@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/patient_portal.css') }}">
+<script src="https://kit.fontawesome.com/58224b2815.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %}
+HMS | Patient Portal
+{% endblock %}
+
+{% block content %}
+<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
+<p onclick="openView(event, 'help')">Help</p>
+
+<!-- <p onclick="openView(event, 'appointment')">Book Appointment</p>
+<p onclick="openView(event, 'specialist')">See Specialist</p>
+<p onclick="openView(event, 'medical')">Medical Data</p>
+<p onclick="openView(event, 'payments')">Payments</p> -->
+{% endblock %}
+
+{% block body %}
+<div class="content-area">
+  <div id="dashboard" class="tabcontent">
+    <h4 id="dash">My Dashboard</h4>
+    <div class="dashboard">
+      <div class="dashboard-info">
+        {% if session %}
+        {% for appointment in appointments if appointment.id == session.appointment %}
+        <a href="{{ url_for('patient_session', session_id=session.id) }}">
+          <div class="session doctor-assigned">
+            <h4>{{ appointment.name }} in progress...</h4>
+            <div class="session-details">
+              <p>Created on - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span> </p>
+              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span> </p>
+              {% for doctor in doctors if doctor.id == session.doctor %}
+              <p>Doctor assigned - <span>{{ doctor.first_name }} {{ doctor.second_name }}</span></p>
+              {% endfor %}
+              <p>status - <span>{{ appointment.status }}</span></p>
+            </div>
+          </div>
+        </a>
+        {% endfor %}
+        {% else %}
+        <div class="session no-doctor-assigned">
+          <h4>No Active Sessions</h4>
+        </div>
+        {% endif %}
+        <div class="session-info">
+          <i class="fas fa-arrow-right"></i>
+          <p>This shows if there's any active appointments, if there is, the appointment details will be specified and
+            if
+            there isn't,
+            no details will be shown</p>
+        </div>
+      </div>
+      <div class="other-actions">
+        <div onclick="openView(event, 'appointment')" class="action">
+          <img src="{{ url_for('static', filename='Images/calendar.png') }}" alt="appointment">
+          <h4>Make Appointments <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium facere repellat nesciunt, ipsum id
+            rerum voluptates earum eligendi praesentium omnis.</p>
+        </div>
+        <div onclick="openView(event, 'medical')" class="action">
+          <img src="{{ url_for('static', filename='Images/monitor.png') }}" alt="medical data">
+          <h4>View Medical Data <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
+            saepe.</p>
+        </div>
+        <div onclick="openView(event, 'payments')" class="action">
+          <div class="dot"></div>
+          <img src="{{ url_for('static', filename='Images/secure-payment.png') }}" alt="payment">
+          <h4>Payments <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus commodi quisquam soluta veniam
+            doloribus ducimus porro!</p>
+        </div>
+        <div onclick="openView(event, 'previous-visit')" class="action">
+          <img src="{{ url_for('static', filename='Images/monitor.png') }}" alt="previous visit">
+          <h4>Previous visits <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
+            saepe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="appointment" class="tabcontent">
+    <h4 id="dash">Appointments</h4>
+    <p id="more-info">This shows all services offered by the hospital</p>
+    <div class="appointment">
+      <div class="services">
+        <p onclick="openService(event, 'outpatient')" id="defaultOpens">Outpatient</p>
+        <p onclick="openService(event, 'inpatient')">Inpatient</p>
+        <p onclick="openService(event, 'ambulance')">Ambulance</p>
+        <p onclick="openService(event, 'dental')">Dental</p>
+      </div>
+      <div class="services-info">
+        <div id="outpatient" class="tabcontents">
+          <h4 id="dash">Outpatient</h4>
+          <div class="outpatient">
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/ambulance.png') }}" alt="accident">
+              <p>Accident & Emergency Services</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/test-tube.png') }}" alt="laboratory">
+              <p>Laboratory Services</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/x-ray.png') }}" alt="radiology">
+              <p>Radiology</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/pharmaceutical.png') }}" alt="pharmacy">
+              <p>Phamarcy</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/medicine.png') }}" alt="routine vaccines">
+              <p>Routine Vaccines</p>
+            </div>
+            <div class="info" onclick="openView(event, 'consultation')">
+              <img src="{{ url_for('static',filename='Images/doctor.png') }}" alt="doctor consultation">
+              <p>Doctor Consultation</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/walker.png') }}" alt="physiotherapy">
+              <p>Physiotherapy</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/syringe.png') }}" alt="vaccination">
+              <p>Vaccination</p>
+            </div>
+          </div>
+        </div>
+        <div id="inpatient" class="tabcontents">
+          <h4 id="dash">Inpatient</h4>
+          <div class="inpatient">
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/operation.png') }}" alt="operating theatre">
+              <p>Operating Theatre</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/maternity.png') }}" alt="maternity">
+              <p>Maternity</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/medical-room.png') }}" alt="wards">
+              <p>Wards</p>
+            </div>
+          </div>
+        </div>
+        <div id="ambulance" class="tabcontents">
+          <h4 id="dash">Ambulance</h4>
+          <div class="ambulance">
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/ambulances.png') }}" alt="ambulance">
+              <p>Ambulance</p>
+            </div>
+          </div>
+        </div>
+        <div id="dental" class="tabcontents">
+          <h4 id="dash">Dental</h4>
+          <div class="dental">
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/extraction.png') }}" alt="teeth extraction">
+              <p>Teeth Extraction</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/filling.png') }}" alt="filling">
+              <p>Filling</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/denture.png') }}" alt="dentures">
+              <p>Dentures</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/scaling.png') }}" alt="scaling">
+              <p>Scaling</p>
+            </div>
+            <div class="info">
+              <img src="{{ url_for('static',filename='Images/tooth-whitening.png') }}" alt="teeth whitening">
+              <p>Teeth Whitening</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="consultation" class="tabcontent">
+    <h4 id="dash">Doctor Consultation</h4>
+    <p id="more-info">Fill all the fields in the form</p>
+    <div class="consultation">
+      <form action="{{ url_for('book_appointment') }}" method="post">
+        <div class="left">
+          <div class="one">
+            <label for="fnam">Full Name:</label>
+            <input required type="text" name="fname" placeholder="Full Names" readonly spellcheck="false"
+              value="{{ current_user.first_name }} {{ current_user.second_name }} {{ current_user.last_name }}">
+          </div>
+          <div class="two">
+            <label for="gender">Gender:</label>
+            <select required name="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="two">
+            <label for="age">Age:</label>
+            <input required readonly spellcheck="false" type="tel" name="age" placeholder="Age"
+              value="{{ current_user.age|default(0) }} Years">
+          </div>
+          <div class="two">
+            <label for="phone">Phone Number:</label>
+            <input readonly required spellcheck="false" type="tel" name="phone" placeholder="Phone Number"
+              value="{{ current_user.phone }}">
+          </div>
+          <div class="two">
+            <label for="phone">Email Address:</label>
+            <input required readonly spellcheck="false" type="email" name="email" placeholder="Email Address"
+              value="{{ current_user.email }}">
+          </div>
+        </div>
+        <div class="right">
+          <h4>Take note</h4>
+          <div class="right-info">
+            <ul>
+              <li>Fill all the fields in the form correctly</li>
+              <li>Once done a doctor will be assigned to you</li>
+              <li>Once you're assigned a doctor a session will be created, that will track your progress</li>
+              <li>Once you've created an appointment, you cannot create another one until your previous appointment is
+                complete</li>
+            </ul>
+          </div>
+        </div>
+        <button class="btn" type="submit">
+          <span class="button--text">Create Appointment</span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <div id="previous-visit" class="tabcontent">
+    <h4 id="dash">Previous Visits</h4>
+  </div>
+  <div id="medical" class="tabcontent">
+    <h4 id="dash">Medical Data</h4>
+  </div>
+  <div id="payments" class="tabcontent">
+    <h4 id="dash">Payments</h4>
+    <p id="more-info">This tab allows you to pay for your medication</p>
+    <div class="payments">
+      {% if session.prescription %}
+      <h4>Medical Bill</h4>
+      <table>
+        <tr>
+          <th id="desc">Description</th>
+          <th id="amount">Amount</th>
+        </tr>
+        {% set total = [] %}
+        {% for prescription in prescriptions %}
+        {% for medicine in medicines if medicine.id == prescription.medicine %}
+        {{ total.append(medicine.price) or "" }}
+        <tr>
+          <td>{{ medicine.name }}</td>
+          <td id="center">{{ "Ksh {:,}".format(medicine.price) }}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        <tr id="total">
+          <td>Total</td>
+          <td id="center">{{ "Ksh {:,}".format(total|sum) }}</td>
+        </tr>
+      </table>
+      <div class="payment-methods">
+        <div class="bank-card">
+          <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
+          <h4>
+            Bank credit/debit card
+            <i class="fas fa-chevron-right"></i>
+          </h4>
+        </div>
+        <div class="bank-card">
+          <img src="{{ url_for('static', filename='Images/mpesa.png') }}" alt="mpesa">
+          <h4>
+            Mpesa screenshot
+            <i class="fas fa-chevron-right"></i>
+          </h4>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  <div id="help" class="tabcontent">
+    <h4 id="dash">Help</h4>
+  </div>
+</div>
+
+{% endblock %}

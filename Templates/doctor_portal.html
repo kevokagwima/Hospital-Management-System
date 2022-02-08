@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/doctor_portal.css') }}">
+<script src="https://kit.fontawesome.com/58224b2815.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %}
+HMS | Doctor Portal
+{% endblock %}
+
+{% block content %}
+<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
+<!-- <p onclick="openView(event, 'patients')">Patients</p>
+<p onclick="openView(event, 'prescriptions')">Prescriptions</p> -->
+<p onclick="openView(event, 'help')">Help</p>
+{% endblock %}
+
+{% block body %}
+<div class="content-area">
+  <div id="dashboard" class="tabcontent">
+    <h4 id="dash">Dashboard</h4>
+    <p id="more-info">This tab will show you all your general information</p>
+    <div class="dashboard">
+      <div class="dashboard-info">
+        {% if session %}
+        {% for appointment in appointments if appointment.id == session.appointment %}
+        <a href="{{ url_for('doctor_session', session_id=session.id) }}">
+          <div class="session doctor-assigned">
+            <h4>You have an appointment in progress...</h4>
+            <div class="session-details">
+              <p>Patient - <span>{{ patient.first_name }} {{ patient.second_name }}</span></p>
+              <p>Created on - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span> </p>
+              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span> </p>
+              <p>status - <span>{{ appointment.status }}</span></p>
+            </div>
+          </div>
+          {% endfor %}
+        </a>
+        {% else %}
+        <div class="session no-doctor-assigned">
+          <h4>No Active Sessions</h4>
+        </div>
+        {% endif %}
+        <div class="session-info">
+          <i class="fas fa-arrow-right"></i>
+          <p>This shows if there's any active appointments, if there is, the appointment details will be specified and
+            if
+            there isn't,
+            no details will be shown</p>
+        </div>
+      </div>
+      <div class="other-actions">
+        <div onclick="openView(event, 'patients')" class="action">
+          <img src="{{ url_for('static', filename='Images/examination.png') }}" alt="patients">
+          <h4>Patients <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium facere repellat nesciunt, ipsum id
+            rerum voluptates earum eligendi praesentium omnis.</p>
+        </div>
+        <div onclick="openView(event, 'prescriptions')" class="action">
+          <img src="{{ url_for('static', filename='Images/prescription.png') }}" alt="prescriptions">
+          <h4>Prescriptions <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
+            saepe.</p>
+        </div>
+        <div onclick="openView(event, 'previous-session')" class="action">
+          <img src="{{ url_for('static', filename='Images/online-class.png') }}" alt="hostory">
+          <h4>Previous Sessions <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
+            saepe.</p>
+        </div>
+        <div onclick="openView(event, 'medicine')" class="action">
+          <img src="{{ url_for('static', filename='Images/pills.png') }}" alt="hostory">
+          <h4>Drugs <i class="fas fa-arrow-right"></i></h4>
+          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
+            saepe.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="patients" class="tabcontent">
+    <h4 id="dash">Patients</h4>
+  </div>
+  <div id="prescriptions" class="tabcontent">
+    <h4 id="dash">Prescriptions</h4>
+  </div>
+  <div id="help" class="tabcontent">
+    <h4 id="dash">Help</h4>
+  </div>
+  <div id="previous-session" class="tabcontent">
+    <h4 id="dash">Previous Sessions</h4>
+  </div>
+  <div id="medicine" class="tabcontent">
+    <h4 id="dash">Available Medicine</h4>
+    <p id="more-info">This tab allows you to add new drugs to the database</p>
+    <div class="medicine">
+      <form action="{{ url_for('add_medicine') }}" method="post">
+        <div class="input">
+          <label for="name">Name of Drug</label>
+          <input type="text" name="name" placeholder="Enter name of drug">
+        </div>
+        <div class="input">
+          <label for="type">Type of Drug</label>
+          <select name="type">
+            <option value="Liquid">Liquid</option>
+            <option value="Tablet">Tablet</option>
+            <option value="Capsules">Capsules</option>
+            <option value="Injection">Injection</option>
+          </select>
+        </div>
+        <div class="input">
+          <label for="treatment">Treatment of Drug</label>
+          <input type="text" name="treatment" placeholder="Enter diseases the drug treats">
+        </div>
+        <div class="input">
+          <label for="price">Price of Drug</label>
+          <input type="number" name="price" placeholder="Enter price of drug">
+        </div>
+        <button type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/doctor_portal.js') }}"></script>
+{% endblock %}

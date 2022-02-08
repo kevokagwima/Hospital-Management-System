@@ -1,0 +1,139 @@
+@import url("https://fonts.googleapis.com/css2?family=Alegreya+Sans+SC:wght@300&family=Candal&family=Caudex&family=Martel:wght@200&display=swap");
+
+.users,
+.links {
+  display: none;
+}
+
+body {
+  background-color: var(--nav-links-color);
+}
+
+.container {
+  margin-top: 3.8rem;
+  display: flex;
+  background-image: url("/Static/Images/patient.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.form {
+  flex-grow: 1;
+  padding: 1rem 2rem;
+}
+
+.form h4 {
+  margin-top: 1rem;
+  text-align: center;
+  font-family: "Alegreya Sans SC", sans-serif;
+  font-family: "Candal", sans-serif;
+  font-size: 40px;
+  color: whitesmoke;
+}
+
+form {
+  margin: 3.4rem 8rem 1rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 40px;
+  row-gap: 20px;
+}
+
+label {
+  font-family: var(--nav-links-font);
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+}
+
+input {
+  margin: 5px 0 0;
+  padding: 10px 10px;
+  border: 2px solid white;
+  background-color: rgb(197, 197, 197);
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: var(--nav-links-font);
+  letter-spacing: 1px;
+  color: black;
+  font-weight: 500;
+}
+
+input::placeholder {
+  font-family: var(--nav-links-font);
+  font-weight: normal;
+  font-size: 16px;
+  color: black;
+}
+
+form button {
+  grid-column: 1/3;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: rgb(1, 158, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+}
+
+.button--text {
+  color: white;
+  font-family: var(--nav-links-font);
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.btn--loading .button--text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.btn--loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid transparent;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+}
+
+.box {
+  margin: 2rem auto 0;
+  text-align: center;
+  max-width: max-content;
+  line-height: 1.8;
+  font-family: var(--nav-links-font);
+}
+
+.box p {
+  font-size: 16px;
+  color: white;
+}
+
+.box a {
+  color: var(--red);
+}

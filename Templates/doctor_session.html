@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/doctor_session.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | Doctor Portal
+{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('doctor_portal') }}">Dashboard</a>
+<!-- <p onclick="openView(event, 'dashboard')">Session</p>
+<p onclick="openView(event, 'patients')">Patients</p>
+<p onclick="openView(event, 'prescriptions')">Prescriptions</p> -->
+{% endblock %}
+
+{% block body %}
+<div class="content-area">
+  <div id="dashboard" class="tabcontent">
+    <h4 id="dash">Active Session</h4>
+    <p id="more-info">This tab shows full details of the active session from your appointment with the patient</p>
+    <div class="session-info">
+      <div class="session-details">
+        <h4 id="session-id">Session ID - <span>{{ session.session_id }}</span></h4>
+        <span id="status">{{ appointment.status }}</span>
+        <hr>
+        <h4>Appointment Details</h4>
+        <div class="appointment-info">
+          <button class="accordion">Appointment Information</button>
+          <div class="panel">
+            <div class="appointment-details">
+              <p>Appointment ID - <span>{{ appointment.appointment_id }}</span></p>
+              <p>Appointment Name - <span>{{ appointment.name }}</span></p>
+              <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+            </div>
+          </div>
+          <button class="accordion">Patient Assigned</button>
+          <div class="panel">
+            <div class="appointment-details">
+              <p>Full Name - <span>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</span></p>
+              <p>Age - <span>{{ patient.age }} Years</span></p>
+              <p>Gender - <span>Male</span></p>
+              <p>Phone Number - <span>{{ patient.phone }}</span></p>
+              <p>Email Address - <span>{{ patient.email }}</span></p>
+              <p>Address - <span>{{ patient.address2 }}, {{ patient.address }}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="patient-bio">
+        <h4>{{ patient.first_name }} {{ patient.second_name }}'s Medical Data</h4>
+        <hr>
+        <div class="patient-bio-info">
+          <div class="bio-data">
+            <h4>Blood Pressure</h4>
+            <img src="{{ url_for('static', filename='Images/blood-pressure-gauge.png') }}" alt="blood pressure">
+            <input type="number" name="bpm" value="120">
+          </div>
+          <div class="bio-data">
+            <h4>Weight</h4>
+            <img src="{{ url_for('static', filename='Images/weight-scale.png') }}" alt="weight">
+            <input type="number" name="bpm" value="120">
+          </div>
+          <div class="bio-data">
+            <h4>Height</h4>
+            <img src="{{ url_for('static', filename='Images/height.png') }}" alt="height">
+            <input type="number" name="bpm" value="120">
+          </div>
+          <div class="alergies">
+            <h4>Alergies</h4>
+            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur, animi!</p>
+          </div>
+          <div class="symptoms">
+            <h4>Symptoms</h4>
+            {% if session.symptoms %}
+            <p id="flash">{{ session.symptoms }}</p>
+            {% else %}
+            <h4 class="else">{{ patient.first_name }} {{ patient.second_name }} has not yet entered his symptoms</h4>
+            {% endif %}
+          </div>
+          {% if session.diagnosis %}
+          <div class="patient-diagnosis">
+            <h4>Diagnosis Given</h4>
+            <p>{{ session.diagnosis }}</p>
+          </div>
+          {% endif %}
+          {% if session.prescription %}
+          <div class="patient-prescription">
+            <h4>Prescription Given</h4>
+            {% for prescribe in session.prescription %}
+            <p>
+              <span>
+                {% for med in medicines if med.id == prescribe.medicine %}
+                {{ med.name }} - {{ med.type }}
+                {% endfor %}
+              </span>
+              <span>
+                dose - {{ prescribe.dose }}
+              </span>
+              <span>
+                frequency - {{ prescribe.frequency }} times a day
+              </span>
+            </p>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% if session.notes %}
+          <div class="patient-notes">
+            <h4>Additional Notes</h4>
+            <p>{{ session.notes }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="diagnosis">
+        <h4>Diagnosis</h4>
+        <hr>
+        {% if session.symptoms == None %}
+        <p class="else">Patient has not yet given their symptoms</p>
+        {% elif session.diagnosis %}
+        <p class="else">Patient already given a diagnosis, refer to the patient's medical data panel to view the
+          diagnosis
+          specified</p>
+        {% else %}
+        <form action="{{ url_for('diagnosis', session_id=session.id) }}" method="post">
+          <label for="diagnosis">Specify the diagnosis</label>
+          <textarea required name="diagnosis" placeholder="Give the diagnosis"></textarea>
+          <button type="submit">Submit</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="prescription">
+        <h4>Prescription</h4>
+        <span id="more-info">The drugs below are automatically generated to treat the diagnosis given</span>
+        <hr>
+        <div class="prescription-info">
+          {% if session.diagnosis and medicines %}
+          <table>
+            <tr>
+              <th>Drug Name</th>
+              <th>Type</th>
+              <th>Treatment</th>
+              <th>Price</th>
+            </tr>
+            {% for medicine in medicines if medicine.treatment == session.diagnosis %}
+            <tr id="presc">
+              <td>{{ medicine.name }}</td>
+              <td>{{ medicine.type }}</td>
+              <td>{{ medicine.treatment }}</td>
+              <td>{{ "Ksh {:,}".format(medicine.price) }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <form action="{{ url_for('prescription', session_id=session.id) }}" method="post">
+            <label for="drug">Select Drug To Prescribe</label>
+            <select name="drug">
+              {% for medicine in medicines if medicine.treatment == session.diagnosis %}
+              <option value="{{ medicine.id }}">
+                {{ medicine.name }} - {{ medicine.type }} - {{ medicine.treatment }} - {{ "Ksh
+                {:,}".format(medicine.price) }}
+              </option>
+              </tr>
+              {% endfor %}
+            </select>
+            <label for="dose">Enter Dosage</label>
+            <input required type="text" name="dose" placeholder="Enter dose to be taken">
+            <label for="frequency">Enter Frequency</label>
+            <input required type="text" name="frequency"
+              placeholder="Enter frequency to be taken e.g. 3 - (3 times a day)">
+            <button type="submit">Prescribe</button>
+          </form>
+          {% else %}
+          <p class="else">No drugs to prescribe at the moment</p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="notes">
+        <h4>Additional Notes</h4>
+        <hr>
+        <p id="more-info">You can pass on extra information to your patient</p>
+        <form action="{{ url_for('notes', session_id=session.id) }}" method="post">
+          <label for="notes">Write notes to your patient</label>
+          <textarea required name="notes" placeholder="Maximum of 200 characters is allowed"></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/doctor_session.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo:wght@200;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Martel:wght@200&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Varela+Round&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Lato:400,700&display=swap");
+
+:root {
+  --font: "Exo", sans-serif;
+  --font-1: "PT Sans", sans-serif;
+  --product-desc-font: "Martel", serif;
+}
+
+.container {
+  margin-top: 3.5rem;
+  min-height: 80vh;
+  max-height: 80vh;
+  position: relative;
+  background-color: var(--nav-links-color);
+}
+
+.text {
+  padding: 10rem 0 0 8rem;
+  width: max-content;
+}
+
+.text h4 {
+  text-transform: capitalize;
+  font-size: 3.2rem;
+  font-family: var(--font);
+  max-width: 35rem;
+  line-height: 1.2;
+  color: white;
+  font-weight: bolder;
+  letter-spacing: 3px;
+}
+
+.text p {
+  max-width: 30rem;
+  margin-top: 1rem;
+  font-family: var(--font-1);
+  font-size: 1rem;
+  font-weight: lighter;
+  line-height: 1.4;
+  color: whitesmoke;
+  letter-spacing: 1px;
+}
+
+.text button {
+  margin-top: 2rem;
+  padding: 1em 2em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  font-family: system-ui;
+  background-color: red;
+  font-size: 1rem;
+  text-transform: uppercase;
+  transition: 0.3s ease-in-out;
+}
+
+.image {
+  position: absolute;
+  inset: 5rem 5rem auto auto;
+  height: 100%;
+  width: 40rem;
+  border-radius: 1% 40% 20% 60%;
+  background-image: url(../Images/doctors.jpg);
+  background-size: cover;
+  box-shadow: 0px 0px 10px -5px black;
+}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/patient_session.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | {{ appointment.name }}
+{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('patient_portal') }}">Dashboard</a>
+{% endblock %}
+
+{% block body %}
+<div class="content-area">
+  <div id="session" class="session tabcontent">
+    <h4 id="dash">My Active Session</h4>
+    <p id="more-info">This tab shows full details of the active session from your appointment</p>
+    <div class="session-info">
+      <div class="session-details">
+        <h4 id="session-id">Session ID - <span>{{ session.session_id }}</span></h4>
+        <span id="status">{{ appointment.status }}</span>
+        <hr>
+        <h4>My appointment Details</h4>
+        <div class="appointment-info">
+          <button class="accordion">Appointment Information</button>
+          <div class="panel">
+            <div class="appointment-details">
+              <p>Appointment ID - <span>{{ appointment.appointment_id }}</span></p>
+              <p>Appointment Name - <span>{{ appointment.name }}</span></p>
+              <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+            </div>
+          </div>
+          <button class="accordion">Doctor Assigned</button>
+          <div class="panel">
+            <div class="appointment-details">
+              <p>Full Name - <span>{{ doctor.first_name }} {{ doctor.second_name }}</span></p>
+              <p>Phone Number - <span>{{ doctor.phone }}</span></p>
+              <p>Email Address - <span>{{ doctor.email }}</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="symptoms">
+        <h4>My Symptoms</h4>
+        <hr>
+        {% if session.symptoms %}
+        <p class="else">{{ session.symptoms }}</p>
+        {% else %}
+        <p>Describe your symptoms in full</p>
+        <form action="{{ url_for('patient_session', session_id=session.id) }}" , method="POST">
+          <label for="symptoms">Enter Symptoms</label>
+          <textarea spellcheck="false" required name="symptoms" cols="30" rows="10"
+            placeholder="Write all your symptoms"></textarea>
+          <button type="submit">UPLOAD</button>
+        </form>
+        {% endif %}
+      </div>
+      {% if session.diagnosis %}
+      <div class="diagnosis">
+        <h4>Diagnosis Given</h4>
+        <hr>
+        <p>From your symptoms specified, the doctor has conclude that you're suffering from
+          <span>{{ session.diagnosis}}</span>
+        </p>
+      </div>
+      {% endif %}
+      {% if session.notes %}
+      <div class="notes">
+        <h4>Additional Notes</h4>
+        <hr>
+        <p>{{ session.notes }}</p>
+      </div>
+      {% endif %}
+      <div class="prescription">
+        <h4>Prescriptions Given</h4>
+        <hr>
+        <div class="prescription-info">
+          {% set prescriptions = session.prescription %}
+          {% for prescription in prescriptions %}
+          <p>
+            <span>
+              {% for med in medicines if med.id == prescription.medicine %}
+              {{ med.name }} - {{ med.type }}
+              {% endfor %}
+            </span>
+            <span>
+              {% for med in medicines if med.id == prescription.medicine %}
+              {% if med.type == 'Liquid' or med.type == 'Injection' %}
+              {{ prescription.dose }}
+              {% elif med.type == 'Capsules' %}
+              {{ prescription.dose }} capsules
+              {% elif med.type == 'Tablets' %}
+              {{ prescription.dose }} tablets
+              {% endif %}
+              {% endfor %}
+            </span>
+            <span>{{ prescription.frequency }} times a day</span>
+          </p>
+          {% endfor %}
+        </div>
+        <div class="total">
+          <h4>Total</h4>
+          <hr>
+          <div class="total-info">
+            {% set total = [] %}
+            {% for prescription in prescriptions %}
+            {% for med in medicines if med.id == prescription.medicine %}
+            {{ total.append(med.price) or "" }}
+            {% endfor %}
+            {% endfor %}
+            <h4>{{ "Ksh {:,}".format(total|sum) }}</h4>
+            <p>Proceed to the payment tab in the dashboard to pay for your medication</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/patient_session.js') }}"></script>
+{% endblock %}

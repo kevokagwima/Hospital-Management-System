@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/signup.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/signin.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | Signin
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="image"></div>
+  <div class="form">
+    <h4>Sign In</h4>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="input one">
+        {{ form.email.label }}
+        {{ form.email(placeholder="Enter Email") }}
+      </div>
+      <div class="input two">
+        {{ form.password.label }}
+        {{ form.password(placeholder="Enter Password") }}
+      </div>
+      <button class="btn" type="submit">
+        <span class="button--text">SIGN IN</span>
+      </button>
+      <div class="box">
+        <p>Don't have an account</p>
+        <a href="{{ url_for('patient_register') }}">Sign Up</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+{% endblock %}

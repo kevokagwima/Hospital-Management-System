@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/new_product.css') }}">
+{% endblock %}
+
+{% block title %}
+The Complex | Add Product
+{% endblock %}
+
+{% block body %}
+<h4>Add a new product</h4>
+<form method="post">
+  {{ form.hidden_tag() }}
+  <div class="input">
+    {{ form.name.label }}
+    {{ form.name(placeholder="Enter Name of Product") }}
+  </div>
+  <div class="input">
+    {{ form.brand.label }}
+    {{ form.brand(placeholder="Enter Brand Of Product") }}
+  </div>
+  <div class="input">
+    {{ form.category.label }}
+    {{ form.category(placeholder="Enter Category of Product") }}
+  </div>
+  <div class="input">
+    {{ form.tag.label }}
+    {{ form.tag(placeholder="Enter Tag of Product") }}
+  </div>
+  <div class="input">
+    {{ form.size.label }}
+    {{ form.size(placeholder="Enter Size of Product") }}
+  </div>
+  <div class="input">
+    {{ form.color.label }}
+    {{ form.color(placeholder="Enter Color of Product") }}
+  </div>
+  <div class="input">
+    {{ form.gender.label }}
+    {{ form.gender }}
+  </div>
+  <div class="input">
+    {{ form.price.label }}
+    {{ form.price(placeholder="Enter Price of Product") }}
+  </div>
+  <button class="btn" type="submit">
+    <span class="button--text">Add Product</span>
+  </button>
+</form>
+
+<script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+{% endblock %}

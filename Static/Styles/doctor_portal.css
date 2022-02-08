@@ -1,0 +1,247 @@
+nav {
+  background-color: var(--nav-links-color);
+}
+
+.logo h4 {
+  color: white;
+}
+
+.links p {
+  color: rgb(201, 201, 201);
+  cursor: pointer;
+}
+
+.links p:hover {
+  color: white;
+}
+
+.user-profile > a {
+  display: none;
+}
+
+.user-profile p {
+  color: white;
+}
+
+.content-area {
+  min-height: 92vh;
+  max-height: 92vh;
+  overflow: auto;
+  margin-top: 3.7rem;
+  background-color: whitesmoke;
+  padding: 2rem 3.8rem 0;
+}
+
+#dash {
+  font-size: 1.5rem;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+}
+
+#more-info {
+  font-family: var(--nav-links-font);
+  color: grey;
+  margin-top: 10px;
+}
+
+.dashboard {
+  height: max-content;
+  border-radius: 5px;
+  padding: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 80px;
+  column-gap: 20px;
+}
+
+.dashboard-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  align-items: center;
+  grid-column: 1/4;
+}
+
+.session {
+  padding: 20px;
+  border-radius: 5px;
+  min-height: 16rem;
+  min-width: 35rem;
+  max-width: 35rem;
+  font-family: var(--nav-links-font);
+  box-shadow: 0px 0px 10px -6px black;
+  transition: 0.3s ease;
+}
+
+.session:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 0px 10px -4px black;
+}
+
+.doctor-assigned h4 {
+  color: gold;
+  font-family: var(--nav-links-font);
+  font-size: 1.2rem;
+}
+
+.session-details {
+  max-width: 15rem;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.session-details span {
+  font-weight: bold;
+}
+
+.doctor-assigned {
+  color: black;
+  background-color: var(--dark);
+  color: white;
+  background-image: url(../Images/Gifs/Flame_Remote_Working_transparent_by_Icons8.gif);
+  background-size: contain;
+  background-position: right 20px;
+  background-repeat: no-repeat;
+}
+
+.no-doctor-assigned {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  background-image: url(../Images/not.png);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.no-doctor-assigned h4 {
+  color: red;
+}
+
+.session-info {
+  padding: 1rem 2rem;
+  color: grey;
+  font-family: var(--nav-links-font);
+  border-radius: 5px;
+  grid-column: 2/4;
+  max-width: 35rem;
+  line-height: 1.5;
+  margin: 0 auto;
+  font-size: 18px;
+  position: relative;
+}
+
+.session-info i {
+  position: absolute;
+  inset: auto auto auto -6rem;
+  transform: rotate(180deg);
+  color: orange;
+  font-size: 5rem;
+}
+
+.other-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 3rem;
+  row-gap: 3rem;
+  justify-content: center;
+  grid-column: 1/4;
+}
+
+.action {
+  height: 16rem;
+  background-color: white;
+  border-radius: 0 40px 40px 40px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+  box-shadow: 0px 0px 10px -6px black;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.action:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 0px 10px -4px black;
+}
+
+.action:hover h4 > i {
+  margin-left: 1rem;
+}
+
+.action img {
+  max-width: 3rem;
+  aspect-ratio: 1/1;
+}
+
+.action h4 {
+  color: #212121;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: system-ui;
+}
+
+.action h4 > i {
+  font-size: 14px;
+  color: orange;
+  margin-left: 0.5rem;
+  transition: 0.2s ease-in;
+}
+
+.action p {
+  color: #212121;
+  font-size: 15px;
+  font-weight: lighter;
+  font-family: var(--nav-links-font);
+}
+
+.medicine {
+  margin-top: 1rem;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: white;
+  outline: 1px solid var(--nav-links-color);
+}
+
+.medicine form {
+  display: grid;
+  grid-template-columns: auto;
+  row-gap: 1.5rem;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input label {
+  font-family: var(--nav-links-font);
+}
+
+.input input,
+select {
+  padding: 15px;
+  background-color: whitesmoke;
+  border: 1px solid grey;
+  border-radius: 5px;
+  color: #212121;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+}
+
+.medicine form button {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: system-ui;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}

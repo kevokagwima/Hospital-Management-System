@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='Styles/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='Styles/bootstrap.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>{% block title %}{% endblock %}</title>
+  {% endblock %}
+</head>
+<nav>
+  <div class="logo">
+    <a href="{{ url_for('index') }}">
+      <h4>
+        HMS
+        {% if current_user.is_authenticated %}
+        <span id="account">{{ current_user.account_type }}</span>
+        {% endif %}
+      </h4>
+    </a>
+  </div>
+  <div class="links">
+    {% block content %}
+
+    {% endblock %}
+  </div>
+  {% if current_user.is_authenticated %}
+  <div class="user-profile">
+    {% if current_user.account_type == 'patient' %}
+    <a href="{{ url_for('patient_portal') }}">Patient</a>
+    {% else %}
+    <a href="{{ url_for('doctor_portal') }}">Doctor</a>
+    {% endif %}
+    <p>Welcome, <b id="bold">{{ current_user.first_name }} {{ current_user.second_name }}</b></p>
+    <div class="profile">
+      <p id="logout"><a href="{{ url_for('logout') }}">Logout</a></p>
+    </div>
+  </div>
+  {% else %}
+  <div class="users">
+    <a href="{{ url_for('patient_register') }}">Patient</a>
+    <a href="{{ url_for('doctor_register') }}">Doctor</a>
+    <a href="{{ url_for('signin') }}">
+      <button class="btn2">Sign In</button>
+    </a>
+  </div>
+  {% endif %}
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="tops">
+  {% for category, message in messages %}
+  <div class="alert alert-{{category}}">
+    <p>{{ message }}</p>
+    <span id="close">x</span>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<body>
+  {% block body %}
+
+  {% endblock %}
+
+  <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+</body>
+
+</html>

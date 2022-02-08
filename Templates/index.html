@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/style.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | Home
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="text">
+    <h4>Providing you with the best care</h4>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ex ad maxime quod ipsa commodi reprehenderit
+      culpa similique dolore corporis distinctio aliquid sunt adipisci hic nulla nisi necessitatibus beatae reiciendis
+      vero eligendi suscipit, nam non quisquam odit. Nulla culpa, provident dicta</p>
+    <button>book an appointment</button>
+  </div>
+  <div class="image"></div>
+</div>
+{% endblock %}

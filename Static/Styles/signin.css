@@ -1,0 +1,16 @@
+form {
+  display: flex;
+  flex-direction: column;
+  margin: 8rem 12rem 3rem;
+}
+
+.input,
+.btn {
+  min-width: 30vw;
+  max-width: 30vw;
+  margin: 0 auto;
+}
+
+.form h4 {
+  margin: 2rem 0 0;
+}
