@@ -53,11 +53,17 @@ body {
   margin-top: 1rem;
   height: max-content;
   border-radius: 5px;
-  padding: 20px 0;
+  padding: 15px 5px 10px 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   row-gap: 80px;
   column-gap: 20px;
+  max-height: 38rem;
+  overflow: auto;
+}
+
+.dashboard::-webkit-scrollbar {
+  display: none;
 }
 
 .dashboard-info {
@@ -111,13 +117,14 @@ body {
 }
 
 .no-doctor-assigned {
-  background-color: var(--red);
+  background-color: var(--dark);
+  outline: 4px solid var(--red);
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background-image: url(../Images/not.png);
-  background-size: contain;
-  background-position: center;
+  background-image: url(../Images/not-found.png);
+  background-size: 8rem;
+  background-position: center 3rem;
   background-repeat: no-repeat;
 }
 
@@ -442,6 +449,11 @@ select {
   font-family: "Varela Round", sans-serif;
 }
 
+.payments .else {
+  color: rgb(172, 172, 172);
+  font-size: 20px;
+}
+
 .payments table {
   margin: 2rem auto 0;
   border: 2px solid white;
@@ -476,6 +488,11 @@ td {
   background-color: rgb(81, 184, 81);
 }
 
+#dosage {
+  color: rgb(172, 172, 172);
+  margin-left: 2rem;
+}
+
 #total td {
   font-weight: bold;
   font-size: 18px;
@@ -485,8 +502,8 @@ td {
 .payment-methods {
   margin: 4rem 17.6rem 0;
   display: grid;
-  grid-template-columns: repeat(2, auto);
-  column-gap: 2rem;
+  grid-template-columns: auto;
+  justify-content: center;
 }
 
 .bank-card {
@@ -499,6 +516,7 @@ td {
   align-items: flex-start;
   cursor: pointer;
   color: #212121;
+  width: 20rem;
   transition: 0.2s ease-in-out;
 }
 
@@ -508,7 +526,7 @@ td {
 }
 
 .bank-card:hover h4 > i {
-  right: -11.5rem;
+  right: -7.5rem;
 }
 
 .bank-card img {
@@ -522,6 +540,6 @@ td {
 
 .bank-card i {
   position: absolute;
-  inset: -1.5rem -11rem auto auto;
+  inset: -1.5rem -7rem auto auto;
   transition: 0.2s ease;
 }

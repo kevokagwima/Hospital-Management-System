@@ -24,6 +24,7 @@ HMS | Patient Portal
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
     <h4 id="dash">My Dashboard</h4>
+    <p id="more-info">This tab shows all your general information</p>
     <div class="dashboard">
       <div class="dashboard-info">
         {% if session %}
@@ -44,7 +45,7 @@ HMS | Patient Portal
         {% endfor %}
         {% else %}
         <div class="session no-doctor-assigned">
-          <h4>No Active Sessions</h4>
+          <h4>No Active Appointment</h4>
         </div>
         {% endif %}
         <div class="session-info">
@@ -69,7 +70,13 @@ HMS | Patient Portal
             saepe.</p>
         </div>
         <div onclick="openView(event, 'payments')" class="action">
+          {% set active_prescriptions = [] %}
+          {% for prescription in prescriptions if prescription.status == "Active" %}
+          {{ active_prescriptions.append(prescription) or "" }}
+          {% endfor %}
+          {% if active_prescriptions %}
           <div class="dot"></div>
+          {% endif %}
           <img src="{{ url_for('static', filename='Images/secure-payment.png') }}" alt="payment">
           <h4>Payments <i class="fas fa-arrow-right"></i></h4>
           <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus commodi quisquam soluta veniam
@@ -199,10 +206,15 @@ HMS | Patient Portal
           </div>
           <div class="two">
             <label for="gender">Gender:</label>
+            {% if current_user.gender %}
+            <input required type="text" name="fname" placeholder="Full Names" readonly spellcheck="false"
+              value="{{ current_user.gender }}">
+            {% else %}
             <select required name="gender">
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
+            {% endif %}
           </div>
           <div class="two">
             <label for="age">Age:</label>
@@ -248,7 +260,7 @@ HMS | Patient Portal
     <h4 id="dash">Payments</h4>
     <p id="more-info">This tab allows you to pay for your medication</p>
     <div class="payments">
-      {% if session.prescription %}
+      {% if active_prescriptions %}
       <h4>Medical Bill</h4>
       <table>
         <tr>
@@ -256,11 +268,21 @@ HMS | Patient Portal
           <th id="amount">Amount</th>
         </tr>
         {% set total = [] %}
-        {% for prescription in prescriptions %}
+        {% for prescription in prescriptions if prescription.status == "Active" %}
         {% for medicine in medicines if medicine.id == prescription.medicine %}
         {{ total.append(medicine.price) or "" }}
         <tr>
-          <td>{{ medicine.name }}</td>
+          <td>{{ medicine.name }}
+            <span id="dosage">
+              {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
+              {{ prescription.dose }}
+              {% elif medicine.type == 'Capsules' %}
+              {{ prescription.dose }} capsules
+              {% elif medicine.type == 'Tablet' %}
+              {{ prescription.dose }} tablets
+              {% endif %} &times; {{ prescription.frequency }}
+            </span>
+          </td>
           <td id="center">{{ "Ksh {:,}".format(medicine.price) }}</td>
         </tr>
         {% endfor %}
@@ -271,21 +293,18 @@ HMS | Patient Portal
         </tr>
       </table>
       <div class="payment-methods">
-        <div class="bank-card">
-          <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
-          <h4>
-            Bank credit/debit card
-            <i class="fas fa-chevron-right"></i>
-          </h4>
-        </div>
-        <div class="bank-card">
-          <img src="{{ url_for('static', filename='Images/mpesa.png') }}" alt="mpesa">
-          <h4>
-            Mpesa screenshot
-            <i class="fas fa-chevron-right"></i>
-          </h4>
-        </div>
+        <a href="{{ url_for('medical_bill_payment') }}">
+          <div class="bank-card">
+            <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
+            <h4>
+              Bank credit/debit card
+              <i class="fas fa-chevron-right"></i>
+            </h4>
+          </div>
+        </a>
       </div>
+      {% else %}
+      <h4 class="else">No active medical bill to pay at the moment</h4>
       {% endif %}
     </div>
   </div>

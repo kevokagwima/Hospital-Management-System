@@ -30,17 +30,19 @@ HMS | Doctor Portal
           <div class="session doctor-assigned">
             <h4>You have an appointment in progress...</h4>
             <div class="session-details">
+              {% for patient in patients if patient.id == appointment.patient %}
               <p>Patient - <span>{{ patient.first_name }} {{ patient.second_name }}</span></p>
+              {% endfor %}
               <p>Created on - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span> </p>
               <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span> </p>
               <p>status - <span>{{ appointment.status }}</span></p>
             </div>
           </div>
-          {% endfor %}
         </a>
+        {% endfor %}
         {% else %}
         <div class="session no-doctor-assigned">
-          <h4>No Active Sessions</h4>
+          <h4>No Active Appointment</h4>
         </div>
         {% endif %}
         <div class="session-info">
@@ -89,7 +91,67 @@ HMS | Doctor Portal
     <h4 id="dash">Help</h4>
   </div>
   <div id="previous-session" class="tabcontent">
-    <h4 id="dash">Previous Sessions</h4>
+    <h4 id="dash">Previous Sessions ({{ current_user.session|count }})</h4>
+    <p id="more-info">This tab shows you previous interaction with your patients</p>
+    <div class="previous-session">
+      {% for session in current_user.session if session.status == "Closed" %}
+      {% for appointment in current_user.appointment|sort(attribute='date_closed.strftime("%d/%m/%Y")', reverse=true) if
+      appointment.id ==
+      session.appointment %}
+      <div class="accordion">
+        {{ appointment.name }}
+        {% for patient in patients if patient.id == session.patient %}
+        - {{ patient.first_name }} {{ patient.second_name }}
+        {% endfor %}
+        <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p")}}
+        </span>
+      </div>
+      <div class="panel">
+        <div class="panel-info">
+          <div class="appointment-info">
+            <h4>Appointment Details</h4>
+            <hr>
+            <p>Appointment Name <span>- {{ appointment.name }}</span></p>
+            <p>Date created <span>- {{ appointment.date_created.strftime('%d/%m/%Y') }}</span></p>
+            <p>Time Started <span>- {{ appointment.date_created.strftime('%I:%M %p') }}</span></p>
+            <p>Status <span>- {{ appointment.status }}</span></p>
+          </div>
+          <div class="symptoms">
+            <h4>Patient's Symptoms</h4>
+            <hr>
+            <p>Patient's symptoms - <span>{{ session.symptoms }}</span></p>
+          </div>
+          <div class="diagnosis">
+            <h4>Diagnosis Given</h4>
+            <hr>
+            <p>Diagnosis given - <span>{{ session.diagnosis }}</span></p>
+          </div>
+          <div class="prescriptions">
+            <h4>Prescriptions Given</h4>
+            <hr>
+            {% for prescription in current_user.prescription if prescription.session == session.id %}
+            {% for medicine in medicines if medicine.id == prescription.medicine %}
+            <P>{{ medicine.name }} - {{ medicine.type }} <span>- {% if medicine.type == 'Liquid' or medicine.type ==
+                'Injection' %}
+                {{ prescription.dose }}
+                {% elif medicine.type == 'Capsules' %}
+                {{ prescription.dose }} capsules
+                {% elif medicine.type == 'Tablet' %}
+                {{ prescription.dose }} tablets
+                {% endif %} &times; {{ prescription.frequency }}</span></P>
+            {% endfor %}
+            {% endfor %}
+            <div class="notes">
+              <h4>Additional Notes</h4>
+              <hr>
+              <p>{{ session.notes }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
   </div>
   <div id="medicine" class="tabcontent">
     <h4 id="dash">Available Medicine</h4>

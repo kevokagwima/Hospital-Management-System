@@ -1,10 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, request, sessions
 from flask.helpers import flash
-from models import db, Patients, Doctors, Appointment, Session, Medicine, Prescription
+from models import db, Patients, Doctors, Appointment, Session, Medicine, Prescription, Transaction
 from form import patient_registration, login, doctor_registration
 from flask_login import login_manager,LoginManager,login_user,login_required,logout_user,current_user
 from werkzeug.utils import secure_filename
-import datetime, random
+import datetime, random, stripe
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
@@ -12,6 +12,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mysecretkeythatyouarenotsupposedtosee"
+stripe.api_key = "sk_test_51J8POQHxOFRqyd61L7UzfYpE75ICCFRlAkMeQn57fJtO8q6tD6RhcAAu743nGwM8ShVrMaNtuxpZF0PjX8U1snnB00BH2Sk76b"
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
 
 db.init_app(app)
 login_manager = LoginManager()
@@ -97,7 +99,6 @@ def doctor_register():
 @app.route("/signin", methods=["POST", "GET"])
 def signin():
   form = login()
-  
   if form.validate_on_submit():
     patient = Patients.query.filter_by(email=form.email.data).first() 
     doctor = Doctors.query.filter_by(email=form.email.data).first()
@@ -115,14 +116,13 @@ def signin():
       return redirect(next or url_for("doctor_portal"))
     else:
       flash(f"Invalid Login Credentials", category="danger")
-  
 
   return render_template("signin.html", form=form)
 
 @app.route("/patient-portal")
 @login_required
 def patient_portal():
-  session = db.session.query(Session).filter(Session.patient == current_user.id).first()
+  session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
   prescriptions = Prescription.query.filter_by(patient=current_user.id).all()
@@ -138,9 +138,16 @@ def book_appointment():
     return redirect(url_for('signin'))
   available_doctors = []
   doctors = Doctors.query.all()
-  available_doctors.extend(doctors)
+  for doctor in doctors:
+    appointment = Appointment.query.filter_by(doctor=doctor.id, status="Active").first()
+    if appointment == None:
+      available_doctors.append(doctor)
+  if len(available_doctors) == 0:
+    flash(f"No available doctors to assign, all doctors are already engaged in a session", category="info")
+    return redirect(url_for('patient_portal'))
   random_doctor = random.choice(available_doctors)
-  if current_user.appointment:
+  appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
+  if appointment:
     flash(f"You have an active appointment, complete it before creating a new one", category="danger")
   else:
     new_appointment = Appointment (
@@ -153,12 +160,14 @@ def book_appointment():
     )
     db.session.add(new_appointment)
     current_user.doctor = random_doctor.id
+    current_user.gender = request.form.get("gender")
     db.session.commit()
     new_session = Session (
       session_id = random.randint(100000,999999),
       appointment = new_appointment.id,
       patient = new_appointment.patient,
-      doctor = new_appointment.doctor
+      doctor = new_appointment.doctor,
+      status = "Active"
     )
     db.session.add(new_session)
     db.session.commit()
@@ -185,19 +194,71 @@ def patient_session(session_id):
 
   return render_template("patient_session.html", session=session, appointment=appointment, doctor=doctor, medicines=medicines)
 
+@app.route("/medical-bill-payment")
+@login_required
+def medical_bill_payment():
+  total = []
+  prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
+  for prescription in prescriptions:
+    medicines = Medicine.query.filter_by(id=prescription.medicine).all()
+    for medicine in medicines:
+      total.append(medicine.price)
+  checkout_session = stripe.checkout.Session.create(
+    line_items = [
+      {
+        'price_data': {
+          'currency': 'KES',
+          'product_data': {
+            'name': 'Medical Bill',
+          },
+          'unit_amount': (sum(total)*100),
+        },
+        'quantity': 1,
+      }
+    ],
+    mode='payment',
+    success_url=request.host_url + 'payment-complete',
+    cancel_url=request.host_url + '',
+  )
+  
+  return redirect(checkout_session.url)
+
+@app.route("/payment-complete")
+@login_required
+def payment_complete():
+  prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
+  session = Session.query.filter_by(patient=current_user.id, status="Active").first()
+  appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
+  new_transaction = Transaction (
+    transaction_id = random.randint(100000, 999999),
+    date = datetime.datetime.now(),
+    status = "Success"
+  )
+  db.session.add(new_transaction)
+  for prescription in prescriptions:
+    prescription.transactions = new_transaction.id
+    current_user.doctor = None
+    prescription.status = "Closed"
+    session.status = "Closed"
+    appointment.status = "Closed"
+    appointment.date_closed = datetime.datetime.now()
+    db.session.commit()
+  flash(f"Medical bill has been cleared successfully", category="success")
+
+  return redirect(url_for('patient_portal'))
+
 @app.route("/doctor-portal")
 @login_required
 def doctor_portal():
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
     return redirect(url_for('signin'))
-  session = db.session.query(Session).filter(Session.patient == current_user.id).first()
+  session = Session.query.filter_by(doctor=current_user.id, status="Active").first()
   appointments = Appointment.query.all()
-  if appointments:
-    patient = Patients.query.filter_by(id=session.patient).first()
-    return render_template("doctor_portal.html", session=session, patient=patient, appointments=appointments)
+  patients = Patients.query.all()
+  medicines = Medicine.query.all()
 
-  return render_template("doctor_portal.html", session=session, appointments=appointments)
+  return render_template("doctor_portal.html", session=session, appointments=appointments, patients=patients, medicines=medicines)
 
 @app.route("/doctor-patient-session/<int:session_id>")
 @login_required
@@ -240,11 +301,12 @@ def prescription(session_id):
     doctor = session.doctor,
     dose = request.form.get("dose"),
     frequency = request.form.get("frequency"),
-    date = datetime.datetime.now()
+    date = datetime.datetime.now(),
+    status = "Active"
   )
   db.session.add(new_prescription)
   db.session.commit()
-  flash(f"Prescrption added successfully", category="success")
+  flash(f"Prescription added successfully", category="success")
 
   return redirect(url_for('doctor_session', session_id=session.id))
 

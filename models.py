@@ -13,12 +13,14 @@ class Patients(db.Model, UserMixin):
   second_name = db.Column(db.String(length=50), nullable=False)
   last_name = db.Column(db.String(length=50), nullable=False)
   age = db.Column(db.Integer(), nullable=False)
+  gender = db.Column(db.String(length=10), nullable=True)
   email = db.Column(db.String(length=100), nullable=False)
   phone = db.Column(db.String(length=10), nullable=False)
   address = db.Column(db.String(20), nullable=False)
   address2 = db.Column(db.String(20), nullable=False)
   doctor = db.Column(db.Integer(), db.ForeignKey("Doctors.id"))
   appointment = db.relationship("Appointment", backref="doctor-appointment", lazy=True)
+  session = db.relationship("Session", backref="patient-session", lazy=True)
   blood_pressure = db.Column(db.Integer(), nullable=True)
   prescription = db.relationship("Prescription", backref="patient-prescription", lazy=True)
   height = db.Column(db.Integer(), nullable=True)
@@ -53,6 +55,7 @@ class Doctors(db.Model, UserMixin):
   address2 = db.Column(db.String(20), nullable=False)
   patient = db.relationship("Patients", backref="patient", lazy=True)
   appointment = db.relationship("Appointment", backref="patient-appointment", lazy=True)
+  session = db.relationship("Session", backref="doctor-session", lazy=True)
   prescription = db.relationship("Prescription", backref="doctor-prescription", lazy=True)
   date = db.Column(db.DateTime())
   password = db.Column(db.String(), nullable=False)
@@ -93,6 +96,7 @@ class Session(db.Model):
   prescription = db.relationship("Prescription", backref="session-prescription", lazy=True)
   notes = db.Column(db.String(length=200), nullable=True)
   cost = db.Column(db.Integer(), nullable=True)
+  status = db.Column(db.String(length=10), nullable=False)
 
 class Medicine(db.Model):
   __tablename__ = 'Medicines'
@@ -113,3 +117,14 @@ class Prescription(db.Model):
   dose = db.Column(db.String(length=10), nullable=False)
   frequency = db.Column(db.Integer(), nullable=False)
   date = db.Column(db.DateTime(), nullable=False)
+  status = db.Column(db.String(10), nullable=False)
+  transactions = db.Column(db.Integer(), db.ForeignKey("Transactions.id"))
+
+class Transaction(db.Model):
+  __tablename__ = 'Transactions'
+  id = db.Column(db.Integer(), primary_key=True)
+  transaction_id = db.Column(db.Integer(), nullable=False)
+  prescription = db.relationship("Prescription", backref="transaction-prescription", lazy=True)
+  date = db.Column(db.DateTime(), nullable=False)
+  status = db.Column(db.String(length=10), nullable=False)
+  

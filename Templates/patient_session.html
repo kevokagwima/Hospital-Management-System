@@ -75,6 +75,7 @@ HMS | {{ appointment.name }}
         <p>{{ session.notes }}</p>
       </div>
       {% endif %}
+      {% if session.prescription %}
       <div class="prescription">
         <h4>Prescriptions Given</h4>
         <hr>
@@ -93,7 +94,7 @@ HMS | {{ appointment.name }}
               {{ prescription.dose }}
               {% elif med.type == 'Capsules' %}
               {{ prescription.dose }} capsules
-              {% elif med.type == 'Tablets' %}
+              {% elif med.type == 'Tablet' %}
               {{ prescription.dose }} tablets
               {% endif %}
               {% endfor %}
@@ -117,6 +118,7 @@ HMS | {{ appointment.name }}
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

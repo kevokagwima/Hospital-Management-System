@@ -19,6 +19,14 @@ open_profile.addEventListener("click", () => {
   profile.classList.toggle("show-profile");
 });
 
+const close_alert = document.querySelectorAll("#close");
+
+close_alert.forEach((p) => {
+  p.addEventListener("click", () => {
+    p.parentElement.style.display = "none";
+  });
+});
+
 function openView(evt, cityName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -50,11 +58,3 @@ function openService(evt, cityName) {
 }
 
 document.getElementById("defaultOpens").click();
-
-const close_alert = document.querySelectorAll("#close");
-
-close_alert.forEach((p) => {
-  p.addEventListener("click", () => {
-    p.parentElement.style.display = "none";
-  });
-});
