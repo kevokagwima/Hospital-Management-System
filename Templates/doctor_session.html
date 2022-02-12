@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block title %}
-HMS | Doctor Portal
+HMS | Doctor Session
 {% endblock %}
 
 {% block content %}
@@ -17,6 +17,43 @@ HMS | Doctor Portal
 {% endblock %}
 
 {% block body %}
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="close-modal">X</span>
+    </div>
+    <div class="modal-body">
+      <h4>Enter the new medical metrics taken during the test, this information will be saved and updated in the
+        database immediately.</h4>
+      <p id="more-info">Always make sure to take this test before beginning the session with your patient </p>
+      <div class="modal-info">
+        <h4>{{ patient.first_name }} {{ patient.second_name }}'s Medical Metrics</h4>
+        <form action="{{ url_for('patient_vitals', session_id=session.id) }}" method="post">
+          <div class="bio-info">
+            <div class="bio-data">
+              <h4>Blood Pressure</h4>
+              <img src="{{ url_for('static', filename='Images/blood-pressure-gauge.png') }}" alt="blood pressure">
+              <input required type="number" name="blood_pressure" placeholder="Bpm">
+            </div>
+            <div class="bio-data">
+              <h4>Weight</h4>
+              <img src="{{ url_for('static', filename='Images/weight-scale.png') }}" alt="weight">
+              <input required type="number" name="weight" placeholder="Kg">
+            </div>
+            <div class="bio-data">
+              <h4>Height</h4>
+              <img src="{{ url_for('static', filename='Images/height.png') }}" alt="Height">
+              <input required type="number" name="height" placeholder="Cm">
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button>Update</button>
+    </div>
+    </form>
+  </div>
+</div>
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
     <h4 id="dash">Active Session</h4>
@@ -35,9 +72,20 @@ HMS | Doctor Portal
               <p>Appointment Name - <span>{{ appointment.name }}</span></p>
               <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
               <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+              {% if session.status == "Closed" %}
+              <p>Date Closed - <span>{{ appointment.date_closed.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time Ended - <span>{{ appointment.date_closed.strftime("%I:%M %p") }}</span></p>
+              {% endif %}
             </div>
           </div>
-          <button class="accordion">Patient Assigned</button>
+          <button class="accordion more">
+            {% if session.status == "Closed" %}
+            Patient Information
+            {% else %}
+            Patient Assigned
+            <p class="btn">Update vitals</p>
+            {% endif %}
+          </button>
           <div class="panel">
             <div class="appointment-details">
               <p>Full Name - <span>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</span></p>
@@ -57,17 +105,35 @@ HMS | Doctor Portal
           <div class="bio-data">
             <h4>Blood Pressure</h4>
             <img src="{{ url_for('static', filename='Images/blood-pressure-gauge.png') }}" alt="blood pressure">
-            <input type="number" name="bpm" value="120">
+            <p>
+              {% if patient.blood_pressure %}
+              {{ patient.blood_pressure }} Bpm
+              {% else %}
+              - - -
+              {% endif %}
+            </p>
           </div>
           <div class="bio-data">
             <h4>Weight</h4>
             <img src="{{ url_for('static', filename='Images/weight-scale.png') }}" alt="weight">
-            <input type="number" name="bpm" value="120">
+            <p>
+              {% if patient.weight %}
+              {{ patient.weight }} Kg
+              {% else %}
+              - - -
+              {% endif %}
+            </p>
           </div>
           <div class="bio-data">
             <h4>Height</h4>
             <img src="{{ url_for('static', filename='Images/height.png') }}" alt="height">
-            <input type="number" name="bpm" value="120">
+            <p>
+              {% if patient.height %}
+              {{ patient.height }} Cm
+              {% else %}
+              - - -
+              {% endif %}
+            </p>
           </div>
           <div class="alergies">
             <h4>Alergies</h4>
@@ -137,7 +203,9 @@ HMS | Doctor Portal
         <span id="more-info">The drugs below are automatically generated to treat the diagnosis given</span>
         <hr>
         <div class="prescription-info">
-          {% if session.diagnosis and medicines %}
+          {% if session.status == "Closed" %}
+          <p class="else">This session has ended</p>
+          {% elif session.diagnosis and medicines %}
           <table>
             <tr>
               <th>Drug Name</th>
@@ -180,15 +248,20 @@ HMS | Doctor Portal
       <div class="notes">
         <h4>Additional Notes</h4>
         <hr>
+        {% if session.status == "Closed" %}
+        <p class="else">This session has ended</p>
+        {% else %}
         <p id="more-info">You can pass on extra information to your patient</p>
         <form action="{{ url_for('notes', session_id=session.id) }}" method="post">
           <label for="notes">Write notes to your patient</label>
           <textarea required name="notes" placeholder="Maximum of 200 characters is allowed"></textarea>
           <button type="submit">Send</button>
         </form>
+        {% endif %}
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <script src="{{ url_for('static', filename='js/doctor_session.js') }}"></script>

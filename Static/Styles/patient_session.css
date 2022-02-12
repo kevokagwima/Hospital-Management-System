@@ -59,7 +59,7 @@ body {
 .session-info {
   margin-top: 1.5rem;
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   max-height: 38rem;
   overflow: auto;
@@ -105,7 +105,7 @@ body {
 
 #status {
   position: absolute;
-  inset: 1.5rem 3rem auto auto;
+  inset: 1.5rem 1.2rem auto auto;
   color: rgb(0, 255, 0);
 }
 
@@ -185,6 +185,7 @@ body {
   font-family: "Varela Round", sans-serif;
   max-height: 5rem;
   max-width: 86rem;
+  text-transform: capitalize;
 }
 
 .symptoms form ::placeholder {
@@ -194,9 +195,7 @@ body {
 }
 
 .symptoms form button {
-  position: absolute;
-  inset: -10px 0 auto auto;
-  padding: 5px 20px;
+  padding: 10px 20px;
   background-color: green;
   letter-spacing: 1px;
   color: white;
@@ -222,7 +221,7 @@ body {
 
 .prescription {
   grid-column: 3/4;
-  grid-row: 1/4;
+  grid-row: 1/5;
   position: sticky;
   top: 0;
 }

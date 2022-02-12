@@ -110,6 +110,22 @@ nav {
   background-size: contain;
   background-position: right 20px;
   background-repeat: no-repeat;
+  outline: 4px solid rgb(4, 231, 4);
+  animation: flashs 1s infinite;
+}
+
+@keyframes flashs {
+  0% {
+    outline: 4px solid rgb(4, 231, 4);
+  }
+
+  50% {
+    outline: 4px solid orange;
+  }
+
+  100% {
+    outline: 4p solid rgb(4, 231, 4);
+  }
 }
 
 .no-doctor-assigned {
@@ -211,6 +227,10 @@ nav {
   margin-top: 2rem;
   max-height: 37.8rem;
   overflow: auto;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .previous-session::-webkit-scrollbar {
@@ -218,91 +238,30 @@ nav {
 }
 
 .accordion {
-  padding: 10px;
-  font-weight: bold;
+  padding: 10px 15px;
   font-size: 15px;
-  color: white;
-  background-color: var(--nav-links-color);
+  color: #212121;
+  background-color: white;
   border: none;
   font-family: var(--nav-links-font);
   cursor: pointer;
   min-width: 100%;
-  border-radius: 5px 5px 0 0;
+  border-radius: 30px;
   text-align: left;
-  outline: 1px solid grey;
-  box-shadow: 0px 0px 10px -5px black;
   position: relative;
+  outline: 2px solid var(--dark);
 }
 
 .accordion span {
   position: absolute;
   right: 2rem;
   font-weight: bold;
-  color: orange;
+  color: red;
 }
 
-.actives {
+.accordion:hover {
   color: white;
   background-color: var(--dark);
-}
-
-.panel {
-  background-color: white;
-  padding: 0;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-  border-radius: 0 0 5px 5px;
-  margin-bottom: 1rem;
-  box-shadow: 0px 0px 10px -5px black;
-}
-
-.panel-info {
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-
-.panel-info div {
-  padding: 20px;
-  outline: 2px solid var(--nav-links-color);
-  border-radius: 2px;
-  font-family: var(--nav-links-font);
-  height: max-content;
-}
-
-.appointment-info,
-.symptoms,
-.diagnosis {
-  grid-column: 1/3;
-}
-
-.prescriptions,
-.notes {
-  grid-column: 3/4;
-  grid-row: 1/3;
-}
-
-.notes {
-  margin-top: 1rem;
-  background-color: var(--nav-links-color);
-  color: white;
-}
-
-.panel-info div hr {
-  background-color: rgb(201, 201, 201);
-  outline: 1px solid rgb(201, 201, 201);
-  border: none;
-  margin: 10px 0;
-}
-
-.panel-info div p {
-  padding: 8px 0;
-}
-
-.panel-info div p > span {
-  font-weight: bold;
 }
 
 .medicine {
@@ -338,6 +297,7 @@ select {
   color: #212121;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
+  text-transform: capitalize;
 }
 
 .medicine form button {

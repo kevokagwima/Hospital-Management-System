@@ -21,8 +21,9 @@ class Patients(db.Model, UserMixin):
   doctor = db.Column(db.Integer(), db.ForeignKey("Doctors.id"))
   appointment = db.relationship("Appointment", backref="doctor-appointment", lazy=True)
   session = db.relationship("Session", backref="patient-session", lazy=True)
-  blood_pressure = db.Column(db.Integer(), nullable=True)
   prescription = db.relationship("Prescription", backref="patient-prescription", lazy=True)
+  transactions = db.relationship("Prescription", backref="patient-transaction", lazy=True)
+  blood_pressure = db.Column(db.Integer(), nullable=True)
   height = db.Column(db.Integer(), nullable=True)
   weight = db.Column(db.Integer(), nullable=True)
   allergies = db.Column(db.String(length=100), nullable=True)
@@ -125,6 +126,6 @@ class Transaction(db.Model):
   id = db.Column(db.Integer(), primary_key=True)
   transaction_id = db.Column(db.Integer(), nullable=False)
   prescription = db.relationship("Prescription", backref="transaction-prescription", lazy=True)
+  patient = db.Column(db.Integer(), db.ForeignKey("Patients.id"))
   date = db.Column(db.DateTime(), nullable=False)
   status = db.Column(db.String(length=10), nullable=False)
-  

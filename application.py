@@ -122,13 +122,18 @@ def signin():
 @app.route("/patient-portal")
 @login_required
 def patient_portal():
+  if current_user.account_type != "patient":
+    flash(f"Only patients are allowed", category="warning")
+    return redirect(url_for('signin'))
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
+  appointmentz = Appointment.query.filter_by(status="Closed").all()
   prescriptions = Prescription.query.filter_by(patient=current_user.id).all()
+  transactions = Transaction.query.filter_by(patient=current_user.id).all()
   medicines = Medicine.query.all()
   
-  return render_template("patient_portal.html", session=session, doctors=doctors, appointments=appointments, prescriptions=prescriptions, medicines=medicines)
+  return render_template("patient_portal.html", session=session, doctors=doctors, appointments=appointments, appointmentz=appointmentz, prescriptions=prescriptions, medicines=medicines, transactions=transactions)
 
 @app.route("/book-appointment", methods=["POST", "GET"])
 @login_required
@@ -197,6 +202,9 @@ def patient_session(session_id):
 @app.route("/medical-bill-payment")
 @login_required
 def medical_bill_payment():
+  if current_user.account_type != "patient":
+    flash(f"Only patients are allowed", category="warning")
+    return redirect(url_for('signin'))
   total = []
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   for prescription in prescriptions:
@@ -218,31 +226,43 @@ def medical_bill_payment():
     ],
     mode='payment',
     success_url=request.host_url + 'payment-complete',
-    cancel_url=request.host_url + '',
+    cancel_url=request.host_url + 'payment-failed',
   )
   
   return redirect(checkout_session.url)
 
+@app.route("/payment-failed")
+@login_required
+def payment_failed():
+  flash(f"Payment process failed, try again", category="danger")
+  return redirect(url_for('patient_portal'))
+
 @app.route("/payment-complete")
 @login_required
 def payment_complete():
+  if current_user.account_type != "patient":
+    flash(f"Only patients are allowed", category="warning")
+    return redirect(url_for('signin'))
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
   new_transaction = Transaction (
     transaction_id = random.randint(100000, 999999),
+    patient = current_user.id,
     date = datetime.datetime.now(),
     status = "Success"
   )
   db.session.add(new_transaction)
+  db.session.commit()
   for prescription in prescriptions:
     prescription.transactions = new_transaction.id
-    current_user.doctor = None
     prescription.status = "Closed"
-    session.status = "Closed"
-    appointment.status = "Closed"
-    appointment.date_closed = datetime.datetime.now()
     db.session.commit()
+  current_user.doctor = None
+  session.status = "Closed"
+  appointment.status = "Closed"
+  appointment.date_closed = datetime.datetime.now()
+  db.session.commit()
   flash(f"Medical bill has been cleared successfully", category="success")
 
   return redirect(url_for('patient_portal'))
@@ -254,11 +274,12 @@ def doctor_portal():
     flash(f"Only doctors are allowed", category="warning")
     return redirect(url_for('signin'))
   session = Session.query.filter_by(doctor=current_user.id, status="Active").first()
-  appointments = Appointment.query.all()
+  appointments = Appointment.query.all()  
+  appointmentz = Appointment.query.filter_by(status="Closed").all()
   patients = Patients.query.all()
   medicines = Medicine.query.all()
 
-  return render_template("doctor_portal.html", session=session, appointments=appointments, patients=patients, medicines=medicines)
+  return render_template("doctor_portal.html", session=session, appointments=appointments, appointmentz=appointmentz, patients=patients, medicines=medicines)
 
 @app.route("/doctor-patient-session/<int:session_id>")
 @login_required
@@ -320,6 +341,22 @@ def notes(session_id):
   session.notes = request.form.get("notes")
   db.session.commit()
   flash(f"Additional notes sent successfully", category="success")
+
+  return redirect(url_for('doctor_session', session_id=session.id))
+
+@app.route("/patient-vitals/<int:session_id>", methods=["POST", "GET"])
+@login_required
+def patient_vitals(session_id):
+  if current_user.account_type != "doctor":
+    flash(f"Only doctors are allowed", category="warning")
+    return redirect(url_for('signin'))
+  session = Session.query.get(session_id)
+  patient = Patients.query.filter_by(id=session.patient).first()
+  patient.blood_pressure = request.form.get("blood_pressure")
+  patient.weight = request.form.get("weight")
+  patient.height = request.form.get("height")
+  db.session.commit()
+  flash(f"Patient's vitals updated successfully", category="success")
 
   return redirect(url_for('doctor_session', session_id=session.id))
 

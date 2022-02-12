@@ -32,9 +32,19 @@ HMS | {{ appointment.name }}
               <p>Appointment Name - <span>{{ appointment.name }}</span></p>
               <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
               <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+              {% if session.status == "Closed" %}
+              <p>Date Closed - <span>{{ appointment.date_closed.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time Ended - <span>{{ appointment.date_closed.strftime("%I:%M %p") }}</span></p>
+              {% endif %}
             </div>
           </div>
-          <button class="accordion">Doctor Assigned</button>
+          <button class="accordion">
+            {% if session.status == "Closed" %}
+            Doctor Information
+            {% else %}
+            Doctor Assigned
+            {% endif %}
+          </button>
           <div class="panel">
             <div class="appointment-details">
               <p>Full Name - <span>{{ doctor.first_name }} {{ doctor.second_name }}</span></p>

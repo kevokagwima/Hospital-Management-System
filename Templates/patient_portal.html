@@ -57,7 +57,7 @@ HMS | Patient Portal
         </div>
       </div>
       <div class="other-actions">
-        <div onclick="openView(event, 'appointment')" class="action">
+        <div onclick="openView(event, 'consultation')" class="action">
           <img src="{{ url_for('static', filename='Images/calendar.png') }}" alt="appointment">
           <h4>Make Appointments <i class="fas fa-arrow-right"></i></h4>
           <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium facere repellat nesciunt, ipsum id
@@ -91,108 +91,6 @@ HMS | Patient Portal
       </div>
     </div>
   </div>
-  <div id="appointment" class="tabcontent">
-    <h4 id="dash">Appointments</h4>
-    <p id="more-info">This shows all services offered by the hospital</p>
-    <div class="appointment">
-      <div class="services">
-        <p onclick="openService(event, 'outpatient')" id="defaultOpens">Outpatient</p>
-        <p onclick="openService(event, 'inpatient')">Inpatient</p>
-        <p onclick="openService(event, 'ambulance')">Ambulance</p>
-        <p onclick="openService(event, 'dental')">Dental</p>
-      </div>
-      <div class="services-info">
-        <div id="outpatient" class="tabcontents">
-          <h4 id="dash">Outpatient</h4>
-          <div class="outpatient">
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/ambulance.png') }}" alt="accident">
-              <p>Accident & Emergency Services</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/test-tube.png') }}" alt="laboratory">
-              <p>Laboratory Services</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/x-ray.png') }}" alt="radiology">
-              <p>Radiology</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/pharmaceutical.png') }}" alt="pharmacy">
-              <p>Phamarcy</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/medicine.png') }}" alt="routine vaccines">
-              <p>Routine Vaccines</p>
-            </div>
-            <div class="info" onclick="openView(event, 'consultation')">
-              <img src="{{ url_for('static',filename='Images/doctor.png') }}" alt="doctor consultation">
-              <p>Doctor Consultation</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/walker.png') }}" alt="physiotherapy">
-              <p>Physiotherapy</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/syringe.png') }}" alt="vaccination">
-              <p>Vaccination</p>
-            </div>
-          </div>
-        </div>
-        <div id="inpatient" class="tabcontents">
-          <h4 id="dash">Inpatient</h4>
-          <div class="inpatient">
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/operation.png') }}" alt="operating theatre">
-              <p>Operating Theatre</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/maternity.png') }}" alt="maternity">
-              <p>Maternity</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/medical-room.png') }}" alt="wards">
-              <p>Wards</p>
-            </div>
-          </div>
-        </div>
-        <div id="ambulance" class="tabcontents">
-          <h4 id="dash">Ambulance</h4>
-          <div class="ambulance">
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/ambulances.png') }}" alt="ambulance">
-              <p>Ambulance</p>
-            </div>
-          </div>
-        </div>
-        <div id="dental" class="tabcontents">
-          <h4 id="dash">Dental</h4>
-          <div class="dental">
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/extraction.png') }}" alt="teeth extraction">
-              <p>Teeth Extraction</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/filling.png') }}" alt="filling">
-              <p>Filling</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/denture.png') }}" alt="dentures">
-              <p>Dentures</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/scaling.png') }}" alt="scaling">
-              <p>Scaling</p>
-            </div>
-            <div class="info">
-              <img src="{{ url_for('static',filename='Images/tooth-whitening.png') }}" alt="teeth whitening">
-              <p>Teeth Whitening</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div id="consultation" class="tabcontent">
     <h4 id="dash">Doctor Consultation</h4>
     <p id="more-info">Fill all the fields in the form</p>
@@ -207,7 +105,7 @@ HMS | Patient Portal
           <div class="two">
             <label for="gender">Gender:</label>
             {% if current_user.gender %}
-            <input required type="text" name="fname" placeholder="Full Names" readonly spellcheck="false"
+            <input required type="text" placeholder="Gender" readonly spellcheck="false"
               value="{{ current_user.gender }}">
             {% else %}
             <select required name="gender">
@@ -251,7 +149,26 @@ HMS | Patient Portal
     </div>
   </div>
   <div id="previous-visit" class="tabcontent">
-    <h4 id="dash">Previous Visits</h4>
+    <h4 id="dash">Previous Sessions ({{ current_user.session|count }})</h4>
+    <p id="more-info">This tab shows your previous interaction with your doctor</p>
+    <p id="more-info">Your previous visits are ordered from latest to oldest</p>
+    <div class="previous-session">
+      {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) if appointment.patient
+      == current_user.id and appointment.status == "Closed" %}
+      {% for session in current_user.session if session.status == "Closed" and session.appointment == appointment.id %}
+      <a href="{{ url_for('patient_session', session_id=session.id) }}">
+        <div class="accordion">
+          {{ appointment.name }}
+          {% for doctor in doctors if doctor.id == session.doctor %}
+          - {{ doctor.first_name }} {{ doctor.second_name }}
+          {% endfor %}
+          <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p")}}
+          </span>
+        </div>
+      </a>
+      {% endfor %}
+      {% endfor %}
+    </div>
   </div>
   <div id="medical" class="tabcontent">
     <h4 id="dash">Medical Data</h4>
@@ -259,53 +176,102 @@ HMS | Patient Portal
   <div id="payments" class="tabcontent">
     <h4 id="dash">Payments</h4>
     <p id="more-info">This tab allows you to pay for your medication</p>
-    <div class="payments">
-      {% if active_prescriptions %}
-      <h4>Medical Bill</h4>
-      <table>
-        <tr>
-          <th id="desc">Description</th>
-          <th id="amount">Amount</th>
-        </tr>
-        {% set total = [] %}
-        {% for prescription in prescriptions if prescription.status == "Active" %}
-        {% for medicine in medicines if medicine.id == prescription.medicine %}
-        {{ total.append(medicine.price) or "" }}
-        <tr>
-          <td>{{ medicine.name }}
-            <span id="dosage">
-              {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
-              {{ prescription.dose }}
-              {% elif medicine.type == 'Capsules' %}
-              {{ prescription.dose }} capsules
-              {% elif medicine.type == 'Tablet' %}
-              {{ prescription.dose }} tablets
-              {% endif %} &times; {{ prescription.frequency }}
-            </span>
-          </td>
-          <td id="center">{{ "Ksh {:,}".format(medicine.price) }}</td>
-        </tr>
-        {% endfor %}
-        {% endfor %}
-        <tr id="total">
-          <td>Total</td>
-          <td id="center">{{ "Ksh {:,}".format(total|sum) }}</td>
-        </tr>
-      </table>
-      <div class="payment-methods">
-        <a href="{{ url_for('medical_bill_payment') }}">
-          <div class="bank-card">
-            <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
-            <h4>
-              Bank credit/debit card
-              <i class="fas fa-chevron-right"></i>
-            </h4>
-          </div>
-        </a>
+    <div class="payment">
+      <div class="payments">
+        {% if active_prescriptions %}
+        <h4>Medical Bill</h4>
+        <table>
+          <tr>
+            <th id="desc">Description</th>
+            <th id="amount">Amount</th>
+          </tr>
+          {% set total = [] %}
+          {% for prescription in active_prescriptions %}
+          {% for medicine in medicines if medicine.id == prescription.medicine %}
+          {{ total.append(medicine.price) or "" }}
+          <tr>
+            <td>{{ medicine.name }}
+              <span id="dosage">
+                {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
+                {{ prescription.dose }}
+                {% elif medicine.type == 'Capsules' %}
+                {{ prescription.dose }} capsules
+                {% elif medicine.type == 'Tablet' %}
+                {{ prescription.dose }} tablets
+                {% endif %} &times; {{ prescription.frequency }}
+              </span>
+            </td>
+            <td id="center">{{ "Ksh {:,}".format(medicine.price) }}</td>
+          </tr>
+          {% endfor %}
+          {% endfor %}
+          <tr id="total">
+            <td>Total</td>
+            <td id="center">{{ "Ksh {:,}".format(total|sum) }}</td>
+          </tr>
+        </table>
+        <div class="payment-methods">
+          <a href="{{ url_for('medical_bill_payment') }}">
+            <div class="bank-card">
+              <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
+              <h4>
+                Bank credit/debit card
+                <i class="fas fa-chevron-right"></i>
+              </h4>
+            </div>
+          </a>
+        </div>
+        {% else %}
+        <h4 class="else">No active medical bill to pay at the moment</h4>
+        {% endif %}
       </div>
-      {% else %}
-      <h4 class="else">No active medical bill to pay at the moment</h4>
-      {% endif %}
+      <div class="recent-transaction">
+        <h4>Previous Medical Bills</h4>
+        <div class="transaction-info">
+          {% for transaction in transactions|sort(attribute="date", reverse=true) %}
+          <div class="transaction-details">
+            <h4 class="accordion">Transaction ID {{ transaction.transaction_id }}
+              <span>{{ transaction.status }} - {{ transaction.date.strftime("%d/%m/%Y at %I:%M %p") }}</span>
+            </h4>
+            <div class="panel">
+              <div class="panel-info">
+                <table>
+                  <tr>
+                    <th id="desc">Description</th>
+                    <th id="amount">Amount</th>
+                  </tr>
+                  {% set totalz = [] %}
+                  {% for prescription in prescriptions if prescription.status == "Closed" and prescription.transactions
+                  == transaction.id %}
+                  {% for medicine in medicines if medicine.id == prescription.medicine %}
+                  {{ totalz.append(medicine.price) or "" }}
+                  <tr>
+                    <td>{{ medicine.name }} - {{ medicine.treatment }}
+                      <span id="dosage">
+                        {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
+                        {{ prescription.dose }}
+                        {% elif medicine.type == 'Capsules' %}
+                        {{ prescription.dose }} capsules
+                        {% elif medicine.type == 'Tablet' %}
+                        {{ prescription.dose }} tablets
+                        {% endif %} &times; {{ prescription.frequency }}
+                      </span>
+                    </td>
+                    <td id="center">{{ "Ksh {:,}".format(medicine.price) }}</td>
+                  </tr>
+                  {% endfor %}
+                  {% endfor %}
+                  <tr id="total">
+                    <td>Total</td>
+                    <td id="center">{{ "Ksh {:,}".format(totalz|sum) }}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
   </div>
   <div id="help" class="tabcontent">
@@ -313,4 +279,5 @@ HMS | Patient Portal
   </div>
 </div>
 
+<script src="{{ url_for('static', filename='js/patient_portal.js') }}"></script>
 {% endblock %}
