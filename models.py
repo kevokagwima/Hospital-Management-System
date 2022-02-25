@@ -22,7 +22,7 @@ class Patients(db.Model, UserMixin):
   appointment = db.relationship("Appointment", backref="doctor-appointment", lazy=True)
   session = db.relationship("Session", backref="patient-session", lazy=True)
   prescription = db.relationship("Prescription", backref="patient-prescription", lazy=True)
-  transactions = db.relationship("Prescription", backref="patient-transaction", lazy=True)
+  transactions = db.relationship("Transaction", backref="patient-transaction", lazy=True)
   blood_pressure = db.Column(db.Integer(), nullable=True)
   height = db.Column(db.Integer(), nullable=True)
   weight = db.Column(db.Integer(), nullable=True)
@@ -97,6 +97,8 @@ class Session(db.Model):
   prescription = db.relationship("Prescription", backref="session-prescription", lazy=True)
   notes = db.Column(db.String(length=200), nullable=True)
   cost = db.Column(db.Integer(), nullable=True)
+  date_opened = db.Column(db.DateTime(), nullable=False)
+  date_closed = db.Column(db.DateTime(), nullable=False)
   status = db.Column(db.String(length=10), nullable=False)
 
 class Medicine(db.Model):

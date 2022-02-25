@@ -42,3 +42,12 @@ for (i = 0; i < acc.length; i++) {
     }
   });
 }
+
+$(document).ready(function () {
+  $("#prescription-search").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".prescriptions .prescription-info").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
+});

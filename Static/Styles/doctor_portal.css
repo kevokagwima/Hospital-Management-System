@@ -1,3 +1,7 @@
+::-webkit-scrollbar {
+  display: none;
+}
+
 nav {
   background-color: var(--nav-links-color);
 }
@@ -33,6 +37,7 @@ nav {
 }
 
 #dash {
+  position: relative;
   font-size: 1.5rem;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
@@ -110,21 +115,21 @@ nav {
   background-size: contain;
   background-position: right 20px;
   background-repeat: no-repeat;
-  outline: 4px solid rgb(4, 231, 4);
+  outline: 4px solid var(--dark);
   animation: flashs 1s infinite;
 }
 
 @keyframes flashs {
   0% {
-    outline: 4px solid rgb(4, 231, 4);
+    outline: 4px solid gold;
   }
 
   50% {
-    outline: 4px solid orange;
+    outline: 4px solid whitesmoke;
   }
 
   100% {
-    outline: 4p solid rgb(4, 231, 4);
+    outline: 4px solid gold;
   }
 }
 
@@ -218,7 +223,7 @@ nav {
 
 .action p {
   color: #212121;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: lighter;
   font-family: var(--nav-links-font);
 }
@@ -310,4 +315,112 @@ select {
   font-family: system-ui;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+#prescription-search {
+  position: absolute;
+  top: 3px;
+  right: 1rem;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  outline: 2px solid var(--red);
+  background-color: white;
+  color: var(--dark);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  min-width: 12rem;
+  text-transform: capitalize;
+}
+
+.prescriptions {
+  margin-top: 1.8rem;
+  font-family: var(--nav-links-font);
+  padding: 5px 10px 0 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 37.8rem;
+  overflow: auto;
+}
+
+.prescriptions > h4 {
+  color: rgb(2, 168, 2);
+  font-size: 18px;
+}
+
+.prescription-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+.prescription-info h4 {
+  position: relative;
+  font-size: 18px;
+}
+
+.prescription-info h4 > span {
+  color: var(--red);
+}
+
+.prescription-info h4 #date {
+  position: absolute;
+  right: 1rem;
+  color: rgb(2, 168, 2);
+  font-size: 15px;
+}
+
+.prescription-info hr {
+  border: none;
+  outline: 1px solid grey;
+  margin: 0.8em 0;
+}
+
+.prescription-details {
+  padding: 10px 20px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.prescribe {
+  padding: 0 0 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.payment-info {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 5px;
+}
+
+.payment-info p {
+  font-weight: bold;
+}
+
+.payment-info p span {
+  color: green;
+}
+
+.alert {
+  color: white;
+  font-size: 15px;
+}
+
+.alert-success {
+  background-color: rgb(2, 168, 2);
+}
+
+.alert-danger {
+  background-color: var(--red);
+}
+
+#close {
+  top: -3px;
 }

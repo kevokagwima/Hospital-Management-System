@@ -11,9 +11,7 @@ HMS | Doctor Session
 
 {% block content %}
 <a href="{{ url_for('doctor_portal') }}">Dashboard</a>
-<!-- <p onclick="openView(event, 'dashboard')">Session</p>
-<p onclick="openView(event, 'patients')">Patients</p>
-<p onclick="openView(event, 'prescriptions')">Prescriptions</p> -->
+<p id="defaultOpen" onclick="openView(event, 'dashboard')">Session</p>
 {% endblock %}
 
 {% block body %}
@@ -56,7 +54,12 @@ HMS | Doctor Session
 </div>
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
-    <h4 id="dash">Active Session</h4>
+    <h4 id="dash">
+      Active Session
+      {% if patient.session %}
+      <button onclick="openView(event, 'previous')" class="dash-btn">View Previous Sessions</button>
+      {% endif %}
+    </h4>
     <p id="more-info">This tab shows full details of the active session from your appointment with the patient</p>
     <div class="session-info">
       <div class="session-details">
@@ -261,7 +264,79 @@ HMS | Doctor Session
       </div>
     </div>
   </div>
-</div>
+  <div id="previous" class="tabcontent">
+    <h4 id="dash">{{ patient.first_name }} {{ patient.second_name }}'s Previous Sessions</h4>
+    <p id="more-info">This tab shows all the previous session the patient has had prior to the current session</p>
+    <div class="side-panel">
+      {% for session in patient.session if session.status == "Closed" %}
+      {% for appointment in appointments if appointment.id == session.appointment and appointment.status == "Closed" %}
+      <div class="accordion">
+        <h4>
+          {% for doctor in doctors if doctor.id == session.doctor %}
+          {{ doctor.first_name }} {{ doctor.second_name }} - Doctor in session
+          {% endfor %}
+          <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p") }}</span>
+        </h4>
+      </div>
+      <div class="panel">
+        <div class="panel-info">
+          <div class="session-details">
+            <h4>Appointment Details</h4>
+            <hr>
+            <p>Appointment Name - <span>{{ appointment.name }}</span></p>
+            <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
+            <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+            <p>Date Closed - <span>{{ appointment.date_closed.strftime("%d/%m/%Y") }}</span></p>
+            <p>Time Ended - <span>{{ appointment.date_closed.strftime("%I:%M %p") }}</span></p>
+          </div>
+          <div class="symptoms">
+            <h4>Symptoms</h4>
+            <hr>
+            {% if session.symptoms %}
+            <ul>
+              <li>{{ session.symptoms }}</li>
+            </ul>
+            {% else %}
+            <h4 class="else">{{ patient.first_name }} {{ patient.second_name }} has not yet entered his symptoms</h4>
+            {% endif %}
+          </div>
+          <div class="diagnosis">
+            <h4>Diagnosis</h4>
+            <hr>
+            <p>The diagnosis given was <span>{{ session.diagnosis }}</span></p>
+          </div>
+          <div class="prescriptions">
+            <h4>Prescription Given</h4>
+            <hr>
+            {% for prescribe in session.prescription %}
+            <p>
+              <span>
+                {% for med in medicines if med.id == prescribe.medicine %}
+                {{ med.name }} - {{ med.type }}
+                {% endfor %}
+              </span>
+              <span>
+                dose - {{ prescribe.dose }}
+              </span>
+              <span>
+                frequency - {{ prescribe.frequency }} times a day
+              </span>
+            </p>
+            {% endfor %}
+          </div>
+          {% if session.notes %}
+          <div class="notes">
+            <h4>Additional Notes</h4>
+            <hr>
+            <p>{{ session.notes }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
 </div>
 
 <script src="{{ url_for('static', filename='js/doctor_session.js') }}"></script>

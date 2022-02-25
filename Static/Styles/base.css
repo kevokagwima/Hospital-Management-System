@@ -142,6 +142,7 @@ a {
   border-radius: 3px;
   overflow: hidden;
   display: none;
+  z-index: 10;
 }
 
 .show-profile {

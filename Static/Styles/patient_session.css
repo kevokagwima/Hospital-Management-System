@@ -63,7 +63,7 @@ body {
   gap: 1rem;
   max-height: 38rem;
   overflow: auto;
-  padding-right: 10px;
+  padding: 5px;
 }
 
 .session-details,
@@ -85,13 +85,12 @@ body {
 .diagnosis,
 .notes {
   grid-column: 1/3;
+  outline: 1px solid orange;
 }
 
 #session-id,
 .symptoms h4,
 .diagnosis h4,
-.prescription h4,
-.total h4,
 .notes h4 {
   font-size: 1.2rem;
   font-family: "Bebas Neue", cursive;
@@ -220,6 +219,7 @@ body {
 }
 
 .prescription {
+  background-color: rgb(1, 182, 1);
   grid-column: 3/4;
   grid-row: 1/5;
   position: sticky;
@@ -234,7 +234,7 @@ body {
 
 .prescription-info p {
   outline: 2px solid white;
-  background-color: var(--red);
+  background-color: var(--dark);
   padding: 10px;
   margin-left: 10px;
   border-radius: 5px;
@@ -247,6 +247,7 @@ body {
 .total {
   margin-top: 1rem;
   box-shadow: none;
+  background-color: transparent;
 }
 
 .total-info {
@@ -256,9 +257,10 @@ body {
 }
 
 .total-info h4 {
-  color: orange;
-  font-size: 3rem;
-  font-family: var(--nav-links-font);
+  color: white;
+  font-size: 3.5rem;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
 }
 
 .total-info p {

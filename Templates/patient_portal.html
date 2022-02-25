@@ -33,11 +33,11 @@ HMS | Patient Portal
           <div class="session doctor-assigned">
             <h4>{{ appointment.name }} in progress...</h4>
             <div class="session-details">
-              <p>Created on - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span> </p>
-              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span> </p>
               {% for doctor in doctors if doctor.id == session.doctor %}
               <p>Doctor assigned - <span>{{ doctor.first_name }} {{ doctor.second_name }}</span></p>
               {% endfor %}
+              <p>Created on - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span> </p>
+              <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span> </p>
               <p>status - <span>{{ appointment.status }}</span></p>
             </div>
           </div>
@@ -60,14 +60,12 @@ HMS | Patient Portal
         <div onclick="openView(event, 'consultation')" class="action">
           <img src="{{ url_for('static', filename='Images/calendar.png') }}" alt="appointment">
           <h4>Make Appointments <i class="fas fa-arrow-right"></i></h4>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium facere repellat nesciunt, ipsum id
-            rerum voluptates earum eligendi praesentium omnis.</p>
+          <p>Create instant appointments with a doctor and quickly get treatment for your symptoms</p>
         </div>
         <div onclick="openView(event, 'medical')" class="action">
           <img src="{{ url_for('static', filename='Images/monitor.png') }}" alt="medical data">
           <h4>View Medical Data <i class="fas fa-arrow-right"></i></h4>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
-            saepe.</p>
+          <p>View all your medical data from blood pressure, weight, height and more</p>
         </div>
         <div onclick="openView(event, 'payments')" class="action">
           {% set active_prescriptions = [] %}
@@ -79,14 +77,12 @@ HMS | Patient Portal
           {% endif %}
           <img src="{{ url_for('static', filename='Images/secure-payment.png') }}" alt="payment">
           <h4>Payments <i class="fas fa-arrow-right"></i></h4>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus commodi quisquam soluta veniam
-            doloribus ducimus porro!</p>
+          <p>Quickly and easily pay for your prescribed medication with a click of a button</p>
         </div>
         <div onclick="openView(event, 'previous-visit')" class="action">
           <img src="{{ url_for('static', filename='Images/monitor.png') }}" alt="previous visit">
           <h4>Previous visits <i class="fas fa-arrow-right"></i></h4>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Libero dignissimos ipsa voluptatem eaque soluta
-            saepe.</p>
+          <p>View all details from your previous visits and recap on what was said</p>
         </div>
       </div>
     </div>
@@ -152,6 +148,11 @@ HMS | Patient Portal
     <h4 id="dash">Previous Sessions ({{ current_user.session|count }})</h4>
     <p id="more-info">This tab shows your previous interaction with your doctor</p>
     <p id="more-info">Your previous visits are ordered from latest to oldest</p>
+    {% set previous_session = [] %}
+    {% for appointment in current_user.appointment if appointment.status == "Closed" %}
+    {{ previous_session.append(prescription) or "" }}
+    {% endfor %}
+    {% if previous_session %}
     <div class="previous-session">
       {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) if appointment.patient
       == current_user.id and appointment.status == "Closed" %}
@@ -169,6 +170,9 @@ HMS | Patient Portal
       {% endfor %}
       {% endfor %}
     </div>
+    {% else %}
+
+    {% endif %}
   </div>
   <div id="medical" class="tabcontent">
     <h4 id="dash">Medical Data</h4>
@@ -190,7 +194,7 @@ HMS | Patient Portal
           {% for medicine in medicines if medicine.id == prescription.medicine %}
           {{ total.append(medicine.price) or "" }}
           <tr>
-            <td>{{ medicine.name }}
+            <td>{{ medicine.name }} ({{ medicine.type }})
               <span id="dosage">
                 {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
                 {{ prescription.dose }}
@@ -227,6 +231,11 @@ HMS | Patient Portal
       </div>
       <div class="recent-transaction">
         <h4>Previous Medical Bills</h4>
+        {% set closed_prescriptions = [] %}
+        {% for prescription in current_user.prescription if prescription.status == "Closed" %}
+        {{ closed_prescriptions.append(prescription) or "" }}
+        {% endfor %}
+        {% if closed_prescriptions %}
         <div class="transaction-info">
           {% for transaction in transactions|sort(attribute="date", reverse=true) %}
           <div class="transaction-details">
@@ -246,7 +255,7 @@ HMS | Patient Portal
                   {% for medicine in medicines if medicine.id == prescription.medicine %}
                   {{ totalz.append(medicine.price) or "" }}
                   <tr>
-                    <td>{{ medicine.name }} - {{ medicine.treatment }}
+                    <td>{{ medicine.name }} ({{ medicine.type }}) for {{ medicine.treatment }}
                       <span id="dosage">
                         {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
                         {{ prescription.dose }}
@@ -271,6 +280,9 @@ HMS | Patient Portal
           </div>
           {% endfor %}
         </div>
+        {% else %}
+        <h4 class="else">No previous medical bills</h4>
+        {% endif %}
       </div>
     </div>
   </div>

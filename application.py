@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request, sessions
-from flask.helpers import flash
+from flask import Flask, render_template, redirect, url_for, request, sessions, flash
 from models import db, Patients, Doctors, Appointment, Session, Medicine, Prescription, Transaction
 from form import patient_registration, login, doctor_registration
 from flask_login import login_manager,LoginManager,login_user,login_required,logout_user,current_user
+from twilio.rest import Client
 from werkzeug.utils import secure_filename
 import datetime, random, stripe
 
@@ -13,6 +13,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = (
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "mysecretkeythatyouarenotsupposedtosee"
 stripe.api_key = "sk_test_51J8POQHxOFRqyd61L7UzfYpE75ICCFRlAkMeQn57fJtO8q6tD6RhcAAu743nGwM8ShVrMaNtuxpZF0PjX8U1snnB00BH2Sk76b"
+account_sid = 'AC45b9710e01e0959e0e75a2829f8aeec3'
+auth_token = '10c9a732cc923589404eebd136bfb8b8'
+clients = Client(account_sid, auth_token)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
 
 db.init_app(app)
@@ -148,7 +151,7 @@ def book_appointment():
     if appointment == None:
       available_doctors.append(doctor)
   if len(available_doctors) == 0:
-    flash(f"No available doctors to assign, all doctors are already engaged in a session", category="info")
+    flash(f"Could not create appointment, no available doctors to assign", category="info")
     return redirect(url_for('patient_portal'))
   random_doctor = random.choice(available_doctors)
   appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
@@ -165,18 +168,26 @@ def book_appointment():
     )
     db.session.add(new_appointment)
     current_user.doctor = random_doctor.id
-    current_user.gender = request.form.get("gender")
+    if current_user.gender == None:
+      current_user.gender = request.form.get("gender")
     db.session.commit()
     new_session = Session (
       session_id = random.randint(100000,999999),
       appointment = new_appointment.id,
       patient = new_appointment.patient,
       doctor = new_appointment.doctor,
+      date_opened = datetime.datetime.now(),
       status = "Active"
     )
     db.session.add(new_session)
     db.session.commit()
     flash(f"Appointment created successfully", category="success")
+    doctor = Doctors.query.filter_by(id=current_user.doctor).first()
+    clients.api.account.messages.create(
+      to = '+254796897011',
+      from_ = '+16203191736',
+      body = f'\nCongratulations {current_user.first_name} {current_user.second_name} you have successfully created an appointment. Your appointment ID is {new_appointment.appointment_id}\nYou have been assigned doctor {doctor.first_name} {doctor.second_name}, tel {doctor.phone}, email {doctor.email}\nYour session ID is {new_session.session_id}'
+    )
     return redirect(url_for('patient_session', session_id=new_session.id))
 
   return redirect(url_for('patient_portal'))
@@ -262,6 +273,7 @@ def payment_complete():
   session.status = "Closed"
   appointment.status = "Closed"
   appointment.date_closed = datetime.datetime.now()
+  session.date_closed = datetime.datetime.now()
   db.session.commit()
   flash(f"Medical bill has been cleared successfully", category="success")
 
@@ -278,8 +290,9 @@ def doctor_portal():
   appointmentz = Appointment.query.filter_by(status="Closed").all()
   patients = Patients.query.all()
   medicines = Medicine.query.all()
+  transactions = Transaction.query.all()
 
-  return render_template("doctor_portal.html", session=session, appointments=appointments, appointmentz=appointmentz, patients=patients, medicines=medicines)
+  return render_template("doctor_portal.html", session=session, appointments=appointments, appointmentz=appointmentz, patients=patients, medicines=medicines, transactions=transactions)
 
 @app.route("/doctor-patient-session/<int:session_id>")
 @login_required
@@ -291,8 +304,10 @@ def doctor_session(session_id):
   appointment = Appointment.query.filter_by(id=session.appointment).first()
   patient = Patients.query.filter_by(id=session.patient).first()
   medicines = Medicine.query.all()
+  appointments = Appointment.query.all()
+  doctors = Doctors.query.all()
 
-  return render_template("doctor_session.html", session=session, appointment=appointment, patient=patient, medicines=medicines)
+  return render_template("doctor_session.html", session=session, appointment=appointment, patient=patient, medicines=medicines, appointments=appointments, doctors=doctors)
 
 @app.route("/patient-diagnosis/<int:session_id>", methods=["POST", "GET"])
 @login_required
@@ -352,6 +367,26 @@ def patient_vitals(session_id):
     return redirect(url_for('signin'))
   session = Session.query.get(session_id)
   patient = Patients.query.filter_by(id=session.patient).first()
+  if patient.age > 18:
+    if int(request.form.get("blood_pressure")) < 100 or int(request.form.get("blood_pressure")) > 150:
+      flash(f"Patient's blood pressure is abnormal, recommend retest", category="danger")
+      return redirect(url_for('doctor_session', session_id=session.id))
+    elif int(request.form.get("weight")) < 50 or int(request.form.get("weight")) > 100:
+      flash(f"Patient's weight is abnormal, recommend retest", category="danger")
+      return redirect(url_for('doctor_session', session_id=session.id))
+    elif int(request.form.get("height")) < 165 or int(request.form.get("height")) > 500:
+      flash(f"Patient's height is abnormal, recommend retest", category="danger")
+      return redirect(url_for('doctor_session', session_id=session.id))
+    elif patient.age < 18:
+      if int(request.form.get("blood_pressure")) < 60 or int(request.form.get("blood_pressure")) > 80:
+        flash(f"Patient's blood pressure is abnormal, recommend retest", category="danger")
+        return redirect(url_for('doctor_session', session_id=session.id))
+      elif int(request.form.get("weight")) < 40 or int(request.form.get("weight")) > 80:
+        flash(f"Patient's weight is abnormal, recommend retest", category="danger")
+        return redirect(url_for('doctor_session', session_id=session.id))
+      elif int(request.form.get("height")) < 50 or int(request.form.get("height")) > 164:
+        flash(f"Patient's height is abnormal, recommend retest", category="danger")
+        return redirect(url_for('doctor_session', session_id=session.id))
   patient.blood_pressure = request.form.get("blood_pressure")
   patient.weight = request.form.get("weight")
   patient.height = request.form.get("height")
