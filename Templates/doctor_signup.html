@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/signup.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | SignUp
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="form">
+    <h4>Get Started</h4>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="input one">
+        {{ form.first_name.label }}
+        {{ form.first_name(placeholder="Enter First Name") }}
+      </div>
+      <div class="input two">
+        {{ form.second_name.label }}
+        {{ form.second_name(placeholder="Enter Second Name") }}
+      </div>
+      <div class="input two">
+        {{ form.last_name.label }}
+        {{ form.last_name(placeholder="Enter Last Name") }}
+      </div>
+      <div class="input two">
+        {{ form.age.label }}
+        {{ form.age(placeholder="Enter Age") }}
+      </div>
+      <div class="input three">
+        {{ form.email_address.label }}
+        {{ form.email_address(placeholder="Enter Email Address") }}
+      </div>
+      <div class="input four">
+        {{ form.phone_number.label }}
+        {{ form.phone_number(placeholder="Enter Phone Number") }}
+      </div>
+      <div class="input five">
+        {{ form.address.label }}
+        {{ form.address(placeholder="Enter County Located") }}
+      </div>
+      <div class="input six">
+        {{ form.address1.label }}
+        {{ form.address1(placeholder="Enter City Located") }}
+      </div>
+      <div class="input seven">
+        {{ form.password.label }}
+        {{ form.password(placeholder="Enter Password") }}
+      </div>
+      <div class="input eight">
+        {{ form.password1.label }}
+        {{ form.password1(placeholder="Confirm Password") }}
+      </div>
+      <button class="btn" type="submit">
+        <span class="button--text">SIGN UP</span>
+      </button>
+    </form>
+    <div class="box">
+      <p>Already have an account</p>
+      <a href="{{ url_for('doctor_signin') }}">Login</a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+{% endblock %}
