@@ -49,6 +49,14 @@ nav {
   margin-top: 10px;
 }
 
+.else {
+  color: var(--red);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  margin-top: 2rem;
+  text-align: center;
+}
+
 .dashboard {
   height: max-content;
   max-height: 40rem;
@@ -90,8 +98,11 @@ nav {
 }
 
 .doctor-assigned h4 {
-  color: gold;
-  font-family: var(--nav-links-font);
+  color: greenyellow;
+  font-weight: normal;
+  letter-spacing: 0.8px;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
   font-size: 1.2rem;
 }
 
@@ -125,7 +136,7 @@ nav {
   }
 
   50% {
-    outline: 4px solid whitesmoke;
+    outline: 4px solid greenyellow;
   }
 
   100% {

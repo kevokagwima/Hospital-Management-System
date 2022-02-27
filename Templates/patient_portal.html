@@ -13,11 +13,6 @@ HMS | Patient Portal
 {% block content %}
 <p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
 <p onclick="openView(event, 'help')">Help</p>
-
-<!-- <p onclick="openView(event, 'appointment')">Book Appointment</p>
-<p onclick="openView(event, 'specialist')">See Specialist</p>
-<p onclick="openView(event, 'medical')">Medical Data</p>
-<p onclick="openView(event, 'payments')">Payments</p> -->
 {% endblock %}
 
 {% block body %}
@@ -147,7 +142,6 @@ HMS | Patient Portal
   <div id="previous-visit" class="tabcontent">
     <h4 id="dash">Previous Sessions ({{ current_user.session|count }})</h4>
     <p id="more-info">This tab shows your previous interaction with your doctor</p>
-    <p id="more-info">Your previous visits are ordered from latest to oldest</p>
     {% set previous_session = [] %}
     {% for appointment in current_user.appointment if appointment.status == "Closed" %}
     {{ previous_session.append(prescription) or "" }}
@@ -171,11 +165,117 @@ HMS | Patient Portal
       {% endfor %}
     </div>
     {% else %}
-
+    <h4 class="else">No previous session</h4>
     {% endif %}
   </div>
   <div id="medical" class="tabcontent">
     <h4 id="dash">Medical Data</h4>
+    <p id="more-info">View all your medical data in one place</p>
+    <div class="medical-data">
+      <div class="data personal-profile">
+        <div class="profile-img">
+          <img src="{{ url_for('static', filename='Images/profile.png') }}" alt="profile">
+        </div>
+        <div class="personal-info">
+          <h4>{{ current_user.first_name }} {{ current_user.second_name }} {{ current_user.last_name }}</h4>
+          <div class="other-details">
+            <p>Patient ID - <span>{{ current_user.patient_id }}</span></p>
+            <p>Phone - <span>{{ current_user.phone }}</span></p>
+            <p>Email - <span>{{ current_user.email }}</span></p>
+            <p>Age - <span>{{ current_user.age }} years</span></p>
+            <p>Address - <span>{{ current_user.address }}, {{ current_user.address2 }}</span></p>
+            <p>Gender -
+              <span>
+                {% if current_user.gender %}
+                {{ current_user.gender }}
+                {% endif %}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="data blood-type">
+        <h4>Blood Type</h4>
+        <div class="blood-type-info">
+          <img src="{{ url_for('static', filename='Images/blood-test.png') }}" alt="blood-type">
+          <p>O-</p>
+        </div>
+      </div>
+      <div class="data alergies">
+        <h4>My Allergies</h4>
+        <div class="alergies-info">
+          <ul>
+            <li>Peanuts</li>
+            <li>Fried eggs</li>
+            <li>Gluecose</li>
+            <li>Syringe</li>
+          </ul>
+        </div>
+      </div>
+      {% if current_user.appointment %}
+      <div class="data recent-visit">
+        <h4>Recent Appointment - <span>{{ current_user.appointment[-1].appointment_id }}</span></h4>
+        <div class="recent-history">
+          {% for appointment in current_user.appointment if appointment.id == current_user.session[-1].appointment %}
+          <img src="{{ url_for('static', filename='Images/man.png') }}" alt="doctor">
+          <p>
+            {% for doctor in doctors if doctor.id == appointment.doctor %}
+            Dr. {{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}
+            {% endfor %}
+          </p>
+          <p>{{ appointment.name }}</p>
+          <p id="schedule">
+            <img src="{{ url_for('static', filename='Images/schedule.png') }}" alt="date opened">
+            {{ appointment.date_created.strftime("Opened on %d/%m/%Y at %I:%M %p") }}
+          </p>
+          <p id="schedule">
+            <img src="{{ url_for('static', filename='Images/schedule.png') }}" alt="date opened">
+            {% if appointment.date_closed %}
+            {{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p") }}
+            {% else %}
+            <span id="ongoing">Currently ongoing</span>
+            {% endif %}
+          </p>
+          <p>{{ appointment.status }}</p>
+          {% endfor %}
+          <a href="{{ url_for('patient_session', session_id=current_user.session[-1].id) }}">View Session</a>
+        </div>
+      </div>
+      {% endif %}
+      <div class="data primary-data">
+        <div class="blood-pressure">
+          <div class="primary-data-details">
+            <h4>Blood Pressure</h4>
+            <p>{{ current_user.blood_pressure }} Bpm</p>
+          </div>
+          <img src="{{ url_for('static', filename='Images/blood-pressure-gauge.png') }}" alt="blood pressure">
+        </div>
+        <div class="heart-rate">
+          <div class="primary-data-details">
+            <h4>Heart Rate</h4>
+            <p>102 Beats/min</p>
+          </div>
+          <img src="{{ url_for('static', filename='Images/heartbeat.png') }}" alt="heart rate">
+        </div>
+        <div class="weight">
+          <div class="primary-data-details">
+            <h4>Weight</h4>
+            <p>{{ current_user.weight }} kg</p>
+          </div>
+          <img src="{{ url_for('static', filename='Images/weight-scale.png') }}" alt="weight">
+        </div>
+        <div class="height">
+          <div class="primary-data-details">
+            <h4>Height</h4>
+            <p>{{ current_user.height }} Cm</p>
+          </div>
+          <img src="{{ url_for('static', filename='Images/height.png') }}" alt="height">
+        </div>
+      </div>
+      <div class="data recent-session">
+        <h4>Diagnosis / Prescription</h4>
+      </div>
+    </div>
   </div>
   <div id="payments" class="tabcontent">
     <h4 id="dash">Payments</h4>

@@ -27,7 +27,7 @@ HMS | Doctor Portal
         {% for appointment in appointments if appointment.id == session.appointment %}
         <a href="{{ url_for('doctor_session', session_id=session.id) }}">
           <div class="session doctor-assigned">
-            <h4>You have an appointment in progress...</h4>
+            <h4>Patient consultation in progress...</h4>
             <div class="session-details">
               {% for patient in patients if patient.id == appointment.patient %}
               <p>Patient - <span>{{ patient.first_name }} {{ patient.second_name }}</span></p>
@@ -56,7 +56,7 @@ HMS | Doctor Portal
         <div onclick="openView(event, 'prescriptions')" class="action">
           <img src="{{ url_for('static', filename='Images/prescription.png') }}" alt="prescriptions">
           <h4>Prescriptions <i class="fas fa-arrow-right"></i></h4>
-          <p>View all the prescriptions given to your patients</p>
+          <p>View all the prescriptions you've given to your patients</p>
         </div>
         <div onclick="openView(event, 'previous-session')" class="action">
           <img src="{{ url_for('static', filename='Images/online-class.png') }}" alt="hostory">
@@ -66,7 +66,7 @@ HMS | Doctor Portal
         <div onclick="openView(event, 'medicine')" class="action">
           <img src="{{ url_for('static', filename='Images/pills.png') }}" alt="hostory">
           <h4>Drugs <i class="fas fa-arrow-right"></i></h4>
-          <p>Quickly add new medication to the system</p>
+          <p>Quickly add new medication to the system to be available during sessions</p>
         </div>
       </div>
     </div>
@@ -77,6 +77,11 @@ HMS | Doctor Portal
       <input type="text" id="prescription-search" placeholder="Search for any prescription" spellcheck="false">
     </h4>
     <p id="more-info">This tab shows all the prescriptions you have ever prescribed to your patients</p>
+    {% set previous_prescriptions = [] %}
+    {% for prescription in current_user.prescription %}
+    {{ previous_prescriptions.append(prescription) or "" }}
+    {% endfor %}
+    {% if previous_prescriptions %}
     <div class="prescriptions">
       {% for session in current_user.session|sort(attribute="date_closed", reverse=true) %}
       <div class="prescription-info">
@@ -128,13 +133,21 @@ HMS | Doctor Portal
       </div>
       {% endfor %}
     </div>
+    {% else %}
+    <h4 class="else">No prescriptions given</h4>
+    {% endif %}
   </div>
   <div id="help" class="tabcontent">
     <h4 id="dash">Help</h4>
   </div>
   <div id="previous-session" class="tabcontent">
-    <h4 id="dash">Previous Sessions ({{ current_user.session|count }})</h4>
+    {% set previous_session = [] %}
+    {% for session in current_user.session if session.status == "Closed" %}
+    {{ previous_session.append(session) or "" }}
+    {% endfor %}
+    <h4 id="dash">Previous Sessions ({{ previous_session|count }})</h4>
     <p id="more-info">This tab shows you previous interaction with your patients</p>
+    {% if previous_session %}
     <div class="previous-session">
       {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) if appointment.doctor ==
       current_user.id and appointment.status == "Closed" %}
@@ -152,6 +165,9 @@ HMS | Doctor Portal
       {% endfor %}
       {% endfor %}
     </div>
+    {% else %}
+    <h4 class="else">No previous sessions</h4>
+    {% endif %}
   </div>
   <div id="medicine" class="tabcontent">
     <h4 id="dash">Available Medicine</h4>

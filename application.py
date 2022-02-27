@@ -1,26 +1,26 @@
-from flask import Flask, render_template, redirect, url_for, request, sessions, flash
+from flask import Flask, render_template, redirect, url_for, request, flash
 from models import db, Patients, Doctors, Appointment, Session, Medicine, Prescription, Transaction
 from form import patient_registration, login, doctor_registration
 from flask_login import login_manager,LoginManager,login_user,login_required,logout_user,current_user
 from twilio.rest import Client
 from werkzeug.utils import secure_filename
-import datetime, random, stripe
+import datetime, random, stripe, os
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
   "mssql://@KEVINKAGWIMA/HMS?driver=SQL SERVER"
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "mysecretkeythatyouarenotsupposedtosee"
-stripe.api_key = "sk_test_51J8POQHxOFRqyd61L7UzfYpE75ICCFRlAkMeQn57fJtO8q6tD6RhcAAu743nGwM8ShVrMaNtuxpZF0PjX8U1snnB00BH2Sk76b"
-account_sid = 'AC45b9710e01e0959e0e75a2829f8aeec3'
-auth_token = '10c9a732cc923589404eebd136bfb8b8'
+app.config["SECRET_KEY"] = os.environ['Hms_secret_key']
+stripe.api_key = os.environ['Stripe_api_key']
+account_sid = os.environ['Twilio_account_sid']
+auth_token = os.environ['Twilio_auth_key']
 clients = Client(account_sid, auth_token)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = -1
 
 db.init_app(app)
 login_manager = LoginManager()
-login_manager.login_view = "signin"
+login_manager.login_view = "patient_signin"
 login_manager.login_message_category = "danger"
 login_manager.init_app(app)
 
@@ -58,7 +58,7 @@ def patient_register():
       db.session.add(user)
       db.session.commit()
       flash(f"Account successfully created", category="success")
-      return redirect(url_for('signin'))
+      return redirect(url_for('patient_signin'))
 
     if form.errors != {}:
       for err_msg in form.errors.values():
@@ -89,7 +89,7 @@ def doctor_register():
       db.session.add(user)
       db.session.commit()
       flash(f"Account successfully created", category="success")
-      return redirect(url_for('signin'))
+      return redirect(url_for('doctor_signin'))
 
     if form.errors != {}:
       for err_msg in form.errors.values():
@@ -97,21 +97,32 @@ def doctor_register():
   except:
     flash(f"An error occurred when submitting the form. Check the from and try again", category="danger")
     
-  return render_template("patient_signup.html", form=form)
+  return render_template("doctor_signup.html", form=form)
 
-@app.route("/signin", methods=["POST", "GET"])
-def signin():
+@app.route("/patient-signin", methods=["POST", "GET"])
+def patient_signin():
   form = login()
   if form.validate_on_submit():
     patient = Patients.query.filter_by(email=form.email.data).first() 
-    doctor = Doctors.query.filter_by(email=form.email.data).first()
-    if patient is None and doctor is None:
+    if patient is None:
       flash(f"No user with that email", category="danger")
     elif patient and patient.check_password_correction(attempted_password=form.password.data):
       login_user(patient, remember=True)
       flash(f"Login successfull, welcome {current_user.first_name} {current_user.second_name}", category="success")
       next = request.args.get("next")
       return redirect(next or url_for("patient_portal"))
+    else:
+      flash(f"Invalid Login Credentials", category="danger")
+
+  return render_template("signin.html", form=form)
+
+@app.route("/doctor-signin", methods=["POST", "GET"])
+def doctor_signin():
+  form = login()
+  if form.validate_on_submit():
+    doctor = Doctors.query.filter_by(email=form.email.data).first()
+    if doctor is None:
+      flash(f"No user with that email", category="danger")
     elif doctor and doctor.check_password_correction(attempted_password=form.password.data):
       login_user(doctor, remember=True)
       flash(f"Login successfull, welcome doctor {current_user.first_name} {current_user.second_name}", category="success")
@@ -127,7 +138,7 @@ def signin():
 def patient_portal():
   if current_user.account_type != "patient":
     flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('patient_signin'))
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
@@ -143,7 +154,7 @@ def patient_portal():
 def book_appointment():
   if current_user.account_type != "patient":
     flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('patient_signin'))
   available_doctors = []
   doctors = Doctors.query.all()
   for doctor in doctors:
@@ -160,7 +171,7 @@ def book_appointment():
   else:
     new_appointment = Appointment (
       appointment_id = random.randint(100000,999999),
-      name = "Doctor Consultation",
+      name = "Doctor consultation",
       patient = current_user.id,
       doctor = random_doctor.id,
       date_created = datetime.datetime.now(),
@@ -183,27 +194,28 @@ def book_appointment():
     db.session.commit()
     flash(f"Appointment created successfully", category="success")
     doctor = Doctors.query.filter_by(id=current_user.doctor).first()
-    clients.api.account.messages.create(
-      to = '+254796897011',
-      from_ = '+16203191736',
-      body = f'\nCongratulations {current_user.first_name} {current_user.second_name} you have successfully created an appointment. Your appointment ID is {new_appointment.appointment_id}\nYou have been assigned doctor {doctor.first_name} {doctor.second_name}, tel {doctor.phone}, email {doctor.email}\nYour session ID is {new_session.session_id}'
-    )
+    # clients.messages.create(
+    #   to = '+254796897011',
+    #   from_ = '+16203191736',
+    #   body = f'\nCongratulations {current_user.first_name} {current_user.second_name} you have successfully created an appointment. Your appointment ID is {new_appointment.appointment_id}\nYou have been assigned doctor {doctor.first_name} {doctor.second_name}, tel {doctor.phone}, email {doctor.email}\nYour session ID is {new_session.session_id}'
+    # )
     return redirect(url_for('patient_session', session_id=new_session.id))
 
   return redirect(url_for('patient_portal'))
 
 @app.route("/current-session/<int:session_id>", methods=["POST", "GET"])
+@login_required
 def patient_session(session_id):
   if current_user.account_type != "patient":
     flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('patient_signin'))
   session = Session.query.get(session_id)
   appointment = Appointment.query.filter_by(id=session.appointment).first()
   doctor = Doctors.query.filter_by(id=session.doctor).first()
   medicines = Medicine.query.all()
-  sysmptoms = request.form.get("symptoms")
-  if sysmptoms:
-    session.symptoms = sysmptoms
+  symptoms = request.form
+  if symptoms:
+    session.symptoms = symptoms
     db.session.commit()
     flash(f"Your symptoms have been saved and sent to your doctor", category="success")
     return redirect(url_for('patient_session', session_id=session.id))
@@ -215,7 +227,7 @@ def patient_session(session_id):
 def medical_bill_payment():
   if current_user.account_type != "patient":
     flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('patient_signin'))
   total = []
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   for prescription in prescriptions:
@@ -253,7 +265,7 @@ def payment_failed():
 def payment_complete():
   if current_user.account_type != "patient":
     flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('patient_signin'))
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
@@ -279,12 +291,19 @@ def payment_complete():
 
   return redirect(url_for('patient_portal'))
 
+@app.route("/logout")
+@login_required
+def patient_logout():
+  logout_user()
+  flash(f"Logged out successfully", category="success")
+  return redirect(url_for('patient_signin'))
+
 @app.route("/doctor-portal")
 @login_required
 def doctor_portal():
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.filter_by(doctor=current_user.id, status="Active").first()
   appointments = Appointment.query.all()  
   appointmentz = Appointment.query.filter_by(status="Closed").all()
@@ -299,7 +318,7 @@ def doctor_portal():
 def doctor_session(session_id):
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.get(session_id)
   appointment = Appointment.query.filter_by(id=session.appointment).first()
   patient = Patients.query.filter_by(id=session.patient).first()
@@ -314,7 +333,7 @@ def doctor_session(session_id):
 def diagnosis(session_id):
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.get(session_id)
   diagnosis = request.form.get("diagnosis")
   session.diagnosis = diagnosis
@@ -328,7 +347,7 @@ def diagnosis(session_id):
 def prescription(session_id):
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.get(session_id)
   new_prescription = Prescription (
     medicine = request.form.get("drug"),
@@ -351,7 +370,7 @@ def prescription(session_id):
 def notes(session_id):
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.get(session_id)
   session.notes = request.form.get("notes")
   db.session.commit()
@@ -364,7 +383,7 @@ def notes(session_id):
 def patient_vitals(session_id):
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   session = Session.query.get(session_id)
   patient = Patients.query.filter_by(id=session.patient).first()
   if patient.age > 18:
@@ -400,7 +419,7 @@ def patient_vitals(session_id):
 def add_medicine():
   if current_user.account_type != "doctor":
     flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('signin'))
+    return redirect(url_for('doctor_signin'))
   new_medicine = Medicine (
     name = request.form.get("name"),
     type = request.form.get("type"),
@@ -413,12 +432,12 @@ def add_medicine():
 
   return redirect(url_for('doctor_portal'))
 
-@app.route("/logout")
+@app.route("/doctor-logout")
 @login_required
-def logout():
+def doctor_logout():
   logout_user()
   flash(f"Logged out successfully", category="success")
-  return redirect(url_for('signin'))
+  return redirect(url_for('doctor_signin'))
 
 if __name__ == '__main__':
   app.run(debug=True)

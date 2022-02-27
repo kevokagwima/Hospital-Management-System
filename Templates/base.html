@@ -37,16 +37,19 @@
     {% endif %}
     <p>Welcome, <b id="bold">{{ current_user.first_name }} {{ current_user.second_name }}</b></p>
     <div class="profile">
-      <p id="logout"><a href="{{ url_for('logout') }}">Logout</a></p>
+      <p id="logout">
+        {% if current_user.account_type == "patient" %}
+        <a href="{{ url_for('patient_logout') }}">Logout</a>
+        {% else %}
+        <a href="{{ url_for('doctor_logout') }}">Logout</a>
+        {% endif %}
+      </p>
     </div>
   </div>
   {% else %}
   <div class="users">
     <a href="{{ url_for('patient_register') }}">Patient</a>
     <a href="{{ url_for('doctor_register') }}">Doctor</a>
-    <a href="{{ url_for('signin') }}">
-      <button class="btn2">Sign In</button>
-    </a>
   </div>
   {% endif %}
 </nav>

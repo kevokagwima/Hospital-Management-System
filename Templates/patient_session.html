@@ -61,7 +61,7 @@ HMS | {{ appointment.name }}
         <p class="else">{{ session.symptoms }}</p>
         {% else %}
         <p>Describe your symptoms in full</p>
-        <form action="{{ url_for('patient_session', session_id=session.id) }}" , method="POST">
+        <form action="{{ url_for('patient_session', session_id=session.id) }}" method="POST">
           <label for="symptoms">Enter Symptoms</label>
           <textarea spellcheck="false" required name="symptoms" cols="30" rows="10"
             placeholder="Write all your symptoms"></textarea>

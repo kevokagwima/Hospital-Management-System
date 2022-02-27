@@ -1,5 +1,5 @@
 ::-webkit-scrollbar {
-  display: none;
+  background-color: var(--dark);
 }
 
 body {
@@ -43,6 +43,14 @@ body {
   margin-top: 10px;
 }
 
+.else {
+  color: var(--red);
+  margin-top: 2rem;
+  text-align: center;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+}
+
 .dashboard {
   margin-top: 1rem;
   height: max-content;
@@ -84,8 +92,12 @@ body {
 }
 
 .doctor-assigned h4 {
-  color: white;
+  color: aqua;
+  font-weight: normal;
+  letter-spacing: 0.8px;
   font-size: 1.2rem;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
 }
 
 .session-details {
@@ -465,9 +477,208 @@ select {
   color: orange;
 }
 
+.medical-data {
+  margin-top: 0.8rem;
+  padding-left: 2px;
+  padding-right: 15px;
+  border-radius: 5px;
+  max-height: 39rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  color: white;
+}
+
+.medical-data::-webkit-scrollbar {
+  background-color: var(--nav-links-color);
+}
+
+.data {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--dark);
+  height: max-content;
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+.data img {
+  max-height: 5rem;
+}
+
+.personal-profile {
+  grid-column: 1/3;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.profile-img img {
+  max-height: 4rem;
+}
+
+.personal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-grow: 1;
+}
+
+.other-details {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1rem;
+}
+
+.other-details p {
+  color: whitesmoke;
+}
+
+.other-details p span {
+  font-weight: bold;
+  color: rgb(1, 209, 1);
+}
+
+.blood-type-info {
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+  margin-top: 1rem;
+  padding: 5px 10px;
+}
+
+.blood-type-info img {
+  max-height: 4rem;
+}
+
+.blood-type-info p {
+  font-size: 4rem;
+  color: var(--red);
+}
+
+.alergies-info {
+  margin-top: 1rem;
+  max-height: 5.3rem;
+  overflow: auto;
+}
+
+.alergies-info li {
+  padding: 5px;
+  color: whitesmoke;
+}
+
+.recent-visit {
+  padding: 0;
+  background-color: transparent;
+  grid-column: 1/5;
+  box-shadow: none;
+}
+
+.recent-visit h4 > span {
+  color: rgb(172, 172, 172);
+}
+
+.recent-history {
+  margin-top: 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: var(--dark);
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+.recent-history img {
+  max-height: 3rem;
+}
+
+.recent-history a {
+  background-color: var(--red);
+  color: white;
+  width: max-content;
+  padding: 5px 1rem;
+  border-radius: 30px;
+}
+
+#schedule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#ongoing {
+  color: greenyellow;
+}
+
+#schedule > img {
+  max-height: 1.2rem;
+}
+
+.primary-data {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.primary-data > div {
+  height: 10rem;
+  background-color: var(--nav-links-color);
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.primary-data > div h4 {
+  font-size: 20px;
+}
+
+.primary-data > div p {
+  margin-top: 5px;
+  font-size: 16px;
+}
+
+.primary-data > div img {
+  max-height: 4rem;
+}
+
+.blood-pressure {
+  background-image: url(../Images/wave.svg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.heart-rate {
+  background-image: url(../Images/wave1.svg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.weight {
+  background-image: url(../Images/wave2.svg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.height {
+  background-image: url(../Images/wave3.svg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.recent-session {
+  grid-column: 3/5;
+}
+
 .payment {
   max-height: 39.8rem;
   overflow: auto;
+}
+
+.payment::-webkit-scrollbar {
+  display: none;
 }
 
 .payments {
@@ -489,6 +700,7 @@ select {
   color: red;
   font-weight: normal;
   font-size: 18px;
+  margin-top: 0;
 }
 
 table {
