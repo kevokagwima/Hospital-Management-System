@@ -24,9 +24,12 @@ class Patients(db.Model, UserMixin):
   prescription = db.relationship("Prescription", backref="patient-prescription", lazy=True)
   transactions = db.relationship("Transaction", backref="patient-transaction", lazy=True)
   blood_pressure = db.Column(db.Integer(), nullable=True)
+  test = db.relationship("Tests", backref="patient_test", lazy=True)
   height = db.Column(db.Integer(), nullable=True)
   weight = db.Column(db.Integer(), nullable=True)
-  allergies = db.Column(db.String(length=100), nullable=True)
+  allergies = db.relationship("Allergies", backref="allergies", lazy=True)
+  blood_pressure = db.Column(db.Integer(), nullable=True)
+  blood_type = db.Column(db.String(length=15), nullable=True)
   date = db.Column(db.DateTime())
   password = db.Column(db.String(), nullable=False)
   account_type = db.Column(db.String(length=7), nullable=False)
@@ -58,6 +61,7 @@ class Doctors(db.Model, UserMixin):
   appointment = db.relationship("Appointment", backref="patient-appointment", lazy=True)
   session = db.relationship("Session", backref="doctor-session", lazy=True)
   prescription = db.relationship("Prescription", backref="doctor-prescription", lazy=True)
+  test = db.relationship("Tests", backref="doctor_test", lazy=True)
   date = db.Column(db.DateTime())
   password = db.Column(db.String(), nullable=False)
   account_type = db.Column(db.String(length=7), nullable=False)
@@ -92,13 +96,14 @@ class Session(db.Model):
   appointment = db.Column(db.Integer(), db.ForeignKey("Appointments.id"))
   patient = db.Column(db.Integer(), db.ForeignKey("Patients.id"))
   doctor = db.Column(db.Integer(), db.ForeignKey("Doctors.id"))
-  symptoms = db.Column(db.String(length=200), nullable=True)
   diagnosis = db.Column(db.String(length=100), nullable=True)
   prescription = db.relationship("Prescription", backref="session-prescription", lazy=True)
   notes = db.Column(db.String(length=200), nullable=True)
+  test = db.relationship("Tests", backref="session_test", lazy=True)
+  symptoms = db.relationship("Symptoms", backref="symptoms", lazy=True)
   cost = db.Column(db.Integer(), nullable=True)
   date_opened = db.Column(db.DateTime(), nullable=False)
-  date_closed = db.Column(db.DateTime(), nullable=False)
+  date_closed = db.Column(db.DateTime(), nullable=True)
   status = db.Column(db.String(length=10), nullable=False)
 
 class Medicine(db.Model):
@@ -131,3 +136,28 @@ class Transaction(db.Model):
   patient = db.Column(db.Integer(), db.ForeignKey("Patients.id"))
   date = db.Column(db.DateTime(), nullable=False)
   status = db.Column(db.String(length=10), nullable=False)
+
+class Allergies(db.Model):
+  __tablename__ = 'Allergies'
+  id = db.Column(db.Integer(), primary_key=True)
+  name = db.Column(db.String(length=50), nullable=False)
+  severe = db.Column(db.String(length=10), nullable=False)
+  patient = db.Column(db.Integer(), db.ForeignKey("Patients.id"))
+
+class Symptoms(db.Model):
+  __tablename__ = 'symptoms'
+  id = db.Column(db.Integer(), primary_key=True)
+  name = db.Column(db.String(length=50), nullable=False)
+  session = db.Column(db.Integer(), db.ForeignKey("Sessions.id"))
+
+class Tests(db.Model):
+  __tablename__ = 'Tests'
+  id = db.Column(db.Integer(), primary_key=True)
+  name = db.Column(db.String(length=20), nullable=False)
+  sample = db.Column(db.String(length=20), nullable=False)
+  result = db.Column(db.String(length=20), nullable=False)
+  date = db.Column(db.DateTime(), nullable=False)
+  session = db.Column(db.Integer(), db.ForeignKey("Sessions.id"))
+  patient = db.Column(db.Integer(), db.ForeignKey("Patients.id"))
+  doctor = db.Column(db.Integer(), db.ForeignKey("Doctors.id"))
+  status = db.Column(db.String(length=10), nullable=True)

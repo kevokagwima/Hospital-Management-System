@@ -139,13 +139,44 @@ HMS | Doctor Session
             </p>
           </div>
           <div class="alergies">
-            <h4>Alergies</h4>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur, animi!</p>
+            <div class="alergy-info">
+              <h4>Alergies</h4>
+              {% if patient.allergies %}
+              <ul>
+                {% for allergy in patient.allergies %}
+                <li>{{ allergy.name }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <p class="else">No allergies specified</p>
+              {% endif %}
+            </div>
+            <div class="blood-group">
+              <h4>Blood Group</h4>
+              <div class="blood-group-info">
+                {% if patient.blood_type %}
+                <p>
+                  {{ patient.blood_type }}
+                </p>
+                {% elif session.status == "Closed" %}
+                <span style="color: grey;">Session ended</span>
+                {% else %}
+                <span>Unknown</span>
+                <a href="{{ url_for('blood_test', session_id=session.id) }}">
+                  <button>Test</button>
+                </a>
+                {% endif %}
+              </div>
+            </div>
           </div>
           <div class="symptoms">
             <h4>Symptoms</h4>
             {% if session.symptoms %}
-            <p id="flash">{{ session.symptoms }}</p>
+            <ul id="flash">
+              {% for symptom in session.symptoms %}
+              <li>{{ symptom.name }}</li>
+              {% endfor %}
+            </ul>
             {% else %}
             <h4 class="else">{{ patient.first_name }} {{ patient.second_name }} has not yet entered his symptoms</h4>
             {% endif %}
@@ -187,12 +218,12 @@ HMS | Doctor Session
       <div class="diagnosis">
         <h4>Diagnosis</h4>
         <hr>
-        {% if session.symptoms == None %}
+        {% if session.symptoms == [] %}
         <p class="else">Patient has not yet given their symptoms</p>
         {% elif session.diagnosis %}
-        <p class="else">Patient already given a diagnosis, refer to the patient's medical data panel to view the
-          diagnosis
-          specified</p>
+        <p class="else">
+          Patient already given a diagnosis, refer to the patient's medical data panel to view the diagnosis specified
+        </p>
         {% else %}
         <form action="{{ url_for('diagnosis', session_id=session.id) }}" method="post">
           <label for="diagnosis">Specify the diagnosis</label>
@@ -253,6 +284,8 @@ HMS | Doctor Session
         <hr>
         {% if session.status == "Closed" %}
         <p class="else">This session has ended</p>
+        {% elif session.diagnosis == None or session.prescription == None %}
+        <p class="else">Awaiting diagnosis and prescription</p>
         {% else %}
         <p id="more-info">You can pass on extra information to your patient</p>
         <form action="{{ url_for('notes', session_id=session.id) }}" method="post">
@@ -267,75 +300,30 @@ HMS | Doctor Session
   <div id="previous" class="tabcontent">
     <h4 id="dash">{{ patient.first_name }} {{ patient.second_name }}'s Previous Sessions</h4>
     <p id="more-info">This tab shows all the previous session the patient has had prior to the current session</p>
+    {% set previous_session = [] %}
+    {% for session in patient.session if session.status == "Closed" %}
+    {{ previous_session.append(session) or "" }}
+    {% endfor %}
+    {% if previous_session %}
     <div class="side-panel">
       {% for session in patient.session if session.status == "Closed" %}
       {% for appointment in appointments if appointment.id == session.appointment and appointment.status == "Closed" %}
-      <div class="accordion">
-        <h4>
-          {% for doctor in doctors if doctor.id == session.doctor %}
-          {{ doctor.first_name }} {{ doctor.second_name }} - Doctor in session
-          {% endfor %}
-          <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p") }}</span>
-        </h4>
-      </div>
-      <div class="panel">
-        <div class="panel-info">
-          <div class="session-details">
-            <h4>Appointment Details</h4>
-            <hr>
-            <p>Appointment Name - <span>{{ appointment.name }}</span></p>
-            <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
-            <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
-            <p>Date Closed - <span>{{ appointment.date_closed.strftime("%d/%m/%Y") }}</span></p>
-            <p>Time Ended - <span>{{ appointment.date_closed.strftime("%I:%M %p") }}</span></p>
-          </div>
-          <div class="symptoms">
-            <h4>Symptoms</h4>
-            <hr>
-            {% if session.symptoms %}
-            <ul>
-              <li>{{ session.symptoms }}</li>
-            </ul>
-            {% else %}
-            <h4 class="else">{{ patient.first_name }} {{ patient.second_name }} has not yet entered his symptoms</h4>
-            {% endif %}
-          </div>
-          <div class="diagnosis">
-            <h4>Diagnosis</h4>
-            <hr>
-            <p>The diagnosis given was <span>{{ session.diagnosis }}</span></p>
-          </div>
-          <div class="prescriptions">
-            <h4>Prescription Given</h4>
-            <hr>
-            {% for prescribe in session.prescription %}
-            <p>
-              <span>
-                {% for med in medicines if med.id == prescribe.medicine %}
-                {{ med.name }} - {{ med.type }}
-                {% endfor %}
-              </span>
-              <span>
-                dose - {{ prescribe.dose }}
-              </span>
-              <span>
-                frequency - {{ prescribe.frequency }} times a day
-              </span>
-            </p>
+      <a href="{{ url_for('doctor_session', session_id=session.id) }}" target="_blank">
+        <div class="accordion">
+          <h4>
+            {% for doctor in doctors if doctor.id == session.doctor %}
+            {{ doctor.first_name }} {{ doctor.second_name }} - Doctor in session
             {% endfor %}
-          </div>
-          {% if session.notes %}
-          <div class="notes">
-            <h4>Additional Notes</h4>
-            <hr>
-            <p>{{ session.notes }}</p>
-          </div>
-          {% endif %}
+            <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p") }}</span>
+          </h4>
         </div>
-      </div>
+      </a>
       {% endfor %}
       {% endfor %}
     </div>
+    {% else %}
+    <h4 class="else">No previous sessions</h4>
+    {% endif %}
   </div>
 </div>
 

@@ -16,6 +16,33 @@ HMS | Patient Portal
 {% endblock %}
 
 {% block body %}
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="close-modal">X</span>
+    </div>
+    <div class="modal-body">
+      <h4>Add all your allergies to ensure no complication during medicine prescription</h4>
+      <form action="{{ url_for('patient_allergies') }}" method="post">
+        <div class="one">
+          <label for="name">Name Of Allergy</label>
+          <input id="input" required type="text" name="names" placeholder="e.g. Peanut allergy">
+        </div>
+        <div class="one">
+          <label for="severe">Severety Of The Allergy</label>
+          <select id="select" required name="severe">
+            <option value="Mild">Mild</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+          </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button>Add</button>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
     <h4 id="dash">My Dashboard</h4>
@@ -89,7 +116,7 @@ HMS | Patient Portal
       <form action="{{ url_for('book_appointment') }}" method="post">
         <div class="left">
           <div class="one">
-            <label for="fnam">Full Name:</label>
+            <label for="fname">Full Name:</label>
             <input required type="text" name="fname" placeholder="Full Names" readonly spellcheck="false"
               value="{{ current_user.first_name }} {{ current_user.second_name }} {{ current_user.last_name }}">
           </div>
@@ -155,7 +182,7 @@ HMS | Patient Portal
         <div class="accordion">
           {{ appointment.name }}
           {% for doctor in doctors if doctor.id == session.doctor %}
-          - {{ doctor.first_name }} {{ doctor.second_name }}
+          - Dr. {{ doctor.first_name }} {{ doctor.second_name }}
           {% endfor %}
           <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p")}}
           </span>
@@ -198,21 +225,33 @@ HMS | Patient Portal
         <h4>Blood Type</h4>
         <div class="blood-type-info">
           <img src="{{ url_for('static', filename='Images/blood-test.png') }}" alt="blood-type">
-          <p>O-</p>
+          <p>
+            {% if current_user.blood_type %}
+            {{ current_user.blood_type }}
+            {% else %}
+            UNKNOWN
+            {% endif %}
+          </p>
         </div>
       </div>
       <div class="data alergies">
-        <h4>My Allergies</h4>
+        <h4>
+          My Allergies
+          <button id="add_allergies">+ Add</button>
+        </h4>
         <div class="alergies-info">
           <ul>
-            <li>Peanuts</li>
-            <li>Fried eggs</li>
-            <li>Gluecose</li>
-            <li>Syringe</li>
+            {% if current_user.allergies %}
+            {% for allergy in current_user.allergies %}
+            <li>{{ allergy.name }}</li>
+            {% endfor %}
+            {% else %}
+            <h4 class="else">No allergies added</h4>
+            {% endif %}
           </ul>
         </div>
       </div>
-      {% if current_user.appointment %}
+      {% if current_user.appointment[-1] %}
       <div class="data recent-visit">
         <h4>Recent Appointment - <span>{{ current_user.appointment[-1].appointment_id }}</span></h4>
         <div class="recent-history">
@@ -220,7 +259,7 @@ HMS | Patient Portal
           <img src="{{ url_for('static', filename='Images/man.png') }}" alt="doctor">
           <p>
             {% for doctor in doctors if doctor.id == appointment.doctor %}
-            Dr. {{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}
+            Dr. {{ doctor.first_name }} {{ doctor.second_name }}
             {% endfor %}
           </p>
           <p>{{ appointment.name }}</p>
@@ -246,7 +285,7 @@ HMS | Patient Portal
         <div class="blood-pressure">
           <div class="primary-data-details">
             <h4>Blood Pressure</h4>
-            <p>{{ current_user.blood_pressure }} Bpm</p>
+            <p>{% if current_user.blood_pressure %}{{ current_user.blood_pressure }}{% else %} --- {% endif %} Bpm</p>
           </div>
           <img src="{{ url_for('static', filename='Images/blood-pressure-gauge.png') }}" alt="blood pressure">
         </div>
@@ -260,20 +299,58 @@ HMS | Patient Portal
         <div class="weight">
           <div class="primary-data-details">
             <h4>Weight</h4>
-            <p>{{ current_user.weight }} kg</p>
+            <p>{% if current_user.weight %}{{ current_user.weight }}{% else %} --- {% endif %} kg</p>
           </div>
           <img src="{{ url_for('static', filename='Images/weight-scale.png') }}" alt="weight">
         </div>
         <div class="height">
           <div class="primary-data-details">
             <h4>Height</h4>
-            <p>{{ current_user.height }} Cm</p>
+            <p>{% if current_user.height %}{{ current_user.height }}{% else %} --- {% endif %} Cm</p>
           </div>
           <img src="{{ url_for('static', filename='Images/height.png') }}" alt="height">
         </div>
       </div>
       <div class="data recent-session">
-        <h4>Diagnosis / Prescription</h4>
+        <h4>Recent Session Details</h4>
+        <div class="diagnosis">
+          <h4>Diagnosis Given</h4>
+          {% if current_user.session and current_user.session[-1].diagnosis %}
+          <div class="diagnosis-info">
+            <ul>
+              <li>You have been diagnosed with <span>{{ current_user.session[-1].diagnosis }}</span></li>
+            </ul>
+          </div>
+          {% else %}
+          <h4 class="else">No diagnosis given</h4>
+          {% endif %}
+        </div>
+        <div class="prescription">
+          <h4>Prescription</h4>
+          {% if current_user.session and current_user.session[-1].prescription %}
+          <div class="prescription-info">
+            {% for prescription in prescriptions if prescription.session == current_user.session[-1].id %}
+            <p>
+              {% for medicine in medicines if prescription.medicine == medicine.id %}
+              <span>{{ medicine.name }} ({{ medicine.type }})</span>
+              <span>
+                {% if medicine.type == 'Liquid' or medicine.type == 'Injection' %}
+                {{ prescription.dose }}
+                {% elif medicine.type == 'Capsules' %}
+                {{ prescription.dose }} capsules
+                {% elif medicine.type == 'Tablet' %}
+                {{ prescription.dose }} tablets
+                {% endif %}
+              </span>
+              <span>{{ prescription.frequency }} times a day</span>
+              {% endfor %}
+            </p>
+            {% endfor %}
+          </div>
+          {% else %}
+          <h4 class="else">No prescription given</h4>
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>

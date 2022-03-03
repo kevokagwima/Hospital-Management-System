@@ -206,8 +206,20 @@ body {
 }
 
 .symptoms .else {
-  color: rgb(172, 172, 172);
+  color: white;
   margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.else li {
+  text-transform: capitalize;
+  border-radius: 30px;
+  outline: 2px solid white;
+  padding: 10px 15px;
+  background-color: var(--red);
 }
 
 .diagnosis p {

@@ -135,7 +135,10 @@ nav {
   overflow: auto;
   margin-top: 2rem;
   border-radius: 5px;
-  padding: 0 10px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .side-panel .accordion {
@@ -155,65 +158,6 @@ nav {
   position: absolute;
   right: 0;
   color: var(--red);
-}
-
-.side-panel .panel {
-  max-width: 100%;
-  margin: 10px 15px;
-  background-color: white;
-  color: #212121;
-  box-shadow: 0px 0px 10px -6px black;
-}
-
-.side-panel .panel-info {
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  max-width: 100%;
-  max-height: 30rem;
-  overflow: auto;
-}
-
-.panel-info div {
-  padding: 20px;
-  outline: 2px solid var(--dark);
-  grid-column: 1/4;
-  color: #212121;
-}
-
-.panel-info div > h4 {
-  font-family: var(--nav-links-font);
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.panel-info div hr {
-  margin: 0.5rem 0;
-  background-color: grey;
-  border: none;
-  outline: 1px solid grey;
-}
-
-.panel-info div p {
-  padding: 10px 0;
-  background-color: transparent;
-}
-
-.panel-info .prescriptions p {
-  display: flex;
-  flex-direction: column;
-  background-color: whitesmoke;
-  gap: 10px;
-  padding: 1rem;
-}
-
-.panel-info div p span {
-  font-weight: bold;
-}
-
-.panel-info div ul li {
-  margin-left: 1.5rem;
 }
 
 #dash {
@@ -420,8 +364,40 @@ nav {
   border-radius: 5px;
 }
 
-.alergies p,
-.symptoms p,
+.alergies {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1rem;
+}
+
+.alergies .else {
+  margin-top: 1rem;
+}
+
+.blood-group-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60%;
+  border-radius: 5px;
+  background-color: var(--nav-links-color);
+  margin-top: 5px;
+  padding: 10px 0;
+}
+
+.blood-group button {
+  padding: 5px 15px;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  background-color: rgb(1, 170, 1);
+  font-family: var(--nav-links-font);
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+.alergies ul,
 .patient-diagnosis p,
 .patient-prescription p,
 .patient-notes p {
@@ -430,6 +406,21 @@ nav {
   margin-top: 10px;
   border-radius: 3px;
   outline: 2px solid white;
+}
+
+.patient-diagnosis p {
+  color: greenyellow;
+  font-size: 20px;
+}
+
+.blood-group p {
+  font-size: 1.8rem;
+  color: orange;
+}
+
+.alergies li {
+  margin-left: 1rem;
+  padding: 2px 0;
 }
 
 .patient-prescription p {
@@ -445,12 +436,30 @@ nav {
 }
 
 #flash {
+  text-transform: capitalize;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style-type: none;
+  padding: 15px 0 0;
+}
+
+#flash li {
+  text-transform: capitalize;
+  border-radius: 30px;
+  outline: 2px solid white;
+  padding: 10px 15px;
   background-color: var(--red);
 }
 
 .else {
   color: var(--red);
   font-weight: 600;
+}
+
+#previous .else {
+  margin-top: 3rem;
+  text-align: center;
 }
 
 .diagnosis form,

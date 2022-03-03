@@ -42,3 +42,15 @@ for (i = 0; i < acc.length; i++) {
     }
   });
 }
+
+const btn = document.querySelector("#add_allergies");
+const modal = document.querySelector(".modal");
+const close_modal = document.getElementById("close-modal");
+
+btn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+close_modal.addEventListener("click", () => {
+  modal.style.display = "none";
+});

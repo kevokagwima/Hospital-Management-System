@@ -21,6 +21,104 @@ body {
   display: none;
 }
 
+.modal {
+  position: absolute;
+  inset: 0;
+  height: 100vh;
+  background-color: rgb(0, 0, 0, 0.7);
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+.modal-content {
+  border-radius: 5px;
+  background-color: var(--dark);
+  color: white;
+  outline: 2px solid orange;
+  width: 45vw;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px;
+  background-color: var(--nav-links-color);
+  position: relative;
+}
+
+.modal-header span {
+  position: absolute;
+  inset: 0.5rem 1.3rem auto auto;
+  color: red;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body form {
+  margin-top: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-body form .one {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-body > form #select,
+#input {
+  border: none;
+  padding: 15px;
+  background-color: var(--nav-links-color);
+  color: white;
+  min-width: 100%;
+  max-width: 100%;
+  border-radius: 5px;
+  font-family: var(--nav-links-font);
+  font-size: 16px;
+  cursor: pointer;
+  outline: 1px solid grey;
+}
+
+.modal-body > form input::placeholder {
+  color: whitesmoke;
+  font-family: var(--nav-links-font);
+  font-size: 14px;
+}
+
+.modal-footer {
+  padding: 10px;
+  background-color: var(--nav-links-color);
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.modal-footer button {
+  flex-grow: 0.5;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 25px;
+  font-family: system-ui;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 1px;
+  color: white;
+  background-color: rgb(1, 170, 1);
+}
+
 .content-area {
   min-height: 92vh;
   max-height: 92vh;
@@ -329,7 +427,7 @@ body {
   color: white;
 }
 
-.consultation form input,
+.consultation > form input,
 select {
   padding: 10px;
   background-color: var(--nav-links-color);
@@ -407,8 +505,8 @@ select {
 .accordion span {
   position: absolute;
   right: 2rem;
-  font-weight: bold;
-  color: orange;
+  font-weight: normal;
+  color: red;
 }
 
 .accordion:hover {
@@ -499,6 +597,8 @@ select {
   border-radius: 10px;
   background-color: var(--dark);
   height: max-content;
+  max-height: 24rem;
+  overflow: auto;
   box-shadow: 0px 0px 10px -6px black;
 }
 
@@ -541,7 +641,7 @@ select {
 .blood-type-info {
   display: flex;
   align-items: center;
-  gap: 5rem;
+  gap: 3rem;
   margin-top: 1rem;
   padding: 5px 10px;
 }
@@ -551,8 +651,33 @@ select {
 }
 
 .blood-type-info p {
-  font-size: 4rem;
+  font-size: 1.8rem;
   color: var(--red);
+}
+
+.alergies,
+.blood-type {
+  height: 10rem;
+}
+
+.alergies > h4 {
+  position: relative;
+}
+
+#add_allergies {
+  position: absolute;
+  right: 0;
+  background-color: rgb(81, 184, 81);
+  padding: 4px 1rem;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: none;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  outline: 2px solid greenyellow;
 }
 
 .alergies-info {
@@ -670,6 +795,64 @@ select {
 
 .recent-session {
   grid-column: 3/5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.recent-session > h4 {
+  margin-bottom: 0.5rem;
+}
+
+.recent-session > div {
+  padding: 20px;
+  background-color: var(--dark);
+  max-height: 15rem;
+  overflow: auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+.diagnosis-info,
+.prescription-info {
+  padding: 15px;
+}
+
+.diagnosis h4,
+.prescription h4 {
+  margin-bottom: 0.5rem;
+}
+
+.diagnosis-info li {
+  color: whitesmoke;
+  margin-left: 1rem;
+}
+
+.diagnosis-info li > span {
+  color: greenyellow;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.prescription-info {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 20px;
+  max-height: 10rem;
+  overflow: auto;
+}
+
+.prescription-info p {
+  padding: 1rem;
+  background-color: var(--nav-links-color);
+  outline: 2px solid white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .payment {
@@ -698,7 +881,6 @@ select {
 
 .payments .else {
   color: red;
-  font-weight: normal;
   font-size: 18px;
   margin-top: 0;
 }

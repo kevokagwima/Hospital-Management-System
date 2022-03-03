@@ -98,7 +98,7 @@ nav {
 }
 
 .doctor-assigned h4 {
-  color: greenyellow;
+  color: green;
   font-weight: normal;
   letter-spacing: 0.8px;
   font-family: "Dancing Script", cursive;
@@ -120,8 +120,7 @@ nav {
 
 .doctor-assigned {
   color: black;
-  background-color: var(--dark);
-  color: white;
+  background-color: gold;
   background-image: url(../Images/Gifs/Flame_Remote_Working_transparent_by_Icons8.gif);
   background-size: contain;
   background-position: right 20px;
@@ -132,15 +131,15 @@ nav {
 
 @keyframes flashs {
   0% {
-    outline: 4px solid gold;
+    outline: 4px solid var(--dark);
   }
 
   50% {
-    outline: 4px solid greenyellow;
+    outline: 4px solid rgb(2, 168, 2);
   }
 
   100% {
-    outline: 4px solid gold;
+    outline: 4px solid var(--dark);
   }
 }
 

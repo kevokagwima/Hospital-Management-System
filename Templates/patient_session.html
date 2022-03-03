@@ -58,14 +58,18 @@ HMS | {{ appointment.name }}
         <h4>My Symptoms</h4>
         <hr>
         {% if session.symptoms %}
-        <p class="else">{{ session.symptoms }}</p>
-        {% else %}
-        <p>Describe your symptoms in full</p>
-        <form action="{{ url_for('patient_session', session_id=session.id) }}" method="POST">
+        <ul class="else">
+          {% for symptom in session.symptoms %}
+          <li>{{ symptom.name }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if session.diagnosis == None %}
+        <form method="POST" id="symptoms">
           <label for="symptoms">Enter Symptoms</label>
-          <textarea spellcheck="false" required name="symptoms" cols="30" rows="10"
+          <textarea spellcheck="false" required cols="30" rows="10" id="symptom"
             placeholder="Write all your symptoms"></textarea>
-          <button type="submit">UPLOAD</button>
+          <button type="submit" onclick="send_data();">UPLOAD</button>
         </form>
         {% endif %}
       </div>
@@ -95,7 +99,7 @@ HMS | {{ appointment.name }}
           <p>
             <span>
               {% for med in medicines if med.id == prescription.medicine %}
-              {{ med.name }} - {{ med.type }}
+              {{ med.name }} ({{ med.type }})
               {% endfor %}
             </span>
             <span>
@@ -134,4 +138,33 @@ HMS | {{ appointment.name }}
 </div>
 
 <script src="{{ url_for('static', filename='js/patient_session.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+<script>
+  function send_data(e) {
+    var symptom = document.getElementById("symptom")
+    var entry = {
+      name: symptom.value
+    }
+    fetch(`${window.origin}/symptoms/{{ session.id }}`, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(entry),
+      cache: "no-cache",
+      headers: new Headers({
+        "content-type": 'application/json'
+      })
+    })
+      .then(function (response) {
+        response.preventDefault()
+        if (response.status !== 200) {
+          console.log(`Response failed`)
+          return
+        }
+        response.json().then(function (data) {
+          console.log(data)
+        })
+      })
+  }
+</script>
 {% endblock %}

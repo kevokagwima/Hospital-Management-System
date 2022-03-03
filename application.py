@@ -1,10 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
-from models import db, Patients, Doctors, Appointment, Session, Medicine, Prescription, Transaction
+from flask import Flask, jsonify, render_template, redirect, url_for, request, flash, make_response
+from models import *
 from form import patient_registration, login, doctor_registration
 from flask_login import login_manager,LoginManager,login_user,login_required,logout_user,current_user
 from twilio.rest import Client
 from werkzeug.utils import secure_filename
-import datetime, random, stripe, os
+import datetime, random, stripe, os, time
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
@@ -222,6 +222,43 @@ def patient_session(session_id):
 
   return render_template("patient_session.html", session=session, appointment=appointment, doctor=doctor, medicines=medicines)
 
+@app.route("/symptoms/<int:session_id>", methods=["POST", "GET"])
+@login_required
+def patient_symptoms(session_id):
+  if current_user.account_type != "patient":
+    flash(f"Only patients are allowed", category="warning")
+    return redirect(url_for('patient_signin'))
+  session = Session.query.get(session_id)
+  req = request.get_json()
+  print(req)
+  if req["name"]:
+    new_symptom = Symptoms(
+      name = req["name"],
+      session = session.id
+    )
+    db.session.add(new_symptom)
+    db.session.commit()
+  res = make_response(jsonify(req), 200)
+  
+  return res
+
+@app.route("/add-allergies", methods=["POST", "GET"])
+@login_required
+def patient_allergies():
+  if current_user.account_type != "patient":
+    flash(f"Only patients are allowed", category="warning")
+    return redirect(url_for('patient_signin'))
+  new_allergy = Allergies(
+    name = request.form.get("names"),
+    severe = request.form.get("severe"),
+    patient = current_user.id
+  )
+  db.session.add(new_allergy)
+  db.session.commit()
+  flash(f"Your allergy has been added", category="success")
+
+  return redirect(url_for('patient_portal'))
+
 @app.route("/medical-bill-payment")
 @login_required
 def medical_bill_payment():
@@ -306,12 +343,13 @@ def doctor_portal():
     return redirect(url_for('doctor_signin'))
   session = Session.query.filter_by(doctor=current_user.id, status="Active").first()
   appointments = Appointment.query.all()  
-  appointmentz = Appointment.query.filter_by(status="Closed").all()
+  appointmentz = Appointment.query.filter_by(doctor=current_user.id, status="Closed").all()
+  sessionz = Session.query.filter_by(doctor=current_user.id, status="Closed").all()
   patients = Patients.query.all()
   medicines = Medicine.query.all()
   transactions = Transaction.query.all()
 
-  return render_template("doctor_portal.html", session=session, appointments=appointments, appointmentz=appointmentz, patients=patients, medicines=medicines, transactions=transactions)
+  return render_template("doctor_portal.html", session=session, appointments=appointments, appointmentz=appointmentz, patients=patients, medicines=medicines, transactions=transactions, sessionz=sessionz)
 
 @app.route("/doctor-patient-session/<int:session_id>")
 @login_required
@@ -413,6 +451,33 @@ def patient_vitals(session_id):
   flash(f"Patient's vitals updated successfully", category="success")
 
   return redirect(url_for('doctor_session', session_id=session.id))
+
+@app.route("/blood-test/<int:session_id>")
+@login_required
+def blood_test(session_id):
+  if current_user.account_type != "doctor":
+    flash(f"Only doctors are allowed", category="warning")
+    return redirect(url_for('doctor_signin'))
+  session = Session.query.get(session_id)
+  blood_groups = ["A-", "A+", "B-", "B+", "O-", "O+", "AB-", "AB+"]
+  result = random.choice(blood_groups)
+  new_test = Tests(
+    name = "Blood Test",
+    sample = "Blood Sample",
+    result = result,
+    date = datetime.datetime.now(),
+    session = session.id,
+    doctor = current_user.id,
+    patient = session.patient,
+    status = "Success"
+  )
+  db.session.add(new_test)
+  db.session.commit()
+  patient = Patients.query.filter_by(id=session.patient).first()
+  patient.blood_type = result
+  db.session.commit()
+  
+  return render_template("test.html", new_test=new_test), {"Refresh": f"2; url=http://127.0.0.1:5000/doctor-patient-session/{session.id}"}
 
 @app.route("/add-new-medicine", methods=["POST", "GET"])
 @login_required

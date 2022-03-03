@@ -83,7 +83,8 @@ HMS | Doctor Portal
     {% endfor %}
     {% if previous_prescriptions %}
     <div class="prescriptions">
-      {% for session in current_user.session|sort(attribute="date_closed", reverse=true) %}
+      {% for session in sessionz|sort(attribute="date_closed", reverse=true)
+      %}
       <div class="prescription-info">
         {% for prescription in current_user.prescription|sort(attribute="date", reverse=true) if prescription.session ==
         session.id %}
@@ -149,8 +150,7 @@ HMS | Doctor Portal
     <p id="more-info">This tab shows you previous interaction with your patients</p>
     {% if previous_session %}
     <div class="previous-session">
-      {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) if appointment.doctor ==
-      current_user.id and appointment.status == "Closed" %}
+      {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) %}
       {% for session in current_user.session if session.status == "Closed" and session.appointment == appointment.id %}
       <a href="{{ url_for('doctor_session', session_id=session.id) }}">
         <div class="accordion">
