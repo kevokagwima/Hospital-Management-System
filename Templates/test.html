@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/test.css') }}">
+<script src="https://kit.fontawesome.com/58224b2815.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block title %}
+HMS | Blood Test
+{% endblock %}
+
+{% block body %}
+<div class="test-complete">
+  <img src="{{ url_for('static', filename='Images/success.gif') }}" alt="success">
+  <h4>Test <span>0{{ new_test.id }}</span> Done</h4>
+</div>
+{% endblock %}
