@@ -1,13 +1,10 @@
-from flask import Blueprint, flash, redirect, render_template, url_for, request
+from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from Doctors.form import *
 from models import *
-from flask_login import login_manager, LoginManager, login_user, login_required,logout_user,current_user
+from flask_login import login_user, login_required,logout_user,current_user
 import random, datetime
 
 doctors = Blueprint('doctors', __name__)
-
-login_manager = LoginManager()
-login_manager.init_app(doctors)
 
 @doctors.route("/doctor-signup", methods=["POST", "GET"])
 def doctor_register():
@@ -62,8 +59,7 @@ def doctor_signin():
 @login_required
 def doctor_portal():
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.filter_by(doctor=current_user.id, status="Active").first()
   appointments = Appointment.query.all()  
   appointmentz = Appointment.query.filter_by(doctor=current_user.id, status="Closed").all()
@@ -78,8 +74,7 @@ def doctor_portal():
 @login_required
 def doctor_session(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   appointment = Appointment.query.filter_by(id=session.appointment).first()
   patient = Patients.query.filter_by(id=session.patient).first()
@@ -93,8 +88,7 @@ def doctor_session(session_id):
 @login_required
 def diagnosis(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   diagnosis = request.form.get("diagnosis")
   session.diagnosis = diagnosis
@@ -107,8 +101,7 @@ def diagnosis(session_id):
 @login_required
 def prescription(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   new_prescription = Prescription (
     medicine = request.form.get("drug"),
@@ -130,8 +123,7 @@ def prescription(session_id):
 @login_required
 def notes(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   session.notes = request.form.get("notes")
   db.session.commit()
@@ -143,8 +135,7 @@ def notes(session_id):
 @login_required
 def patient_vitals(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   patient = Patients.query.filter_by(id=session.patient).first()
   if patient.age > 18:
@@ -179,8 +170,7 @@ def patient_vitals(session_id):
 @login_required
 def blood_test(session_id):
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   blood_groups = ["A-", "A+", "B-", "B+", "O-", "O+", "AB-", "AB+"]
   result = random.choice(blood_groups)
@@ -206,8 +196,7 @@ def blood_test(session_id):
 @login_required
 def add_medicine():
   if current_user.account_type != "doctor":
-    flash(f"Only doctors are allowed", category="warning")
-    return redirect(url_for('doctors.doctor_signin'))
+    abort(403)
   new_medicine = Medicine (
     name = request.form.get("name"),
     type = request.form.get("type"),
@@ -223,6 +212,8 @@ def add_medicine():
 @doctors.route("/doctor-logout")
 @login_required
 def doctor_logout():
+  if current_user.account_type != "doctor":
+    abort(403)
   logout_user()
   flash(f"Logged out successfully", category="success")
   return redirect(url_for('doctors.doctor_signin'))

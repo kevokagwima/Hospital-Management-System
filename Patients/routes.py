@@ -1,14 +1,12 @@
-from flask import Blueprint, flash, redirect, render_template, url_for, request, make_response, jsonify
+from flask import Blueprint, flash, redirect, render_template, url_for, request, make_response, jsonify, abort
 from Patients.form import *
 from models import *
-from flask_login import login_manager, LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from twilio.rest import Client
 import random, datetime, stripe, os
 
 patients = Blueprint('patients', __name__)
 
-login_manager = LoginManager()
-login_manager.init_app(patients)
 stripe.api_key = os.environ['Stripe_api_key']
 account_sid = os.environ['Twilio_account_sid']
 auth_token = os.environ['Twilio_auth_key']
@@ -66,8 +64,7 @@ def patient_signin():
 @login_required
 def patient_portal():
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
@@ -82,8 +79,7 @@ def patient_portal():
 @login_required
 def book_appointment():
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   available_doctors = []
   doctors = Doctors.query.all()
   for doctor in doctors:
@@ -136,8 +132,7 @@ def book_appointment():
 @login_required
 def patient_session(session_id):
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   appointment = Appointment.query.filter_by(id=session.appointment).first()
   doctor = Doctors.query.filter_by(id=session.doctor).first()
@@ -155,8 +150,7 @@ def patient_session(session_id):
 @login_required
 def patient_symptoms(session_id):
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   session = Session.query.get(session_id)
   req = request.get_json()
   print(req)
@@ -175,8 +169,7 @@ def patient_symptoms(session_id):
 @login_required
 def patient_allergies():
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   new_allergy = Allergies(
     name = request.form.get("names"),
     severe = request.form.get("severe"),
@@ -192,8 +185,7 @@ def patient_allergies():
 @login_required
 def medical_bill_payment():
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   total = []
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   for prescription in prescriptions:
@@ -223,6 +215,8 @@ def medical_bill_payment():
 @patients.route("/payment-failed")
 @login_required
 def payment_failed():
+  if current_user.account_type != "patient":
+    abort(403)
   flash(f"Payment process failed, try again", category="danger")
   return redirect(url_for('patients.patient_portal'))
 
@@ -230,8 +224,7 @@ def payment_failed():
 @login_required
 def payment_complete():
   if current_user.account_type != "patient":
-    flash(f"Only patients are allowed", category="warning")
-    return redirect(url_for('patients.patient_signin'))
+    abort(403)
   prescriptions = Prescription.query.filter_by(patient=current_user.id, status="Active").all()
   session = Session.query.filter_by(patient=current_user.id, status="Active").first()
   appointment = Appointment.query.filter_by(patient=current_user.id, status="Active").first()
@@ -260,6 +253,8 @@ def payment_complete():
 @patients.route("/logout")
 @login_required
 def patient_logout():
+  if current_user.account_type != "patient":
+    abort(403)
   logout_user()
   flash(f"Logged out successfully", category="success")
   return redirect(url_for('patients.patient_signin'))

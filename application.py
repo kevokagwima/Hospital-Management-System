@@ -3,6 +3,7 @@ from Patients.routes import patients
 from Doctors.routes import doctors
 from Admin.routes import admin
 from Main.routes import main
+from Errors.handlers import errors
 from models import *
 from config import Config
 from flask_login import login_manager, LoginManager
@@ -15,6 +16,7 @@ app.register_blueprint(patients)
 app.register_blueprint(doctors)
 app.register_blueprint(admin)
 app.register_blueprint(main)
+app.register_blueprint(errors)
 login_manager = LoginManager()
 login_manager.blueprint_login_views = {
   'patients': '/patient-signin',

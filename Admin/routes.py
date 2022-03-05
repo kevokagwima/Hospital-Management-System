@@ -1,12 +1,9 @@
-from flask import Blueprint, flash, redirect, render_template, url_for, request
+from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from Admin.form import *
 from models import *
-from flask_login import login_manager,  LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 
 admin = Blueprint('admin', __name__)
-
-login_manager = LoginManager()
-login_manager.init_app(admin)
 
 @admin.route("/admin-signin", methods=["POST", "GET"])
 def admin_signin():
@@ -29,8 +26,7 @@ def admin_signin():
 @login_required
 def admin_portal():
   if current_user.account_type != "admin":
-    flash(f"Only admins are allowed", category="warning")
-    return redirect(url_for('admin_signin'))
+    abort(403)
   patients = Patients.query.all()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
@@ -44,6 +40,8 @@ def admin_portal():
 @admin.route("/admin-logout")
 @login_required
 def admin_logout():
+  if current_user.account_type != "admin":
+    abort(403)
   logout_user()
   flash(f"Logged out successfully", category="success")
   return redirect(url_for('admin.admin_signin'))
