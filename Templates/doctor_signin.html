@@ -14,7 +14,7 @@ HMS | Signin
 <div class="container">
   <div class="image"></div>
   <div class="form">
-    <h4>Patient Sign In</h4>
+    <h4>Doctor Sign In</h4>
     <form method="POST">
       {{ form.hidden_tag() }}
       <div class="input one">
@@ -30,7 +30,7 @@ HMS | Signin
       </button>
       <div class="box">
         <p>Don't have an account</p>
-        <a href="{{ url_for('patients.patient_register') }}">Sign Up</a>
+        <a href="{{ url_for('doctors.doctor_register') }}">Sign Up</a>
       </div>
     </form>
   </div>

@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/admin.css') }}">
+<script src="https://kit.fontawesome.com/58224b2815.js" crossorigin="anonymous"></script>
+{% endblock %}
+
+{% block title %}
+HMS | Admin Portal
+{% endblock %}
+
+{% block content %}
+<!-- <p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
+<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
+<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
+<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p> -->
+{% endblock %}
+
+{% block body %}
+<div class="content-area">
+  <h4 id="dash">Dashboard</h4>
+  <div id="dashboard" class="tabcontent">
+    <div class="dashboard-area">
+      <div class="general-stats">
+        <div class="total patients">
+          <h4>Total Patients</h4>
+          <div class="details">
+            <p>{{ patients|count }} <span>patients</span></p>
+          </div>
+        </div>
+        <div class="total doctors">
+          <h4>Total Doctors</h4>
+          <div class="details">
+            <p>{{ doctors|count }} <span>doctors</span></p>
+          </div>
+        </div>
+        <div class="total appointments">
+          <h4>Total Appointments</h4>
+          <div class="details">
+            <p>{{ appointments|count }} <span>appointments </span></p>
+            <div class="more-info">
+              {% set active_appointment = [] %}
+              {% for appointment in appointments if appointment.status == "Active" %}
+              {{ active_appointment.append(appointment) or "" }}
+              {% endfor %}
+              <p><span>{{ active_appointment|count }}</span> Active</p>
+              <p><span>{{ appointments|count - active_appointment|count }}</span> Closed</p>
+            </div>
+          </div>
+        </div>
+        <div class="total sessions">
+          <h4>Total Sessions</h4>
+          <div class="details">
+            <p>{{ sessions|count }} <span>sessions</span></p>
+            <div class="more-info">
+              {% set active_session = [] %}
+              {% for session in sessions if session.status == "Active" %}
+              {{ active_session.append(session) or "" }}
+              {% endfor %}
+              <p><span>{{ active_session|count }}</span> Active</p>
+              <p><span>{{ sessions|count - active_session|count }}</span> Closed</p>
+            </div>
+          </div>
+        </div>
+        <div class="total prescriptions">
+          <h4>Total Prescriptions</h4>
+          <div class="details">
+            <p>{{ prescriptions|count }} <span>prescriptions</span></p>
+            <div class="more-info">
+              {% set paid_prescription = [] %}
+              {% for prescription in prescriptions if prescription.status == "Closed" %}
+              {{ paid_prescription.append(prescription) or "" }}
+              {% endfor %}
+              <p><span>{{ paid_prescription|count }}</span> Paid for</p>
+              <p><span>{{ prescriptions|count - paid_prescription|count }}</span> Pending</p>
+            </div>
+          </div>
+        </div>
+        <div class="total transactions">
+          <h4>Total Transactions</h4>
+          <div class="details">
+            <p>{{ transactions|count }} <span>transactions</span></p>
+            <div class="more-info">
+              {% set success_transaction = [] %}
+              {% for transaction in transactions if transaction.status == "Success" %}
+              {{ success_transaction.append(transaction) or "" }}
+              {% endfor %}
+              <p><span>{{ success_transaction|count }}</span> Success</p>
+              <p><span>{{ transactions|count - success_transaction|count }}</span> Failed</p>
+            </div>
+          </div>
+        </div>
+        <div class="total medicines">
+          <h4>Total Pills/Medication </h4>
+          <div class="details">
+            <p>{{ medicines|count }} <span>pills</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="all-patients">
+        <h4>Patients</h4>
+        <div class="patients-details">
+          {% for patient in patients %}
+          <div class="card">
+            <img src="{{ url_for('static', filename='Images/man.png') }}" alt="patient-img">
+            <p>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</p>
+            <p>{{ patient.phone }}</p>
+            <a href="#">View More</a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="all-doctors">
+        <h4>Doctors</h4>
+        <div class="doctors-details">
+          {% for doctor in doctors %}
+          <div class="card">
+            <img src="{{ url_for('static', filename='Images/man.png') }}" alt="patient-img">
+            <p>{{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}</p>
+            <p>{{ doctor.phone }}</p>
+            <a href="#">View More</a>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

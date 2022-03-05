@@ -5,6 +5,26 @@ from flask_login import UserMixin
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 
+class Admin(db.Model, UserMixin):
+  __tablename__ = "Admin"
+  id = db.Column(db.Integer(), primary_key=True)
+  username = db.Column(db.String(length=50), nullable=False)
+  email = db.Column(db.String(length=100), nullable=False)
+  phone = db.Column(db.String(length=10), nullable=False)
+  password = db.Column(db.String(), nullable=False)
+  account_type = db.Column(db.String(length=7), nullable=False)
+
+  @property
+  def passwords(self):
+    return self.passwords
+
+  @passwords.setter
+  def passwords(self, plain_text_password):
+    self.password = bcrypt.generate_password_hash(plain_text_password).decode("utf-8")
+
+  def check_password_correction(self, attempted_password):
+    return bcrypt.check_password_hash(self.password, attempted_password)
+
 class Patients(db.Model, UserMixin):
   __tablename__ = "Patients"
   id = db.Column(db.Integer(), primary_key=True)

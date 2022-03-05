@@ -25,7 +25,7 @@ HMS | Doctor Portal
       <div class="dashboard-info">
         {% if session %}
         {% for appointment in appointments if appointment.id == session.appointment %}
-        <a href="{{ url_for('doctor_session', session_id=session.id) }}">
+        <a href="{{ url_for('doctors.doctor_session', session_id=session.id) }}">
           <div class="session doctor-assigned">
             <h4>Patient consultation in progress...</h4>
             <div class="session-details">
@@ -152,7 +152,7 @@ HMS | Doctor Portal
     <div class="previous-session">
       {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) %}
       {% for session in current_user.session if session.status == "Closed" and session.appointment == appointment.id %}
-      <a href="{{ url_for('doctor_session', session_id=session.id) }}">
+      <a href="{{ url_for('doctors.doctor_session', session_id=session.id) }}">
         <div class="accordion">
           {{ appointment.name }}
           {% for patient in patients if patient.id == session.patient %}
@@ -173,14 +173,14 @@ HMS | Doctor Portal
     <h4 id="dash">Available Medicine</h4>
     <p id="more-info">This tab allows you to add new drugs to the database</p>
     <div class="medicine">
-      <form action="{{ url_for('add_medicine') }}" method="post">
+      <form action="{{ url_for('doctors.add_medicine') }}" method="post">
         <div class="input">
           <label for="name">Name of Drug</label>
-          <input type="text" name="name" placeholder="Enter name of drug">
+          <input required type="text" name="name" placeholder="Enter name of drug">
         </div>
         <div class="input">
           <label for="type">Type of Drug</label>
-          <select name="type">
+          <select required name="type">
             <option value="Liquid">Liquid</option>
             <option value="Tablet">Tablet</option>
             <option value="Capsules">Capsules</option>
@@ -189,11 +189,11 @@ HMS | Doctor Portal
         </div>
         <div class="input">
           <label for="treatment">Treatment of Drug</label>
-          <input type="text" name="treatment" placeholder="Enter diseases the drug treats">
+          <input required type="text" name="treatment" placeholder="Enter diseases the drug treats">
         </div>
         <div class="input">
           <label for="price">Price of Drug</label>
-          <input type="number" name="price" placeholder="Enter price of drug">
+          <input required type="number" name="price" placeholder="Enter price of drug">
         </div>
         <button type="submit">Add</button>
       </form>

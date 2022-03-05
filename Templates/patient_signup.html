@@ -12,7 +12,7 @@ HMS | SignUp
 {% block body %}
 <div class="container">
   <div class="form">
-    <h4>Get Started</h4>
+    <h4>Get Started as a Patient</h4>
     <form method="POST">
       {{ form.hidden_tag() }}
       <div class="input one">
@@ -61,7 +61,7 @@ HMS | SignUp
     </form>
     <div class="box">
       <p>Already have an account</p>
-      <a href="{{ url_for('patient_signin') }}">Login</a>
+      <a href="{{ url_for('patients.patient_signin') }}">Login</a>
     </div>
   </div>
 </div>

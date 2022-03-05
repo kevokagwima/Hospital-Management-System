@@ -10,7 +10,7 @@ HMS | Doctor Session
 {% endblock %}
 
 {% block content %}
-<a href="{{ url_for('doctor_portal') }}">Dashboard</a>
+<a href="{{ url_for('doctors.doctor_portal') }}">Dashboard</a>
 <p id="defaultOpen" onclick="openView(event, 'dashboard')">Session</p>
 {% endblock %}
 
@@ -26,7 +26,7 @@ HMS | Doctor Session
       <p id="more-info">Always make sure to take this test before beginning the session with your patient </p>
       <div class="modal-info">
         <h4>{{ patient.first_name }} {{ patient.second_name }}'s Medical Metrics</h4>
-        <form action="{{ url_for('patient_vitals', session_id=session.id) }}" method="post">
+        <form action="{{ url_for('doctors.patient_vitals', session_id=session.id) }}" method="post">
           <div class="bio-info">
             <div class="bio-data">
               <h4>Blood Pressure</h4>
@@ -162,7 +162,7 @@ HMS | Doctor Session
                 <span style="color: grey;">Session ended</span>
                 {% else %}
                 <span>Unknown</span>
-                <a href="{{ url_for('blood_test', session_id=session.id) }}">
+                <a href="{{ url_for('doctors.blood_test', session_id=session.id) }}">
                   <button>Test</button>
                 </a>
                 {% endif %}
@@ -225,7 +225,7 @@ HMS | Doctor Session
           Patient already given a diagnosis, refer to the patient's medical data panel to view the diagnosis specified
         </p>
         {% else %}
-        <form action="{{ url_for('diagnosis', session_id=session.id) }}" method="post">
+        <form action="{{ url_for('doctors.diagnosis', session_id=session.id) }}" method="post">
           <label for="diagnosis">Specify the diagnosis</label>
           <textarea required name="diagnosis" placeholder="Give the diagnosis"></textarea>
           <button type="submit">Submit</button>
@@ -256,7 +256,7 @@ HMS | Doctor Session
             </tr>
             {% endfor %}
           </table>
-          <form action="{{ url_for('prescription', session_id=session.id) }}" method="post">
+          <form action="{{ url_for('doctors.prescription', session_id=session.id) }}" method="post">
             <label for="drug">Select Drug To Prescribe</label>
             <select name="drug">
               {% for medicine in medicines if medicine.treatment == session.diagnosis %}
@@ -288,7 +288,7 @@ HMS | Doctor Session
         <p class="else">Awaiting diagnosis and prescription</p>
         {% else %}
         <p id="more-info">You can pass on extra information to your patient</p>
-        <form action="{{ url_for('notes', session_id=session.id) }}" method="post">
+        <form action="{{ url_for('doctors.notes', session_id=session.id) }}" method="post">
           <label for="notes">Write notes to your patient</label>
           <textarea required name="notes" placeholder="Maximum of 200 characters is allowed"></textarea>
           <button type="submit">Send</button>
@@ -308,7 +308,7 @@ HMS | Doctor Session
     <div class="side-panel">
       {% for session in patient.session if session.status == "Closed" %}
       {% for appointment in appointments if appointment.id == session.appointment and appointment.status == "Closed" %}
-      <a href="{{ url_for('doctor_session', session_id=session.id) }}" target="_blank">
+      <a href="{{ url_for('doctors.doctor_session', session_id=session.id) }}" target="_blank">
         <div class="accordion">
           <h4>
             {% for doctor in doctors if doctor.id == session.doctor %}

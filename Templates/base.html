@@ -14,7 +14,7 @@
 </head>
 <nav>
   <div class="logo">
-    <a href="{{ url_for('index') }}">
+    <a href="{{ url_for('main.index') }}">
       <h4>
         HMS
         {% if current_user.is_authenticated %}
@@ -31,25 +31,38 @@
   {% if current_user.is_authenticated %}
   <div class="user-profile">
     {% if current_user.account_type == 'patient' %}
-    <a href="{{ url_for('patient_portal') }}">Patient</a>
+    <a href="{{ url_for('patients.patient_portal') }}">Patient</a>
+    {% elif current_user.account_type == "doctor" %}
+    <a href="{{ url_for('doctors.doctor_portal') }}">Doctor</a>
     {% else %}
-    <a href="{{ url_for('doctor_portal') }}">Doctor</a>
+    <a href="{{ url_for('admin.admin_portal') }}">Admin</a>
     {% endif %}
-    <p>Welcome, <b id="bold">{{ current_user.first_name }} {{ current_user.second_name }}</b></p>
+    <p>Welcome,
+      <b id="bold">
+        {% if current_user.account_type == "admin" %}
+        {{ current_user.username }}
+        {% else %}
+        {{ current_user.first_name }} {{ current_user.second_name }}
+        {% endif %}
+      </b>
+    </p>
     <div class="profile">
       <p id="logout">
         {% if current_user.account_type == "patient" %}
-        <a href="{{ url_for('patient_logout') }}">Logout</a>
+        <a href="{{ url_for('patients.patient_logout') }}">Logout</a>
+        {% elif current_user.account_type == "doctor" %}
+        <a href="{{ url_for('doctors.doctor_logout') }}">Logout</a>
         {% else %}
-        <a href="{{ url_for('doctor_logout') }}">Logout</a>
+        <a href="{{ url_for('admin.admin_logout') }}">Logout</a>
         {% endif %}
       </p>
     </div>
   </div>
   {% else %}
   <div class="users">
-    <a href="{{ url_for('patient_register') }}">Patient</a>
-    <a href="{{ url_for('doctor_register') }}">Doctor</a>
+    <a href="{{ url_for('patients.patient_signin') }}">Patient</a>
+    <a href="{{ url_for('doctors.doctor_signin') }}">Doctor</a>
+    <a href="{{ url_for('admin.admin_signin') }}">Admin</a>
   </div>
   {% endif %}
 </nav>

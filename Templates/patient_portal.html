@@ -23,7 +23,7 @@ HMS | Patient Portal
     </div>
     <div class="modal-body">
       <h4>Add all your allergies to ensure no complication during medicine prescription</h4>
-      <form action="{{ url_for('patient_allergies') }}" method="post">
+      <form action="{{ url_for('patients.patient_allergies') }}" method="post">
         <div class="one">
           <label for="name">Name Of Allergy</label>
           <input id="input" required type="text" name="names" placeholder="e.g. Peanut allergy">
@@ -51,7 +51,7 @@ HMS | Patient Portal
       <div class="dashboard-info">
         {% if session %}
         {% for appointment in appointments if appointment.id == session.appointment %}
-        <a href="{{ url_for('patient_session', session_id=session.id) }}">
+        <a href="{{ url_for('patients.patient_session', session_id=session.id) }}">
           <div class="session doctor-assigned">
             <h4>{{ appointment.name }} in progress...</h4>
             <div class="session-details">
@@ -113,7 +113,7 @@ HMS | Patient Portal
     <h4 id="dash">Doctor Consultation</h4>
     <p id="more-info">Fill all the fields in the form</p>
     <div class="consultation">
-      <form action="{{ url_for('book_appointment') }}" method="post">
+      <form action="{{ url_for('patients.book_appointment') }}" method="post">
         <div class="left">
           <div class="one">
             <label for="fname">Full Name:</label>
@@ -178,7 +178,7 @@ HMS | Patient Portal
       {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) if appointment.patient
       == current_user.id and appointment.status == "Closed" %}
       {% for session in current_user.session if session.status == "Closed" and session.appointment == appointment.id %}
-      <a href="{{ url_for('patient_session', session_id=session.id) }}">
+      <a href="{{ url_for('patients.patient_session', session_id=session.id) }}">
         <div class="accordion">
           {{ appointment.name }}
           {% for doctor in doctors if doctor.id == session.doctor %}
@@ -277,7 +277,7 @@ HMS | Patient Portal
           </p>
           <p>{{ appointment.status }}</p>
           {% endfor %}
-          <a href="{{ url_for('patient_session', session_id=current_user.session[-1].id) }}">View Session</a>
+          <a href="{{ url_for('patients.patient_session', session_id=current_user.session[-1].id) }}">View Session</a>
         </div>
       </div>
       {% endif %}
@@ -392,7 +392,7 @@ HMS | Patient Portal
           </tr>
         </table>
         <div class="payment-methods">
-          <a href="{{ url_for('medical_bill_payment') }}">
+          <a href="{{ url_for('patients.medical_bill_payment') }}">
             <div class="bank-card">
               <img src="{{ url_for('static', filename='Images/credit-card.png') }}" alt="credit card">
               <h4>
