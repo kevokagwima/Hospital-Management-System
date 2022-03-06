@@ -173,6 +173,7 @@ class Symptoms(db.Model):
 class Tests(db.Model):
   __tablename__ = 'Tests'
   id = db.Column(db.Integer(), primary_key=True)
+  test_id = db.Column(db.Integer(), nullable=False)
   name = db.Column(db.String(length=20), nullable=False)
   sample = db.Column(db.String(length=20), nullable=False)
   result = db.Column(db.String(length=20), nullable=False)

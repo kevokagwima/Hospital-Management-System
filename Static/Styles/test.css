@@ -1,20 +1,41 @@
-body {
+.test-complete {
   background-color: #f7f7f7;
 }
 
-.test-complete {
+.payment-complete {
+  background-color: var(--nav-links-color);
+}
+
+.payment-complete h4 {
+  color: white;
+  font-size: 2rem;
+}
+
+.payment-complete p,
+.test-complete p {
+  font-size: 1.2rem;
+  color: grey;
+}
+
+.payment-complete span {
+  color: #44b669;
+}
+
+.test-complete,
+.payment-complete {
   height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
 }
 
 .test-complete h4 {
-  font-size: 5rem;
-  font-family: var(--nav-links-font);
-  color: grey;
-  display: none;
+  font-size: 2rem;
+  color: #221211;
 }
 
 .test-complete h4 > span {

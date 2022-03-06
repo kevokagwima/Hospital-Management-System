@@ -175,6 +175,7 @@ def blood_test(session_id):
   blood_groups = ["A-", "A+", "B-", "B+", "O-", "O+", "AB-", "AB+"]
   result = random.choice(blood_groups)
   new_test = Tests(
+    test_id = random.randint(100000, 999999),
     name = "Blood Test",
     sample = "Blood Sample",
     result = result,

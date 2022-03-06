@@ -8,12 +8,26 @@
 {% endblock %}
 
 {% block title %}
+{% if current_user.account_type == "patient" %}
+HMS| Payment Complete
+{% else %}
 HMS | Blood Test
+{% endif %}
 {% endblock %}
 
 {% block body %}
-<div class="test-complete">
-  <img src="{{ url_for('static', filename='Images/success.gif') }}" alt="success">
-  <h4>Test <span>0{{ new_test.id }}</span> Done</h4>
+
+{% if current_user.account_type == "patient" %}
+<div class="payment-complete">
+  <img src="{{ url_for('static', filename='Images/complete.png') }}" alt="success">
+  <h4>Medical Bill payment complete</h4>
+  <p>Transaction ID <span>{{ new_transaction.transaction_id }}</span></p>
 </div>
+{% else %}
+<div class="test-complete">
+  <img src="{{ url_for('static', filename='Images/complete.png') }}" alt="success">
+  <h4>Blood test ID <span>{{ new_test.test_id }}</span> complete</h4>
+  <p>Results - <span>{{ new_test.result }}</span></p>
+</div>
+{% endif %}
 {% endblock %}

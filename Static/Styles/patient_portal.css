@@ -641,7 +641,7 @@ select {
 .blood-type-info {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 6rem;
   margin-top: 1rem;
   padding: 5px 10px;
 }
@@ -651,7 +651,7 @@ select {
 }
 
 .blood-type-info p {
-  font-size: 1.8rem;
+  font-size: 2.8rem;
   color: var(--red);
 }
 

@@ -3,7 +3,8 @@ from Patients.form import *
 from models import *
 from flask_login import login_user, login_required, logout_user, current_user
 from twilio.rest import Client
-import random, datetime, stripe, os
+import random, stripe, os
+from datetime import datetime
 
 patients = Blueprint('patients', __name__)
 
@@ -27,7 +28,7 @@ def patient_register():
         phone = form.phone_number.data,
         address = form.address.data,
         address2 = form.address1.data,
-        date = datetime.datetime.now(),
+        date = datetime.now(),
         passwords = form.password.data,
         account_type = "patient"
       )
@@ -99,7 +100,7 @@ def book_appointment():
       name = "Doctor consultation",
       patient = current_user.id,
       doctor = random_doctor.id,
-      date_created = datetime.datetime.now(),
+      date_created = datetime.now(),
       status = 'Active'
     )
     db.session.add(new_appointment)
@@ -112,7 +113,7 @@ def book_appointment():
       appointment = new_appointment.id,
       patient = new_appointment.patient,
       doctor = new_appointment.doctor,
-      date_opened = datetime.datetime.now(),
+      date_opened = datetime.now(),
       status = "Active"
     )
     db.session.add(new_session)
@@ -231,7 +232,7 @@ def payment_complete():
   new_transaction = Transaction (
     transaction_id = random.randint(100000, 999999),
     patient = current_user.id,
-    date = datetime.datetime.now(),
+    date = datetime.now(),
     status = "Success"
   )
   db.session.add(new_transaction)
@@ -243,12 +244,11 @@ def payment_complete():
   current_user.doctor = None
   session.status = "Closed"
   appointment.status = "Closed"
-  appointment.date_closed = datetime.datetime.now()
-  session.date_closed = datetime.datetime.now()
+  appointment.date_closed = datetime.now()
+  session.date_closed = datetime.now()
   db.session.commit()
-  flash(f"Medical bill has been cleared successfully", category="success")
 
-  return redirect(url_for('patients.patient_portal'))
+  return render_template("test.html", new_transaction=new_transaction), {"Refresh": f"1; url=http://127.0.0.1:5000/patient-portal"}
 
 @patients.route("/logout")
 @login_required
