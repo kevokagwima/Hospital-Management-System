@@ -11,31 +11,32 @@ HMS | Admin Portal
 {% endblock %}
 
 {% block content %}
-<!-- <p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
 <p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
-<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
-<p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p> -->
+<p onclick="openView(event, 'patients')">Patients</p>
+<p onclick="openView(event, 'doctors')">Doctors</p>
+<p onclick="openView(event, 'sessions')">Sessions</p>
+<p onclick="openView(event, 'medication')">Medication</p>
 {% endblock %}
 
 {% block body %}
 <div class="content-area">
-  <h4 id="dash">Dashboard</h4>
   <div id="dashboard" class="tabcontent">
+    <h4 id="dash">Dashboard</h4>
     <div class="dashboard-area">
       <div class="general-stats">
-        <div class="total patients">
+        <div class="total">
           <h4>Total Patients</h4>
           <div class="details">
             <p>{{ patients|count }} <span>patients</span></p>
           </div>
         </div>
-        <div class="total doctors">
+        <div class="total">
           <h4>Total Doctors</h4>
           <div class="details">
             <p>{{ doctors|count }} <span>doctors</span></p>
           </div>
         </div>
-        <div class="total appointments">
+        <div class="total">
           <h4>Total Appointments</h4>
           <div class="details">
             <p>{{ appointments|count }} <span>appointments </span></p>
@@ -49,7 +50,7 @@ HMS | Admin Portal
             </div>
           </div>
         </div>
-        <div class="total sessions">
+        <div class="total">
           <h4>Total Sessions</h4>
           <div class="details">
             <p>{{ sessions|count }} <span>sessions</span></p>
@@ -63,7 +64,7 @@ HMS | Admin Portal
             </div>
           </div>
         </div>
-        <div class="total prescriptions">
+        <div class="total">
           <h4>Total Prescriptions</h4>
           <div class="details">
             <p>{{ prescriptions|count }} <span>prescriptions</span></p>
@@ -77,7 +78,7 @@ HMS | Admin Portal
             </div>
           </div>
         </div>
-        <div class="total transactions">
+        <div class="total">
           <h4>Total Transactions</h4>
           <div class="details">
             <p>{{ transactions|count }} <span>transactions</span></p>
@@ -91,7 +92,7 @@ HMS | Admin Portal
             </div>
           </div>
         </div>
-        <div class="total medicines">
+        <div class="total">
           <h4>Total Pills/Medication </h4>
           <div class="details">
             <p>{{ medicines|count }} <span>pills</span></p>
@@ -124,6 +125,161 @@ HMS | Admin Portal
           {% endfor %}
         </div>
       </div>
+    </div>
+  </div>
+  <div id="patients" class="tabcontent">
+    <h4 id="dash">All Patients</h4>
+    <p id="more-info">This tab shows all the patients in the system</p>
+    <div class="patients">
+      {% for patient in patients|sort(attribute="first_name") %}
+      <div class="special patients-info">
+        <div class="remove">
+          <a href="{{ url_for('admin.remove_user', user_id=patient.patient_id) }}">Remove Patient</a>
+        </div>
+        <div class="avatar">
+          <img src="{{ url_for('static', filename='Images/man.png') }}" alt="patient-img">
+        </div>
+        <div class="patients-details">
+          <h4>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</h4>
+          <p>Phone number - <span>{{ patient.phone }}</span></p>
+          <p>Email Address - <span>{{ patient.email }}</span></p>
+          <p>Gender - <span>{{ patient.gender }}</span></p>
+          <p>Age - <span>{{ patient.age }} years</span></p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="doctors" class="tabcontent">
+    <h4 id="dash">All Doctors</h4>
+    <p id="more-info">This tab shows all the doctors in the system</p>
+    <div class="doctors">
+      {% for doctor in doctors|sort(attribute="first_name") %}
+      <div class="special doctors-info">
+        <div class="remove">
+          <a href="{{ url_for('admin.remove_user', user_id=doctor.doctor_id) }}">Remove Doctor</a>
+        </div>
+        <div class="avatar">
+          <img src="{{ url_for('static', filename='Images/man.png') }}" alt="doctor-profile">
+        </div>
+        <div class="doctors-details">
+          <h4>{{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}</h4>
+          <p>Phone number - <span>{{ doctor.phone }}</span></p>
+          <p>Email Address - <span>{{ doctor.email }}</span></p>
+          <p>Age - <span>{{ doctor.age }} years</span></p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="sessions" class="tabcontent">
+    <h4 id="dash">Sessions</h4>
+    <p id="more-info">This tab shows all the sessions in the system</p>
+    <div class="sessions">
+      {% for session in sessions|sort(attribute="date_opened", reverse=true) %}
+      <div class="session-info">
+        <h4>
+          Session ID - {{ session.session_id }}
+          {% if session.status == "Closed" %}
+          <span>{{ session.date_closed.strftime("Closed on %d-%m-%Y at %I:%M %p") }}</span>
+          {% else %}
+          <span id="active">Currently ongoing</span>
+          {% endif %}
+        </h4>
+        <div class="session-details">
+          <div class="timeline">
+            <div class="line">
+              <div class="line-one">
+                <div class="dot"></div>
+                <div class="info">
+                  {% for patient in patients if patient.id == session.patient %}
+                  <p>Pt. {{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</p>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="line-two">
+                <div class="dot"></div>
+                <div class="info">
+                  {% for doctor in doctors if doctor.id == session.doctor %}
+                  <p>Dr. {{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}</p>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="symptoms">
+            {% if session.symptoms %}
+            <ul>
+              {% for symptom in symptoms if symptom.session == session.id %}
+              <li>{{ symptom.name }}</li>
+              {% endfor %}
+            </ul>
+            {% else %}
+            <span class="else">No symptoms specified</span>
+            {% endif %}
+          </div>
+          <div class="diagnosis">
+            {% if session.diagnosis %}
+            <p>Diagnosis - {{ session.diagnosis }}</p>
+            {% else %}
+            <span class="else">No diagnosis specified</span>
+            {% endif %}
+          </div>
+          <div class="prescription">
+            {% if session.prescription %}
+            {% for prescription in prescriptions if prescription.session == session.id %}
+            <p>
+              <span>
+                {% for medicine in medicines if medicine.id == prescription.medicine %}
+                {{ medicine.name }}({{ medicine.type }})
+                {% endfor %}
+              </span>
+              <span>
+                {% for med in medicines if med.id == prescription.medicine %}
+                {% if med.type == 'Liquid' or med.type == 'Injection' %}
+                {{ prescription.dose }}
+                {% elif med.type == 'Capsules' %}
+                {{ prescription.dose }} capsules
+                {% elif med.type == 'Tablet' %}
+                {{ prescription.dose }} tablets
+                {% endif %}
+                {% endfor %}
+              </span>
+              <span>{{ prescription.frequency }} times a day</span>
+              </li>
+            </p>
+            {% endfor %}
+            {% else %}
+            <span class="else">No prescription specified</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="medication" class="tabcontent">
+    <h4 id="dash">All Medication</h4>
+    <p id="more-info">This tab shows all the medication in the system</p>
+    <div class="medication">
+      <table>
+        <tr id="tr">
+          <th>Medicine No</th>
+          <th>Medicine Name</th>
+          <th>Medicine Type</th>
+          <th>Medicine Treatment</th>
+          <th>Medicine Price</th>
+        </tr>
+        {% for medicine in medicines %}
+        <tr>
+          <td>{{ medicine.id }}</td>
+          <td>{{ medicine.name }}</td>
+          <td>{{ medicine.type }}</td>
+          <td>{{ medicine.treatment }}</td>
+          <td>{{ "Ksh {:,}".format(medicine.price) }}</td>
+        </tr>
+        {% endfor %}
+      </table>
     </div>
   </div>
 </div>

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, abort
 from Patients.routes import patients
 from Doctors.routes import doctors
 from Admin.routes import admin
@@ -31,7 +31,7 @@ def load_user(user_id):
   try:
     return Patients.query.filter_by(phone=user_id).first() or Doctors.query.filter_by(phone=user_id).first() or Admin.query.filter_by(phone=user_id).first()
   except:
-    return None
+    abort(500)
 
 if __name__ == '__main__':
   app.run(debug=True)

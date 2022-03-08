@@ -76,8 +76,11 @@ def doctor_session(session_id):
   if current_user.account_type != "doctor":
     abort(403)
   session = Session.query.get(session_id)
-  appointment = Appointment.query.filter_by(id=session.appointment).first()
-  patient = Patients.query.filter_by(id=session.patient).first()
+  if session:
+    appointment = Appointment.query.filter_by(id=session.appointment).first()
+    patient = Patients.query.filter_by(id=session.patient).first()
+  else:
+    abort(404)
   medicines = Medicine.query.all()
   appointments = Appointment.query.all()
   doctors = Doctors.query.all()
@@ -198,15 +201,18 @@ def blood_test(session_id):
 def add_medicine():
   if current_user.account_type != "doctor":
     abort(403)
-  new_medicine = Medicine (
-    name = request.form.get("name"),
-    type = request.form.get("type"),
-    treatment = request.form.get("treatment"),
-    price = request.form.get("price")
-  )
-  db.session.add(new_medicine)
-  db.session.commit()
-  flash(f"Medicine added successfully", category="success")
+  try:
+    new_medicine = Medicine (
+      name = request.form.get("name"),
+      type = request.form.get("type"),
+      treatment = request.form.get("treatment"),
+      price = request.form.get("price")
+    )
+    db.session.add(new_medicine)
+    db.session.commit()
+    flash(f"Medicine added successfully", category="success")
+  except:
+    flash(f"An error occured, try again", category="danger")
 
   return redirect(url_for('doctors.doctor_portal'))
 

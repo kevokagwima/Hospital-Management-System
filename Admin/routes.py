@@ -34,8 +34,26 @@ def admin_portal():
   prescriptions = Prescription.query.all()
   transactions = Transaction.query.all()
   medicines = Medicine.query.all()
+  symptoms = Symptoms.query.all()
 
-  return render_template("admin.html", patients=patients, doctors=doctors, appointments=appointments, sessions=sessions, prescriptions=prescriptions, transactions=transactions, medicines=medicines)
+  return render_template("admin.html", patients=patients, doctors=doctors, appointments=appointments, sessions=sessions, prescriptions=prescriptions, transactions=transactions, medicines=medicines, symptoms=symptoms)
+
+@admin.route("/remove-user/<int:user_id>")
+@login_required
+def remove_user(user_id):
+  patient = Patients.query.filter_by(patient_id=user_id).first()
+  doctor = Doctors.query.filter_by(doctor_id=user_id).first()
+  if patient or doctor:
+    db.session.delete(patient or doctor)
+    # db.session.commit()
+    if patient:
+      flash(f"Patient {patient.first_name} {patient.second_name}'s account has been deleted successfully", category="success")
+    elif doctor:
+      flash(f"Doctor {doctor.first_name} {doctor.second_name}'s account has been deleted successfully", category="success")
+  else:
+    flash(f"User not found", category="danger")
+  
+  return redirect(url_for('admin.admin_portal'))
 
 @admin.route("/admin-logout")
 @login_required

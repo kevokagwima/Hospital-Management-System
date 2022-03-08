@@ -6,6 +6,10 @@
   background-color: grey;
 }
 
+.links {
+  cursor: pointer;
+}
+
 body {
   background-color: aliceblue;
   font-family: "Dancing Script", cursive;
@@ -29,8 +33,12 @@ body {
 
 #more-info {
   font-family: var(--nav-links-font);
-  color: rgb(172, 172, 172);
+  color: grey;
   margin-top: 10px;
+}
+
+.else {
+  color: var(--red);
 }
 
 .dashboard-area {
@@ -104,8 +112,9 @@ body {
 .all-patients,
 .all-doctors {
   background-color: white;
-  border-radius: 10px 10px 0 0;
+  border-radius: 10px;
   box-shadow: 0px 0px 10px -5px black;
+  height: max-content;
 }
 
 .all-doctors h4,
@@ -122,7 +131,7 @@ body {
 .doctors-details {
   max-height: 20rem;
   overflow: auto;
-  padding: 5px 15px;
+  padding: 10px 15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -155,4 +164,234 @@ body {
 
 .all-doctors {
   grid-column: 3/5;
+}
+
+.patients,
+.doctors,
+.sessions {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 1.5rem;
+  max-height: 38.8rem;
+  overflow: auto;
+  padding: 2px 5px;
+  width: 100%;
+}
+
+.patients-info,
+.doctors-info {
+  padding: 20px 10px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0px 0px 10px -6px black;
+  display: flex;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.remove {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--red);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(35rem);
+  transition: transform 400ms ease;
+}
+
+.show-remove {
+  transform: translateX(0);
+}
+
+.remove > a {
+  color: white;
+}
+
+.avatar img {
+  max-height: 4rem;
+}
+
+.patients-details span,
+.doctors-details span {
+  color: green;
+}
+
+.sessions {
+  grid-template-columns: 1fr;
+  padding-right: 15px;
+}
+
+.session-info {
+  padding: 15px 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+.session-info > h4 {
+  position: relative;
+}
+
+.session-info > h4 span {
+  position: absolute;
+  right: 0;
+  font-size: 14px;
+  color: red;
+}
+
+.session-info > h4 #active {
+  color: green;
+}
+
+.session-details {
+  padding: 20px;
+  background-color: whitesmoke;
+  margin-top: 10px;
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+}
+
+.timeline {
+  min-width: 15rem;
+  max-width: 15rem;
+}
+
+.line {
+  height: 5rem;
+  width: 4px;
+  border-radius: 20px;
+  background-color: var(--nav-links-color);
+  position: relative;
+}
+
+.line div {
+  left: -4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.line-one {
+  position: absolute;
+  height: 1rem;
+  width: max-content;
+  top: 10px;
+}
+
+.line-two {
+  position: absolute;
+  height: 1rem;
+  width: max-content;
+  bottom: 10px;
+}
+
+.line-one .dot,
+.line-two .dot {
+  height: 0.8rem;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  background-color: var(--red);
+}
+
+.line-one .info,
+.line-two .info {
+  flex-grow: 1;
+}
+
+.symptoms,
+.prescription {
+  text-align: center;
+  min-width: 19rem;
+  max-width: 25rem;
+  overflow: auto;
+  padding: 5px;
+}
+
+.diagnosis {
+  text-align: center;
+  width: max-content;
+  min-width: 10rem;
+}
+
+.symptoms ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style-type: none;
+}
+
+.symptoms ul li {
+  background-color: var(--red);
+  padding: 5px 10px;
+  border-radius: 30px;
+  color: white;
+  outline: 2px solid yellow;
+}
+
+.prescription {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 8rem;
+  overflow: auto;
+}
+
+.prescription p {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px -8px black;
+}
+
+.prescription p span {
+  color: var(--nav-links-color);
+}
+
+.medication {
+  margin-top: 1rem;
+  padding: 2px 5px;
+  max-height: 38.8rem;
+  overflow: auto;
+}
+
+table {
+  position: relative;
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0px 0px 10px -6px black;
+}
+
+#tr {
+  position: sticky;
+  top: -2px;
+}
+
+th {
+  color: white;
+  background-color: var(--nav-links-color);
+  text-align: left;
+  padding: 10px;
+}
+
+th:first-child {
+  border-radius: 10px 0 0 0;
+}
+
+th:last-child {
+  border-radius: 0 10px 0 0;
+}
+
+td {
+  padding: 10px;
+  background-color: whitesmoke;
 }

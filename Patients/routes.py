@@ -135,8 +135,11 @@ def patient_session(session_id):
   if current_user.account_type != "patient":
     abort(403)
   session = Session.query.get(session_id)
-  appointment = Appointment.query.filter_by(id=session.appointment).first()
-  doctor = Doctors.query.filter_by(id=session.doctor).first()
+  if session:
+    appointment = Appointment.query.filter_by(id=session.appointment).first()
+    doctor = Doctors.query.filter_by(id=session.doctor).first()
+  else:
+    abort(404)
   medicines = Medicine.query.all()
   symptoms = request.form
   if symptoms:

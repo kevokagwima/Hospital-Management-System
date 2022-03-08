@@ -14,6 +14,15 @@ function openView(evt, cityName) {
 
 document.getElementById("defaultOpen").click();
 
+const patient_info = document.querySelectorAll(".special");
+const remove = document.querySelectorAll(".remove");
+
+patient_info.forEach((p) => {
+  p.addEventListener("click", () => {
+    p.firstElementChild.classList.toggle("show-remove");
+  });
+});
+
 var acc = document.getElementsByClassName("accordion");
 var i;
 for (i = 0; i < acc.length; i++) {
