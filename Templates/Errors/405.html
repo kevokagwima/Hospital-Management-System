@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/error.css') }}">
+{% endblock %}
+
+{% block body %}
+<main>
+  <h1>Method not allowed (405)</h1>
+  <p>Check your Url</p>
+</main>
+{% endblock %}
