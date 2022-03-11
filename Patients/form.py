@@ -21,7 +21,7 @@ class patient_registration(FlaskForm):
       raise ValidationError("Phone Number already exists, Please try another one")
 
   def validate_phone_number_validity(self, phone_number_to_validate):
-    if str(phone_number_to_validate)[0] != 0 and (str(phone_number_to_validate)[1] != 7 or str(phone_number_to_validate)[1] != 1):
+    if str(phone_number_to_validate.data)[0] != 0:
       raise ValidationError("Invalid phone number. Phone number must begin with 0 followed by 7 or 1")
 
   def validate_email_address(self, email_to_validate):

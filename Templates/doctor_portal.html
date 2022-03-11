@@ -13,7 +13,6 @@ HMS | Doctor Portal
 
 {% block content %}
 <p onclick="openView(event, 'dashboard')" id="defaultOpen">Dashboard</p>
-<p onclick="openView(event, 'help')">Help</p>
 {% endblock %}
 
 {% block body %}
@@ -85,6 +84,7 @@ HMS | Doctor Portal
     <div class="prescriptions">
       {% for session in sessionz|sort(attribute="date_closed", reverse=true)
       %}
+      {% if session.patient %}
       <div class="prescription-info">
         {% for prescription in current_user.prescription|sort(attribute="date", reverse=true) if prescription.session ==
         session.id %}
@@ -132,14 +132,12 @@ HMS | Doctor Portal
         </div>
         {% endfor %}
       </div>
+      {% endif %}
       {% endfor %}
     </div>
     {% else %}
     <h4 class="else">No prescriptions given</h4>
     {% endif %}
-  </div>
-  <div id="help" class="tabcontent">
-    <h4 id="dash">Help</h4>
   </div>
   <div id="previous-session" class="tabcontent">
     {% set previous_session = [] %}
@@ -152,16 +150,19 @@ HMS | Doctor Portal
     <div class="previous-session">
       {% for appointment in appointmentz|sort(attribute='date_closed', reverse=true) %}
       {% for session in current_user.session if session.status == "Closed" and session.appointment == appointment.id %}
+      {% if session.patient %}
       <a href="{{ url_for('doctors.doctor_session', session_id=session.id) }}">
         <div class="accordion">
           {{ appointment.name }}
           {% for patient in patients if patient.id == session.patient %}
-          - {{ patient.first_name }} {{ patient.second_name }}
+          - <span id="name">{{ patient.first_name }} {{ patient.second_name }}</span>
           {% endfor %}
           <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p")}}
           </span>
         </div>
       </a>
+      {% else %}
+      {% endif %}
       {% endfor %}
       {% endfor %}
     </div>

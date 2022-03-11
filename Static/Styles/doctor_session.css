@@ -322,6 +322,10 @@ nav {
   display: none;
 }
 
+.patient-bio > h4 {
+  text-transform: capitalize;
+}
+
 .patient-bio hr {
   background-color: rgb(5, 230, 5);
   border: none;

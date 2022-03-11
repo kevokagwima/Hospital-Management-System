@@ -4,6 +4,7 @@
 {{ super() }}
 <link rel="stylesheet" href="{{ url_for('static', filename='Styles/admin.css') }}">
 <script src="https://kit.fontawesome.com/58224b2815.js" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {% endblock %}
 
 {% block title %}
@@ -19,6 +20,100 @@ HMS | Admin Portal
 {% endblock %}
 
 {% block body %}
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="close-modal">X</span>
+    </div>
+    <div class="modal-body">
+      <h4>Fill in the details to add a new patient</h4>
+      <form action="{{ url_for('admin.add_patient') }}" method="POST">
+        <div class="input">
+          <label for="">Enter first Name</label>
+          <input required type="text" name="fname" placeholder="Enter First Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Second Name</label>
+          <input required type="text" name="sname" placeholder="Enter Second Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Last Name</label>
+          <input required type="text" name="lname" placeholder="Enter Last Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Age</label>
+          <input required type="text" name="age" placeholder="Enter Patient's Age">
+        </div>
+        <div class="input">
+          <label for="">Enter Email Address</label>
+          <input required type="text" name="email" placeholder="Enter Email Address">
+        </div>
+        <div class="input">
+          <label for="">Enter Phone Number</label>
+          <input required type="text" name="phone" placeholder="Enter Phone Number">
+        </div>
+        <div class="input">
+          <label for="">Enter County</label>
+          <input required type="text" name="address1" placeholder="Enter County">
+        </div>
+        <div class="input">
+          <label for="">Enter City</label>
+          <input required type="text" name="address2" placeholder="Enter City">
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modals">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="close-modals">X</span>
+    </div>
+    <div class="modal-body">
+      <h4>Fill in the details to add a new doctor</h4>
+      <form action="{{ url_for('admin.add_doctor') }}" method="POST">
+        <div class="input">
+          <label for="">Enter first Name</label>
+          <input required type="text" name="fname" placeholder="Enter First Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Second Name</label>
+          <input required type="text" name="sname" placeholder="Enter Second Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Last Name</label>
+          <input required type="text" name="lname" placeholder="Enter Last Name">
+        </div>
+        <div class="input">
+          <label for="">Enter Age</label>
+          <input required type="text" name="age" placeholder="Enter Doctor's Age">
+        </div>
+        <div class="input">
+          <label for="">Enter Email Address</label>
+          <input required type="text" name="email" placeholder="Enter Email Address">
+        </div>
+        <div class="input">
+          <label for="">Enter Phone Number</label>
+          <input required type="text" name="phone" placeholder="Enter Phone Number">
+        </div>
+        <div class="input">
+          <label for="">Enter County</label>
+          <input required type="text" name="address1" placeholder="Enter County">
+        </div>
+        <div class="input">
+          <label for="">Enter City</label>
+          <input required type="text" name="address2" placeholder="Enter City">
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button type="submit">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
     <h4 id="dash">Dashboard</h4>
@@ -100,27 +195,61 @@ HMS | Admin Portal
         </div>
       </div>
       <div class="all-patients">
-        <h4>Patients</h4>
+        <h4>
+          Patients
+          <p id="add_patient">Add Patient</p>
+        </h4>
         <div class="patients-details">
-          {% for patient in patients %}
+          {% for patient in patients|sort(attribute="date", reverse=true) %}
           <div class="card">
             <img src="{{ url_for('static', filename='Images/man.png') }}" alt="patient-img">
             <p>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</p>
-            <p>{{ patient.phone }}</p>
-            <a href="#">View More</a>
+            <p>
+              {{ patient.appointment|count }}
+              {% if patient.appointment|count == 1 %}
+              Appointment
+              {% else %}
+              Appointments
+              {% endif %}
+            </p>
+            <p>
+              {{ patient.transactions|count }}
+              {% if patient.transactions|count == 1 %}
+              Transaction
+              {% else %}
+              Transactions
+              {% endif %}
+            </p>
           </div>
           {% endfor %}
         </div>
       </div>
       <div class="all-doctors">
-        <h4>Doctors</h4>
+        <h4>
+          Doctors
+          <p id="add_doctor">Add Doctor</a>
+        </h4>
         <div class="doctors-details">
-          {% for doctor in doctors %}
+          {% for doctor in doctors|sort(attribute="date", reverse=true) %}
           <div class="card">
             <img src="{{ url_for('static', filename='Images/man.png') }}" alt="patient-img">
             <p>{{ doctor.first_name }} {{ doctor.second_name }} {{ doctor.last_name }}</p>
-            <p>{{ doctor.phone }}</p>
-            <a href="#">View More</a>
+            <p>
+              {{ doctor.session|count }}
+              {% if doctor.session|count == 1 %}
+              Session
+              {% else %}
+              Sessions
+              {% endif %}
+            </p>
+            <p>
+              {{ doctor.prescription|count }}
+              {% if doctor.prescription|count == 1 %}
+              Prescription
+              {% else %}
+              Prescriptions
+              {% endif %}
+            </p>
           </div>
           {% endfor %}
         </div>
@@ -128,7 +257,10 @@ HMS | Admin Portal
     </div>
   </div>
   <div id="patients" class="tabcontent">
-    <h4 id="dash">All Patients</h4>
+    <h4 id="dash">
+      All Patients
+      <input type="text" id="search-patient" placeholder="Search for any patient">
+    </h4>
     <p id="more-info">This tab shows all the patients in the system</p>
     <div class="patients">
       {% for patient in patients|sort(attribute="first_name") %}
@@ -151,7 +283,10 @@ HMS | Admin Portal
     </div>
   </div>
   <div id="doctors" class="tabcontent">
-    <h4 id="dash">All Doctors</h4>
+    <h4 id="dash">
+      All Doctors
+      <input type="text" id="search-doctor" placeholder="Search for any doctor">
+    </h4>
     <p id="more-info">This tab shows all the doctors in the system</p>
     <div class="doctors">
       {% for doctor in doctors|sort(attribute="first_name") %}
@@ -173,7 +308,10 @@ HMS | Admin Portal
     </div>
   </div>
   <div id="sessions" class="tabcontent">
-    <h4 id="dash">Sessions</h4>
+    <h4 id="dash">
+      Sessions
+      <input type="text" id="search-session" placeholder="Search for any session">
+    </h4>
     <p id="more-info">This tab shows all the sessions in the system</p>
     <div class="sessions">
       {% for session in sessions|sort(attribute="date_opened", reverse=true) %}
@@ -259,7 +397,10 @@ HMS | Admin Portal
     </div>
   </div>
   <div id="medication" class="tabcontent">
-    <h4 id="dash">All Medication</h4>
+    <h4 id="dash">
+      All Medication
+      <input type="text" id="search-medicine" placeholder="Search for any medication">
+    </h4>
     <p id="more-info">This tab shows all the medication in the system</p>
     <div class="medication">
       <table>
@@ -271,7 +412,7 @@ HMS | Admin Portal
           <th>Medicine Price</th>
         </tr>
         {% for medicine in medicines %}
-        <tr>
+        <tr id="table-data">
           <td>{{ medicine.id }}</td>
           <td>{{ medicine.name }}</td>
           <td>{{ medicine.type }}</td>

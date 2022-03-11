@@ -174,8 +174,8 @@ body {
   position: relative;
 }
 
-.symptoms form textarea {
-  padding: 10px;
+.symptoms form input {
+  padding: 1rem 10px;
   background-color: var(--nav-links-color);
   border: 1px solid grey;
   border-radius: 5px;

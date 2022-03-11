@@ -2,8 +2,12 @@ from flask import Blueprint, flash, redirect, render_template, url_for, request,
 from Admin.form import *
 from models import *
 from flask_login import login_user, login_required, logout_user, current_user
+from flask_bcrypt import Bcrypt
+import random
+from datetime import datetime
 
 admin = Blueprint('admin', __name__)
+bcrypt = Bcrypt()
 
 @admin.route("/admin-signin", methods=["POST", "GET"])
 def admin_signin():
@@ -27,6 +31,7 @@ def admin_signin():
 def admin_portal():
   if current_user.account_type != "admin":
     abort(403)
+
   patients = Patients.query.all()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
@@ -45,7 +50,7 @@ def remove_user(user_id):
   doctor = Doctors.query.filter_by(doctor_id=user_id).first()
   if patient or doctor:
     db.session.delete(patient or doctor)
-    # db.session.commit()
+    db.session.commit()
     if patient:
       flash(f"Patient {patient.first_name} {patient.second_name}'s account has been deleted successfully", category="success")
     elif doctor:
@@ -54,6 +59,60 @@ def remove_user(user_id):
     flash(f"User not found", category="danger")
   
   return redirect(url_for('admin.admin_portal'))
+
+@admin.route("/Add-new-patient", methods=["POST", "GET"])
+def add_patient():
+  try:
+    password = bcrypt.generate_password_hash("11111").decode("utf-8")
+    new_patient = Patients(
+      patient_id = random.randint(100000, 999999),
+      first_name = request.form.get("fname"),
+      second_name = request.form.get("sname"),
+      last_name = request.form.get("lname"),
+      age = request.form.get('age'),
+      email = request.form.get("email"),
+      phone = request.form.get("phone"),
+      address = request.form.get("address1"),
+      address2 = request.form.get("address2"),
+      date = datetime.now(),
+      password = password, 
+      account_type = "patient"
+    )
+    db.session.add(new_patient)
+    db.session.commit()
+    flash(f"New patient added successfully", category="success")
+    return redirect(url_for('admin.admin_portal'))
+  
+  except:
+    flash(f"An error occured, try again", category="danger")
+    return redirect(url_for('admin.admin_portal'))
+
+@admin.route("/Add-new-doctor", methods=["POST", "GET"])
+def add_doctor():
+  try:
+    password = bcrypt.generate_password_hash("11111").decode("utf-8")
+    new_patient = Doctors(
+      doctor_id = random.randint(100000, 999999),
+      first_name = request.form.get("fname"),
+      second_name = request.form.get("sname"),
+      last_name = request.form.get("lname"),
+      age = request.form.get('age'),
+      email = request.form.get("email"),
+      phone = request.form.get("phone"),
+      address = request.form.get("address1"),
+      address2 = request.form.get("address2"),
+      date = datetime.now(),
+      password = password, 
+      account_type = "doctor"
+    )
+    db.session.add(new_patient)
+    db.session.commit()
+    flash(f"New doctor added successfully", category="success")
+    return redirect(url_for('admin.admin_portal'))
+  
+  except:
+    flash(f"An error occured, try again", category="danger")
+    return redirect(url_for('admin.admin_portal'))
 
 @admin.route("/admin-logout")
 @login_required

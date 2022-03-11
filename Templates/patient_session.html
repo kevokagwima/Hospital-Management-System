@@ -67,8 +67,7 @@ HMS | {{ appointment.name }}
         {% if session.diagnosis == None %}
         <form method="POST" id="symptoms">
           <label for="symptoms">Enter Symptoms</label>
-          <textarea spellcheck="false" required cols="30" rows="10" id="symptom"
-            placeholder="Write all your symptoms"></textarea>
+          <input type="text" id="symptom" placeholder="Enter your symptoms">
           <button type="submit" onclick="send_data();">UPLOAD</button>
         </form>
         {% endif %}
@@ -162,7 +161,7 @@ HMS | {{ appointment.name }}
           return
         }
         response.json().then(function (data) {
-          console.log(data)
+          alert(data['name'])
         })
       })
   }

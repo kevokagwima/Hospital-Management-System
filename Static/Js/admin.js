@@ -23,16 +23,62 @@ patient_info.forEach((p) => {
   });
 });
 
-var acc = document.getElementsByClassName("accordion");
-var i;
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function () {
-    this.classList.toggle("actives");
-    var panel = this.nextElementSibling;
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    }
+const btn = document.querySelector("#add_patient");
+const modal = document.querySelector(".modal");
+const close_modal = document.getElementById("close-modal");
+
+btn.addEventListener("click", () => {
+  modal.style.display = "flex";
+});
+
+close_modal.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+const btns = document.querySelector("#add_doctor");
+const modals = document.querySelector(".modals");
+const close_modals = document.getElementById("close-modals");
+
+btns.addEventListener("click", () => {
+  modals.style.display = "flex";
+});
+
+close_modals.addEventListener("click", () => {
+  modals.style.display = "none";
+});
+
+$(document).ready(function () {
+  $("#search-patient").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".patients .patients-info").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
   });
-}
+});
+
+$(document).ready(function () {
+  $("#search-doctor").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".doctors .doctors-info").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
+});
+
+$(document).ready(function () {
+  $("#search-session").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".sessions .session-info").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
+});
+
+$(document).ready(function () {
+  $("#search-medicine").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $(".medication #table-data").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+  });
+});

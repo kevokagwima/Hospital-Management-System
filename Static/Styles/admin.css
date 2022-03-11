@@ -10,10 +10,117 @@
   cursor: pointer;
 }
 
+.user-profile > a {
+  display: none;
+}
+
 body {
   background-color: aliceblue;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
+}
+
+.modal,
+.modals {
+  position: absolute;
+  inset: 0;
+  height: 100vh;
+  background-color: rgb(0, 0, 0, 0.7);
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+.modal-content {
+  border-radius: 5px;
+  background-color: var(--dark);
+  color: white;
+  outline: 2px solid orange;
+  width: 60vw;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px;
+  background-color: var(--nav-links-color);
+  position: relative;
+}
+
+.modal-header span {
+  position: absolute;
+  inset: 0.5rem 1.3rem auto auto;
+  color: red;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-body > h4 {
+  text-align: center;
+  font-size: 18px;
+}
+
+.modal-body form {
+  margin-top: 1rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 40px;
+  row-gap: 20px;
+}
+
+.modal-body .input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-body > form input {
+  margin: 5px 0 0;
+  padding: 10px 10px;
+  border: 2px solid white;
+  background-color: var(--nav-links-color);
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: var(--nav-links-font);
+  letter-spacing: 1px;
+  color: white;
+  font-weight: 500;
+}
+
+.modal-body > form input::placeholder {
+  color: whitesmoke;
+  font-family: var(--nav-links-font);
+  font-size: 14px;
+}
+
+.modal-footer {
+  padding: 10px;
+  background-color: var(--nav-links-color);
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.modal-footer button {
+  flex-grow: 0.5;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 25px;
+  font-family: system-ui;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 1px;
+  color: white;
+  background-color: rgb(1, 170, 1);
 }
 
 .content-area {
@@ -29,6 +136,23 @@ body {
   font-size: 1.5rem;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
+  position: relative;
+}
+
+#search-patient,
+#search-doctor,
+#search-session,
+#search-medicine {
+  position: absolute;
+  right: 5px;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  min-width: 12.5vw;
+  outline: 2px solid var(--dark);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  text-transform: capitalize;
 }
 
 #more-info {
@@ -121,6 +245,17 @@ body {
 .all-patients h4 {
   padding: 15px 20px;
   font-size: 1.2rem;
+  position: relative;
+}
+
+.all-patients > h4 > p,
+.all-doctors > h4 > p {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.4rem;
+  color: var(--red);
+  font-size: 16px;
+  cursor: pointer;
 }
 
 .all-patients {
@@ -189,6 +324,7 @@ body {
   gap: 20px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .remove {

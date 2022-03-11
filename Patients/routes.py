@@ -156,15 +156,22 @@ def patient_symptoms(session_id):
   if current_user.account_type != "patient":
     abort(403)
   session = Session.query.get(session_id)
+  symptoms = Symptoms.query.filter_by(session=session.id).all()
+  symptom_names = []
+  for symptom in symptoms:
+    symptom_names.append(symptom.name)
   req = request.get_json()
   print(req)
-  if req["name"]:
+  print(symptom_names)
+  if req["name"] and req["name"] not in symptom_names:
     new_symptom = Symptoms(
       name = req["name"],
       session = session.id
     )
     db.session.add(new_symptom)
     db.session.commit()
+  else:
+    flash(f"could not add symptom", category="danger")
   res = make_response(jsonify(req), 200)
   
   return res

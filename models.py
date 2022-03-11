@@ -50,7 +50,7 @@ class Patients(db.Model, UserMixin):
   allergies = db.relationship("Allergies", backref="allergies", lazy=True)
   blood_pressure = db.Column(db.Integer(), nullable=True)
   blood_type = db.Column(db.String(length=15), nullable=True)
-  date = db.Column(db.DateTime())
+  date = db.Column(db.DateTime(), nullable=False)
   password = db.Column(db.String(), nullable=False)
   account_type = db.Column(db.String(length=7), nullable=False)
 

@@ -10,6 +10,10 @@ main {
   font-family: "Varela Round", sans-serif;
 }
 
+main img {
+  max-height: 45rem;
+}
+
 main > h1 {
   color: white;
   font-size: 3.5rem;
@@ -18,7 +22,7 @@ main > h1 {
 }
 
 main > p {
-  color: whitesmoke;
-  font-size: 1.2rem;
+  color: rgb(221, 221, 221);
+  font-size: 1rem;
   font-family: var(--nav-links-font);
 }
