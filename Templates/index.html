@@ -13,11 +13,48 @@ HMS | Home
 <div class="container">
   <div class="text">
     <h4>Providing you with the best care</h4>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ex ad maxime quod ipsa commodi reprehenderit
-      culpa similique dolore corporis distinctio aliquid sunt adipisci hic nulla nisi necessitatibus beatae reiciendis
-      vero eligendi suscipit, nam non quisquam odit. Nulla culpa, provident dicta</p>
-    <button>book an appointment</button>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas ducimus nam provident nulla aliquam! Atque nam
+      esse inventore? At quod asperiores rem pariatur dolor aut libero culpa debitis eos unde?</p>
   </div>
   <div class="image"></div>
 </div>
+<div class="container-2">
+  <h4>Who is this system for</h4>
+  <div class="patients">
+    <span class="number">01</span>
+    <p class="name">Patients</p>
+    <div class="min-container">
+      <div class="slide first">
+        <img src="{{ url_for('static', filename='Images/3912425.png') }}" alt="appointment">
+        <div class="info">
+          <h4>Quickly create instant appointments</h4>
+          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Molestias libero culpa error, accusantium
+            adipisci dolorem maxime temporibus rerum accusamus quae tenetur aliquid incidunt natus quibusdam obcaecati
+            architecto ipsum perferendis ex.</p>
+        </div>
+      </div>
+      <div class="slide second">
+        <img src="{{ url_for('static', filename='Images/TaeAugust07.png') }}" alt="appointment">
+        <div class="info">
+          <h4>Manage sessions with doctors</h4>
+          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Molestias libero culpa error, accusantium
+            adipisci dolorem maxime temporibus rerum accusamus quae tenetur aliquid incidunt natus quibusdam obcaecati
+            architecto ipsum perferendis ex.</p>
+        </div>
+      </div>
+      <div class="slide third">
+        <img src="{{ url_for('static', filename='Images/3708243.png') }}" alt="appointment">
+        <div class="info">
+          <h4>Easily make online payments</h4>
+          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Molestias libero culpa error, accusantium
+            adipisci dolorem maxime temporibus rerum accusamus quae tenetur aliquid incidunt natus quibusdam obcaecati
+            architecto ipsum perferendis ex.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="doctors"></div>
+</div>
+
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}

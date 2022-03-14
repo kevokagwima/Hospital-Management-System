@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField, SelectField, TextAreaField
 from wtforms.validators import Length, EqualTo, Email, DataRequired, ValidationError
 from models import Patients
+import re
 
 class patient_registration(FlaskForm):
   first_name = StringField(label="First Name", validators=[DataRequired()])
@@ -20,9 +21,9 @@ class patient_registration(FlaskForm):
     if phone_number:
       raise ValidationError("Phone Number already exists, Please try another one")
 
-  def validate_phone_number_validity(self, phone_number_to_validate):
-    if str(phone_number_to_validate.data)[0] != 0:
-      raise ValidationError("Invalid phone number. Phone number must begin with 0 followed by 7 or 1")
+  # def validate_phone_number_validity(self, phone_number_to_validate):
+  #   if str(phone_number_to_validate)[0] != 0 and (str(phone_number_to_validate)[1] != 7 or str(phone_number_to_validate)[1] != 1):
+  #     raise ValidationError("Invalid phone number. Phone number must begin with 0 followed by 7 or 1")
 
   def validate_email_address(self, email_to_validate):
     email = Patients.query.filter_by(email=email_to_validate.data).first()

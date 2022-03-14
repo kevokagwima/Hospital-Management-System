@@ -45,7 +45,7 @@ HMS | Doctor Portal
         {% endif %}
         <div class="session-info">
           <i class="fas fa-arrow-right"></i>
-          <p>This shows if there's any active appointments, if there is, the appointment details will be specified and
+          <p>This shows if there's any active appointments. If there is, the appointment details will be specified and
             if
             there isn't,
             no details will be shown</p>
@@ -155,7 +155,7 @@ HMS | Doctor Portal
         <div class="accordion">
           {{ appointment.name }}
           {% for patient in patients if patient.id == session.patient %}
-          - <span id="name">{{ patient.first_name }} {{ patient.second_name }}</span>
+          - <span id="name">Pt. {{ patient.first_name }} {{ patient.second_name }}</span>
           {% endfor %}
           <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p")}}
           </span>

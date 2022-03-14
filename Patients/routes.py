@@ -135,18 +135,12 @@ def patient_session(session_id):
   if current_user.account_type != "patient":
     abort(403)
   session = Session.query.get(session_id)
-  if session:
+  if session and session.patient == current_user.id:
     appointment = Appointment.query.filter_by(id=session.appointment).first()
     doctor = Doctors.query.filter_by(id=session.doctor).first()
   else:
-    abort(404)
+    abort(403)
   medicines = Medicine.query.all()
-  symptoms = request.form
-  if symptoms:
-    session.symptoms = symptoms
-    db.session.commit()
-    flash(f"Your symptoms have been saved and sent to your doctor", category="success")
-    return redirect(url_for('patients.patient_session', session_id=session.id))
 
   return render_template("patient_session.html", session=session, appointment=appointment, doctor=doctor, medicines=medicines)
 
@@ -160,21 +154,19 @@ def patient_symptoms(session_id):
   symptom_names = []
   for symptom in symptoms:
     symptom_names.append(symptom.name)
-  req = request.get_json()
-  print(req)
-  print(symptom_names)
-  if req["name"] and req["name"] not in symptom_names:
+  symptom = request.form.get("symptom")
+  if symptom not in symptom_names:
     new_symptom = Symptoms(
-      name = req["name"],
+      name = symptom,
       session = session.id
     )
     db.session.add(new_symptom)
     db.session.commit()
+    flash(f"Symptom added successfully", category="success")
   else:
-    flash(f"could not add symptom", category="danger")
-  res = make_response(jsonify(req), 200)
-  
-  return res
+    flash(f"Could not add symptom, symptom already added", category="danger")  
+
+  return redirect(url_for('patients.patient_session', session_id=session.id))
 
 @patients.route("/add-allergies", methods=["POST", "GET"])
 @login_required

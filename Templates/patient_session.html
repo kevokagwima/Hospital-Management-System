@@ -65,10 +65,10 @@ HMS | {{ appointment.name }}
         </ul>
         {% endif %}
         {% if session.diagnosis == None %}
-        <form method="POST" id="symptoms">
+        <form action="{{ url_for('patients.patient_symptoms', session_id=session.id) }}" method="POST" id="symptoms">
           <label for="symptoms">Enter Symptoms</label>
-          <input type="text" id="symptom" placeholder="Enter your symptoms">
-          <button type="submit" onclick="send_data();">UPLOAD</button>
+          <input type="text" required name="symptom" id="symptom" placeholder="Enter your symptoms">
+          <button type="submit">UPLOAD</button>
         </form>
         {% endif %}
       </div>

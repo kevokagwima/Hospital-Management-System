@@ -227,7 +227,7 @@ HMS | Doctor Session
         {% else %}
         <form action="{{ url_for('doctors.diagnosis', session_id=session.id) }}" method="post">
           <label for="diagnosis">Specify the diagnosis</label>
-          <textarea required name="diagnosis" placeholder="Give the diagnosis"></textarea>
+          <input type="text" name="diagnosis" placeholder="Give a diagnosis">
           <button type="submit">Submit</button>
         </form>
         {% endif %}

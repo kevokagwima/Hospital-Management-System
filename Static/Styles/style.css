@@ -2,11 +2,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Martel:wght@200&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Varela+Round&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Days+One&display=swap");
 
 :root {
   --font: "Exo", sans-serif;
-  --font-1: "PT Sans", sans-serif;
+  --font-1: "Days One", sans-serif;
   --product-desc-font: "Martel", serif;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 .container {
@@ -25,7 +30,7 @@
 .text h4 {
   text-transform: capitalize;
   font-size: 3.2rem;
-  font-family: var(--font);
+  font-family: var(--font-1);
   max-width: 35rem;
   line-height: 1.2;
   color: white;
@@ -36,26 +41,13 @@
 .text p {
   max-width: 30rem;
   margin-top: 1rem;
-  font-family: var(--font-1);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
   font-size: 1rem;
   font-weight: lighter;
-  line-height: 1.4;
+  line-height: 1.5;
   color: whitesmoke;
   letter-spacing: 1px;
-}
-
-.text button {
-  margin-top: 2rem;
-  padding: 1em 2em;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: white;
-  font-family: system-ui;
-  background-color: red;
-  font-size: 1rem;
-  text-transform: uppercase;
-  transition: 0.3s ease-in-out;
 }
 
 .image {
@@ -67,4 +59,117 @@
   background-image: url(../Images/doctors.jpg);
   background-size: cover;
   box-shadow: 0px 0px 10px -5px black;
+}
+
+.container-2 {
+  min-height: 60vh;
+  background-color: white;
+  padding: 1rem;
+  color: var(--nav-links-color);
+  overflow: hidden;
+}
+
+.container-2 > h4 {
+  font-size: 3.5rem;
+  text-align: center;
+  font-family: var(--font-1);
+  margin-top: 12rem;
+}
+
+.patients {
+  min-height: 70vh;
+  background-color: whitesmoke;
+  margin-top: 4rem;
+  border-radius: 10px;
+  position: relative;
+  transform: translateY(8rem);
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.show-patients {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.number {
+  position: absolute;
+  top: -10rem;
+  right: 0;
+  color: var(--red);
+  font-size: 12rem;
+  font-family: var(--product-desc-font);
+  transform: translateX(10rem);
+  opacity: 0;
+  transition: 250ms ease;
+}
+
+.show-number {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: 0.8s;
+}
+
+.name {
+  font-size: 2rem;
+  font-family: var(--font-1);
+  color: var(--red);
+  padding: 2rem 2rem;
+}
+
+.min-container {
+  min-height: 10vh;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.min-container div > img {
+  max-height: 30rem;
+  aspect-ratio: 1.1/1;
+}
+
+.first,
+.second,
+.third {
+  padding: 0 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10rem;
+  transform: translateX(-20rem);
+  opacity: 0;
+  transition: 0.3s ease;
+}
+
+.show-slide {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* .second {
+  flex-direction: row-reverse;
+} */
+
+.info {
+  max-width: 40vw;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info h4 {
+  font-size: 3.2rem;
+  font-family: var(--font-1);
+  font-weight: normal;
+  max-width: 38vw;
+}
+
+.info p {
+  font-size: 1rem;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  max-width: 31rem;
+  line-height: 1.4;
 }

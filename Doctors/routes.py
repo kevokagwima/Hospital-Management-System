@@ -1,3 +1,6 @@
+from email import message
+from tkinter import messagebox, Tk
+from turtle import title
 from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from Doctors.form import *
 from models import *
@@ -76,11 +79,11 @@ def doctor_session(session_id):
   if current_user.account_type != "doctor":
     abort(403)
   session = Session.query.get(session_id)
-  if session:
+  if session and session.doctor == current_user.id:
     appointment = Appointment.query.filter_by(id=session.appointment).first()
     patient = Patients.query.filter_by(id=session.patient).first()
   else:
-    abort(404)
+    abort(403)
   medicines = Medicine.query.all()
   appointments = Appointment.query.all()
   doctors = Doctors.query.all()
@@ -93,7 +96,7 @@ def diagnosis(session_id):
   if current_user.account_type != "doctor":
     abort(403)
   session = Session.query.get(session_id)
-  diagnosis = request.form.get("diagnosis")
+  diagnosis = request.form.get("diagnosis").capitalize()
   session.diagnosis = diagnosis
   db.session.commit()
   flash(f"Diagnosis updated successfully, patient will be alerted", category="success")
