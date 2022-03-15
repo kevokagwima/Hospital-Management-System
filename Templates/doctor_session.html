@@ -10,8 +10,10 @@ HMS | Doctor Session
 {% endblock %}
 
 {% block content %}
+{% if session.status == "Active" %}
 <a href="{{ url_for('doctors.doctor_portal') }}">Dashboard</a>
 <p id="defaultOpen" onclick="openView(event, 'dashboard')">Session</p>
+{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -55,8 +57,12 @@ HMS | Doctor Session
 <div class="content-area">
   <div id="dashboard" class="tabcontent">
     <h4 id="dash">
+      {% if session.status == "Active" %}
       Active Session
-      {% if patient.session %}
+      {% else %}
+      Closed Session
+      {% endif %}
+      {% if patient.session and session.status == 'Active' %}
       <button onclick="openView(event, 'previous')" class="dash-btn">View Previous Sessions</button>
       {% endif %}
     </h4>
@@ -73,6 +79,16 @@ HMS | Doctor Session
             <div class="appointment-details">
               <p>Appointment ID - <span>{{ appointment.appointment_id }}</span></p>
               <p>Appointment Name - <span>{{ appointment.name }}</span></p>
+              {% if current_user.id == appointment.doctor %}
+              {% else %}
+              <p>Doctor Assigned -
+                <span>
+                  {% for doctor in doctors if doctor.id == appointment.doctor %}
+                  Dr. {{ doctor.first_name }} {{ doctor.second_name }}
+                  {% endfor %}
+                </span>
+              </p>
+              {% endif %}
               <p>Date Created - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
               <p>Time started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
               {% if session.status == "Closed" %}
@@ -297,6 +313,7 @@ HMS | Doctor Session
       </div>
     </div>
   </div>
+  {% if session.status == "Active" %}
   <div id="previous" class="tabcontent">
     <h4 id="dash">{{ patient.first_name }} {{ patient.second_name }}'s Previous Sessions</h4>
     <p id="more-info">This tab shows all the previous session the patient has had prior to the current session</p>
@@ -325,6 +342,7 @@ HMS | Doctor Session
     <h4 class="else">No previous sessions</h4>
     {% endif %}
   </div>
+  {% endif %}
 </div>
 
 <script src="{{ url_for('static', filename='js/doctor_session.js') }}"></script>

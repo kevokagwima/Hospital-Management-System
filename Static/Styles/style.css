@@ -63,7 +63,7 @@ body {
 
 .container-2 {
   min-height: 60vh;
-  background-color: white;
+  background-color: whitesmoke;
   padding: 1rem;
   color: var(--nav-links-color);
   overflow: hidden;
@@ -73,12 +73,13 @@ body {
   font-size: 3.5rem;
   text-align: center;
   font-family: var(--font-1);
-  margin-top: 12rem;
+  margin-top: 8rem;
 }
 
-.patients {
+.patients,
+.doctors {
   min-height: 70vh;
-  background-color: whitesmoke;
+  background-color: white;
   margin-top: 4rem;
   border-radius: 10px;
   position: relative;
@@ -137,9 +138,9 @@ body {
   justify-content: center;
   align-items: center;
   gap: 10rem;
-  transform: translateX(-20rem);
+  transform: translateX(-40rem);
   opacity: 0;
-  transition: 0.3s ease;
+  transition: 0.5s ease;
 }
 
 .show-slide {
@@ -147,9 +148,9 @@ body {
   opacity: 1;
 }
 
-/* .second {
+.second {
   flex-direction: row-reverse;
-} */
+}
 
 .info {
   max-width: 40vw;
@@ -172,4 +173,8 @@ body {
   font-family: "Varela Round", sans-serif;
   max-width: 31rem;
   line-height: 1.4;
+}
+
+.doctors {
+  margin-top: 10rem;
 }

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='Styles/access.css') }}">
+{% endblock %}
+
+{% block title %}
+HMS | Access Required
+{% endblock %}
+
+{% block body %}
+<div class="container">
+  <h4>You are trying to access a session you were not involved in. <br> To view contents of the session you're
+    required <br>
+    to
+    enter the session ID</h4>
+  <form action="{{ url_for('doctors.verify_access', session_id=session.id) }}" method="post">
+    <input required type="number" name="numbers" placeholder="Enter session ID" value="{{ session.session_id }}">
+    <button type="submit">Verify</button>
+  </form>
+</div>
+{% endblock %}

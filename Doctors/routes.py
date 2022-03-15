@@ -1,6 +1,3 @@
-from email import message
-from tkinter import messagebox, Tk
-from turtle import title
 from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from Doctors.form import *
 from models import *
@@ -83,7 +80,45 @@ def doctor_session(session_id):
     appointment = Appointment.query.filter_by(id=session.appointment).first()
     patient = Patients.query.filter_by(id=session.patient).first()
   else:
+    return redirect(url_for('doctors.session_access', session_id=session.id))
+  medicines = Medicine.query.all()
+  appointments = Appointment.query.all()
+  doctors = Doctors.query.all()
+
+  return render_template("doctor_session.html", session=session, appointment=appointment, patient=patient, medicines=medicines, appointments=appointments, doctors=doctors)
+
+@doctors.route("/special-session-access/<int:session_id>", methods=["POST", "GET"])
+@login_required
+def session_access(session_id):
+  if current_user.account_type != "doctor":
     abort(403)
+  session = Session.query.get(session_id)
+
+  return render_template("access.html", session=session)
+
+@doctors.route("/verifying-session-id/<int:session_id>", methods=["POST", "GET"])
+@login_required
+def verify_access(session_id):
+  if current_user.account_type != "doctor":
+    abort(403)
+  session = Session.query.get(session_id)
+  form_session = request.form.get("numbers")
+  if int(form_session) == session.session_id:
+    flash(f"Session ID verified successfully", category="success")
+    return redirect(url_for('doctors.doctor_special_session', session_id=session.id))
+  else:
+    flash(f"The session ID entered is invalid", category="danger")
+    return redirect(url_for('doctors.session_access', session_id=session.id))
+
+@doctors.route("/special-doctor-patient-session/<int:session_id>")
+@login_required
+def doctor_special_session(session_id):
+  if current_user.account_type != "doctor":
+    abort(403)
+  session = Session.query.get(session_id)
+  if session:
+    appointment = Appointment.query.filter_by(id=session.appointment).first()
+    patient = Patients.query.filter_by(id=session.patient).first()
   medicines = Medicine.query.all()
   appointments = Appointment.query.all()
   doctors = Doctors.query.all()
