@@ -9,6 +9,12 @@
 HMS | Home
 {% endblock %}
 
+{% block content %}
+<a href="#customers">Our Customers</a>
+<a href="#why-us">Why Choose Us</a>
+<a href="#contact_us">Contact Us</a>
+{% endblock %}
+
 {% block body %}
 <div class="container">
   <div class="text">
@@ -18,7 +24,7 @@ HMS | Home
   </div>
   <div class="image"></div>
 </div>
-<div class="container-2">
+<div id="customers" class="container-2">
   <h4>Who is this system for</h4>
   <div class="patients">
     <span class="number">01</span>
@@ -84,6 +90,68 @@ HMS | Home
             architecto ipsum perferendis ex.</p>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<div id="why-us" class="container-3">
+  <h4>Why choose us?</h4>
+  <div class="cards">
+    <div class="card">
+      <div class="card-img">
+        <img src="{{ url_for('static', filename='Images/5401265.png') }}" alt="Excellent Service">
+      </div>
+      <div class="card-info">
+        <h4>Reliable Service</h4>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, quidem cupiditate aut voluptatem blanditiis
+          doloribus?</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">
+        <img src="{{ url_for('static', filename='Images/Data_security.png') }}" alt="Excellent Service">
+      </div>
+      <div class="card-info">
+        <h4>System Security</h4>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, quidem cupiditate aut voluptatem blanditiis
+          doloribus?</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img">
+        <img src="{{ url_for('static', filename='Images/5385893.png') }}" alt="Excellent Service">
+      </div>
+      <div class="card-info">
+        <h4>Professional Expertise</h4>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, quidem cupiditate aut voluptatem blanditiis
+          doloribus?</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="contact_us" class="container-4">
+  <h4>Reach out to us</h4>
+  <div class="divider">
+    <div class="img"></div>
+    <div class="form">
+      <form action="#">
+        <div class="one">
+          <label>First Name</label>
+          <input required type="text" name="" placeholder="Enter First Name">
+        </div>
+        <div class="one">
+          <label>Last Name</label>
+          <input required type="text" name="" placeholder="Enter Last Name">
+        </div>
+        <div class="one">
+          <label>Phone Number</label>
+          <input required type="number" name="" placeholder="Enter Phone Number">
+        </div>
+        <div class="one">
+          <label>Email Address</label>
+          <input required type="email" name="" placeholder="Enter Email Address">
+        </div>
+        <button type="submit">Send</button>
+      </form>
     </div>
   </div>
 </div>

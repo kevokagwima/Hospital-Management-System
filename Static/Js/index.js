@@ -2,6 +2,7 @@ const patients = document.querySelector(".patients");
 const doctors = document.querySelector(".doctors");
 const number = document.querySelectorAll(".number");
 const slide = document.querySelectorAll(".slide");
+const card = document.querySelectorAll(".card");
 
 const observer = new IntersectionObserver(
   (entries) => {
@@ -35,9 +36,24 @@ const slideobserver = new IntersectionObserver(
     });
   },
   {
-    threshold: 0.4,
+    threshold: 0.3,
   }
 );
 slide.forEach((p) => {
   slideobserver.observe(p);
+});
+
+const slideupobserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle("show-card", entry.isIntersecting);
+      if (entry.isIntersecting) slideupobserver.unobserve(entry.target);
+    });
+  },
+  {
+    threshold: 0.4,
+  }
+);
+card.forEach((cards) => {
+  slideupobserver.observe(cards);
 });

@@ -3,6 +3,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Varela+Round&display=swap");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Days+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500&display=swap");
 
 :root {
   --font: "Exo", sans-serif;
@@ -10,8 +11,17 @@
   --product-desc-font: "Martel", serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   overflow-x: hidden;
+}
+
+.user-profile > a {
+  position: absolute;
+  right: 15rem;
 }
 
 .container {
@@ -62,14 +72,15 @@ body {
 }
 
 .container-2 {
-  min-height: 60vh;
   background-color: whitesmoke;
   padding: 1rem;
   color: var(--nav-links-color);
   overflow: hidden;
 }
 
-.container-2 > h4 {
+.container-2 > h4,
+.container-3 > h4,
+.container-4 > h4 {
   font-size: 3.5rem;
   text-align: center;
   font-family: var(--font-1);
@@ -162,8 +173,7 @@ body {
 
 .info h4 {
   font-size: 3.2rem;
-  font-family: var(--font-1);
-  font-weight: normal;
+  font-family: "Montserrat", sans-serif;
   max-width: 38vw;
 }
 
@@ -177,4 +187,158 @@ body {
 
 .doctors {
   margin-top: 10rem;
+}
+
+.container-3 {
+  padding: 1rem;
+  background-color: white;
+  min-height: 60vh;
+  color: var(--nav-links-color);
+}
+
+.container-3 > h4 {
+  margin-top: 4rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  padding: 3rem 1rem;
+}
+
+.card {
+  width: max-content;
+  max-width: 25vw;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: white;
+  opacity: 0;
+  transition: 0.5s ease;
+  outline: 2px solid var(--nav-links-color);
+  box-shadow: 0px 0px 10px -8px black;
+}
+
+.card:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.card:last-child {
+  transition-delay: 0.4s;
+}
+
+.show-card {
+  opacity: 1;
+}
+
+.card-img {
+  max-width: 25rem;
+  aspect-ratio: 1/1;
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+}
+
+.card-info {
+  padding: 1rem;
+  color: var(--nav-links-color);
+}
+
+.card-info h4 {
+  font-size: 1.5rem;
+  font-family: "Montserrat", sans-serif;
+}
+
+.card-info p {
+  margin-top: 1rem;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: normal;
+}
+
+.container-4 {
+  min-height: 50vh;
+  color: white;
+  padding: 2rem 2rem 0;
+  background-color: var(--nav-links-color);
+}
+
+.container-4 > h4 {
+  margin-top: 4rem;
+}
+
+.divider {
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6rem;
+}
+
+.img {
+  border-radius: 1% 40% 20% 60%;
+  min-height: 80vh;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  background-image: url(../Images/5124556.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.form {
+  background-color: var(--dark);
+  padding: 3rem;
+  border-radius: 10px;
+}
+
+form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.one {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form input {
+  padding: 15px;
+  min-width: 20vw;
+  font-family: system-ui;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+}
+
+.form label {
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  color: white;
+}
+
+.one:nth-child(4),
+.one:nth-child(3) {
+  grid-column: 1/3;
+}
+
+.form button {
+  grid-column: 1/3;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: green;
+  color: white;
+  font-family: system-ui;
+  font-size: 18px;
+  cursor: pointer;
 }
