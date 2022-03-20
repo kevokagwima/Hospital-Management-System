@@ -60,7 +60,13 @@ HMS | {{ appointment.name }}
         {% if session.symptoms %}
         <ul class="else">
           {% for symptom in session.symptoms %}
-          <li>{{ symptom.name }}</li>
+          <li>
+            {{ symptom.name }}
+            {% if session.diagnosis == None %}
+            <a href="{{ url_for('patients.remove_symptoms', session_id=session.id, symptom_id=symptom.id) }}"
+              id="close-symtom">&times</a>
+            {% endif %}
+          </li>
           {% endfor %}
         </ul>
         {% endif %}
@@ -68,7 +74,9 @@ HMS | {{ appointment.name }}
         <form action="{{ url_for('patients.patient_symptoms', session_id=session.id) }}" method="POST" id="symptoms">
           <label for="symptoms">Enter Symptoms</label>
           <input type="text" required name="symptom" id="symptom" placeholder="Enter your symptoms">
-          <button type="submit">UPLOAD</button>
+          <button class="btn" type="submit">
+            <span class="button--text">Upload</span>
+          </button>
         </form>
         {% endif %}
       </div>
@@ -88,10 +96,10 @@ HMS | {{ appointment.name }}
         <p>{{ session.notes }}</p>
       </div>
       {% endif %}
-      {% if session.prescription %}
       <div class="prescription">
         <h4>Prescriptions Given</h4>
         <hr>
+        {% if session.prescription %}
         <div class="prescription-info">
           {% set prescriptions = session.prescription %}
           {% for prescription in prescriptions %}
@@ -130,8 +138,10 @@ HMS | {{ appointment.name }}
             <p>Proceed to the payment tab in the dashboard to pay for your medication</p>
           </div>
         </div>
+        {% else %}
+        <h4 class="else">No prescription given yet</h4>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
   </div>
 </div>
@@ -139,7 +149,7 @@ HMS | {{ appointment.name }}
 <script src="{{ url_for('static', filename='js/patient_session.js') }}"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
   crossorigin="anonymous"></script>
-<script>
+<!-- <script>
   function send_data(e) {
     var symptom = document.getElementById("symptom")
     var entry = {
@@ -165,5 +175,5 @@ HMS | {{ appointment.name }}
         })
       })
   }
-</script>
+</script> -->
 {% endblock %}

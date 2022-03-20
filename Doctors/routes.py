@@ -1,17 +1,23 @@
 from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
 from Doctors.form import *
 from models import *
+from twilio.rest import Client
 from flask_login import login_user, login_required,logout_user,current_user
 import random, datetime
+import os
 
 doctors = Blueprint('doctors', __name__)
+
+account_sid = os.environ['Twilio_account_sid']
+auth_token = os.environ['Twilio_auth_key']
+clients = Client(account_sid, auth_token)
 
 @doctors.route("/doctor-signup", methods=["POST", "GET"])
 def doctor_register():
   form = doctor_registration()
   try:
     if form.validate_on_submit():
-      user = Doctors (
+      doctor = Doctors (
         doctor_id = random.randint(100000,999999),
         first_name = form.first_name.data,
         second_name = form.second_name.data,
@@ -25,9 +31,17 @@ def doctor_register():
         passwords = form.password.data,
         account_type = "doctor"
       )
-      db.session.add(user)
+      db.session.add(doctor)
       db.session.commit()
       flash(f"Account successfully created", category="success")
+      # try:
+      #   clients.messages.create(
+      #     to = '+254796897011',
+      #     from_ = '+16203191736',
+      #     body = f'Congratulations! {doctor.first_name} {doctor.second_name} you have successfully created a doctor account. Your doctor ID is {doctor.doctor_id}. Login to your portal with your email and password.'
+      #   )
+      # except:
+      #   flash(f"Failed to send sms", category="danger")
       return redirect(url_for('doctors.doctor_signin'))
 
     if form.errors != {}:
@@ -166,9 +180,22 @@ def notes(session_id):
   if current_user.account_type != "doctor":
     abort(403)
   session = Session.query.get(session_id)
+  prescriptions = Prescription.query.filter_by(session=session.id).all()
+  presc = ''
+  for prescription in prescriptions:
+    medicine = Medicine.query.filter_by(id=prescription.medicine).first()
+    presc += medicine.name + f'({medicine.type})' + " " + prescription.dose + '*' + str(prescription.frequency) + '\n'
   session.notes = request.form.get("notes")
   db.session.commit()
   flash(f"Additional notes sent successfully", category="success")
+  # try:
+  #   clients.messages.create(
+  #     to = '+254796897011',
+  #     from_ = '+16203191736',
+  #     body = f"Your session with Dr. {current_user.first_name} {current_user.second_name} is coming to an end. Details for this session include:\nDiagnosis - {session.diagnosis}\nPrescriptions:\n{presc}\nAdditional notes - {session.notes}"
+  #   )
+  # except:
+  #   flash(f"Failed to send sms", category="danger")
 
   return redirect(url_for('doctors.doctor_session', session_id=session.id))
 
@@ -204,6 +231,14 @@ def patient_vitals(session_id):
   patient.height = request.form.get("height")
   db.session.commit()
   flash(f"Patient's vitals updated successfully", category="success")
+  # try:
+  #   clients.messages.create(
+  #     to = '+254796897011',
+  #     from_ = '+16203191736',
+  #     body = f"Dear patient, your vitals have been successfully updated. Login into your dashboard to view your latest medical data."
+  #   )
+  # except:
+  #   flash(f"Failed to send sms", category="danger")
 
   return redirect(url_for('doctors.doctor_session', session_id=session.id))
 
@@ -231,6 +266,14 @@ def blood_test(session_id):
   patient = Patients.query.filter_by(id=session.patient).first()
   patient.blood_type = result
   db.session.commit()
+  # try:
+  #   clients.messages.create(
+  #     to = '+254796897011',
+  #     from_ = '+16203191736',
+  #     body = f"Dear patient, your blood test has been successfully tested. Result from the test indicate your blood group is {new_test.result}.Login into your portal to view your latest medical data."
+  #   )
+  # except:
+  #   flash(f"Failed to send sms", category="danger")
   
   return render_template("test.html", new_test=new_test), {"Refresh": f"2; url=http://127.0.0.1:5000/doctor-patient-session/{session.id}"}
 

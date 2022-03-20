@@ -54,3 +54,9 @@ btn.addEventListener("click", () => {
 close_modal.addEventListener("click", () => {
   modal.style.display = "none";
 });
+
+const btns = document.querySelector(".btn");
+
+btns.addEventListener("click", () => {
+  btns.classList.toggle("btn--loading");
+});

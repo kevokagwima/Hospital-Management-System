@@ -117,6 +117,7 @@ body {
   letter-spacing: 1px;
   color: white;
   background-color: rgb(1, 170, 1);
+  position: relative;
 }
 
 .content-area {
@@ -689,6 +690,19 @@ select {
 .alergies-info li {
   padding: 5px;
   color: whitesmoke;
+  position: relative;
+}
+
+#allergy {
+  padding: 2px 5px;
+  font-size: 12px;
+  background-color: orange;
+  border-radius: 30px;
+  color: white;
+  letter-spacing: 1px;
+  position: absolute;
+  top: 7px;
+  margin-left: 10px;
 }
 
 .recent-visit {

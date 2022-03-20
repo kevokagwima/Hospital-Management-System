@@ -11,8 +11,8 @@ HMS | Home
 
 {% block content %}
 <a href="#customers">Our Customers</a>
-<a href="#why-us">Why Choose Us</a>
-<a href="#contact_us">Contact Us</a>
+<a href="#why-choose-us">Why choose Us</a>
+<a href="#contact-us">Contact Us</a>
 {% endblock %}
 
 {% block body %}
@@ -93,7 +93,7 @@ HMS | Home
     </div>
   </div>
 </div>
-<div id="why-us" class="container-3">
+<div id="why-choose-us" class="container-3">
   <h4>Why choose us?</h4>
   <div class="cards">
     <div class="card">
@@ -128,32 +128,19 @@ HMS | Home
     </div>
   </div>
 </div>
-<div id="contact_us" class="container-4">
-  <h4>Reach out to us</h4>
-  <div class="divider">
-    <div class="img"></div>
-    <div class="form">
-      <form action="#">
-        <div class="one">
-          <label>First Name</label>
-          <input required type="text" name="" placeholder="Enter First Name">
-        </div>
-        <div class="one">
-          <label>Last Name</label>
-          <input required type="text" name="" placeholder="Enter Last Name">
-        </div>
-        <div class="one">
-          <label>Phone Number</label>
-          <input required type="number" name="" placeholder="Enter Phone Number">
-        </div>
-        <div class="one">
-          <label>Email Address</label>
-          <input required type="email" name="" placeholder="Enter Email Address">
-        </div>
-        <button type="submit">Send</button>
-      </form>
-    </div>
+<div id="contact-us" class="container-4">
+  <div class="form">
+    <h4>Fill the form to <br> get in touch</h4>
+    <form action="#">
+      <input type="text" name="fname" required placeholder="First Name">
+      <input type="text" name="fname" required placeholder="Last Name">
+      <input id="email" type="email" name="fname" required placeholder="Email Address">
+      <textarea required id="email" name="message" placeholder="Message"></textarea>
+      <button type="submit">Send</button>
+    </form>
   </div>
+  <div class="contact-info"></div>
+  <img id="img" src="{{ url_for('static', filename='images/wave.svg') }}" alt="">
 </div>
 
 <script src="{{ url_for('static', filename='js/index.js') }}"></script>

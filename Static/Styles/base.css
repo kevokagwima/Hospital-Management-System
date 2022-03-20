@@ -12,6 +12,8 @@
   --nav-links-font: "Maven Pro", sans-serif;
   --red: #ec1848;
   --dark: rgb(6, 63, 128);
+  --dark-blue: rgb(1, 1, 29);
+  --other-dark-blue: rgb(0, 20, 49);
 }
 
 ::-webkit-scrollbar {

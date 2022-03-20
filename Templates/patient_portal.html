@@ -37,7 +37,9 @@ HMS | Patient Portal
         </div>
     </div>
     <div class="modal-footer">
-      <button>Add</button>
+      <button type="submit" class="btn">
+        <span class="button--text">ADD</span>
+      </button>
       </form>
     </div>
   </div>
@@ -242,7 +244,7 @@ HMS | Patient Portal
           <ul>
             {% if current_user.allergies %}
             {% for allergy in current_user.allergies %}
-            <li>{{ allergy.name }}</li>
+            <li>{{ allergy.name }} <span id="allergy">{{ allergy.severe }}</span></li>
             {% endfor %}
             {% else %}
             <h4 class="else">No allergies added</h4>

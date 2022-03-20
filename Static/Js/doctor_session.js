@@ -54,3 +54,9 @@ function openView(evt, cityName) {
 }
 
 document.getElementById("defaultOpen").click();
+
+const btns = document.querySelector(".btns");
+
+btns.addEventListener("click", () => {
+  btns.classList.toggle("btn--loading");
+});

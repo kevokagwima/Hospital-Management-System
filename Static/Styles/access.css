@@ -1,3 +1,12 @@
+nav {
+  background-color: var(--nav-links-color);
+}
+
+.logo h4,
+.user-profile p {
+  color: white;
+}
+
 .user-profile > a {
   display: none;
 }
@@ -9,6 +18,7 @@
   gap: 3rem;
   align-items: center;
   padding: 8rem 1rem 1rem;
+  background-color: whitesmoke;
 }
 
 .container h4 {
@@ -17,7 +27,7 @@
   text-align: center;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
-  background-color: whitesmoke;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0px 0px 10px -7px black;
 }

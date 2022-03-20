@@ -10,7 +10,7 @@ HMS | Doctor Session
 {% endblock %}
 
 {% block content %}
-{% if session.status == "Active" %}
+{% if session.status == "Active" or session.doctor == current_user.id %}
 <a href="{{ url_for('doctors.doctor_portal') }}">Dashboard</a>
 <p id="defaultOpen" onclick="openView(event, 'dashboard')">Session</p>
 {% endif %}
@@ -160,7 +160,7 @@ HMS | Doctor Session
               {% if patient.allergies %}
               <ul>
                 {% for allergy in patient.allergies %}
-                <li>{{ allergy.name }}</li>
+                <li>{{ allergy.name }} <span id="allergy">{{ allergy.severe }}</span></li>
                 {% endfor %}
               </ul>
               {% else %}
@@ -243,8 +243,10 @@ HMS | Doctor Session
         {% else %}
         <form action="{{ url_for('doctors.diagnosis', session_id=session.id) }}" method="post">
           <label for="diagnosis">Specify the diagnosis</label>
-          <input type="text" name="diagnosis" placeholder="Give a diagnosis">
-          <button type="submit">Submit</button>
+          <input required type="text" name="diagnosis" placeholder="Give a diagnosis">
+          <button class="btns" type="submit">
+            <span class="button--text">Submit</span>
+          </button>
         </form>
         {% endif %}
       </div>
@@ -288,7 +290,7 @@ HMS | Doctor Session
             <label for="frequency">Enter Frequency</label>
             <input required type="text" name="frequency"
               placeholder="Enter frequency to be taken e.g. 3 - (3 times a day)">
-            <button type="submit">Prescribe</button>
+            <button class="btns" type="submit">Prescribe</button>
           </form>
           {% else %}
           <p class="else">No drugs to prescribe at the moment</p>
@@ -307,7 +309,9 @@ HMS | Doctor Session
         <form action="{{ url_for('doctors.notes', session_id=session.id) }}" method="post">
           <label for="notes">Write notes to your patient</label>
           <textarea required name="notes" placeholder="Maximum of 200 characters is allowed"></textarea>
-          <button type="submit">Send</button>
+          <button class="btns" type="submit">
+            <span class="button--text">Send</span>
+          </button>
         </form>
         {% endif %}
       </div>
@@ -331,7 +335,7 @@ HMS | Doctor Session
             {% for doctor in doctors if doctor.id == session.doctor %}
             {{ doctor.first_name }} {{ doctor.second_name }} - Doctor in session
             {% endfor %}
-            <span>{{ appointment.date_closed.strftime("Closed on %d/%m/%Y at %I:%M %p") }}</span>
+            <span>{{ appointment.date_closed.strftime("Closed on %d %B %Y at %I:%M %p") }}</span>
           </h4>
         </div>
       </a>

@@ -21,7 +21,7 @@ body {
 
 .user-profile > a {
   position: absolute;
-  right: 15rem;
+  right: 13rem;
 }
 
 .container {
@@ -72,9 +72,8 @@ body {
 }
 
 .container-2 {
-  background-color: whitesmoke;
+  background-color: white;
   padding: 1rem;
-  color: var(--nav-links-color);
   overflow: hidden;
 }
 
@@ -85,12 +84,13 @@ body {
   text-align: center;
   font-family: var(--font-1);
   margin-top: 8rem;
+  color: black;
 }
 
 .patients,
 .doctors {
   min-height: 70vh;
-  background-color: white;
+  background-color: whitesmoke;
   margin-top: 4rem;
   border-radius: 10px;
   position: relative;
@@ -137,7 +137,7 @@ body {
 }
 
 .min-container div > img {
-  max-height: 30rem;
+  max-height: 25rem;
   aspect-ratio: 1.1/1;
 }
 
@@ -173,8 +173,9 @@ body {
 
 .info h4 {
   font-size: 3.2rem;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-1);
   max-width: 38vw;
+  font-weight: normal;
 }
 
 .info p {
@@ -186,7 +187,7 @@ body {
 }
 
 .doctors {
-  margin-top: 10rem;
+  margin-top: 8rem;
 }
 
 .container-3 {
@@ -215,11 +216,11 @@ body {
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  background-color: white;
+  background-color: whitesmoke;
   opacity: 0;
+  transform: translateY(10rem);
   transition: 0.5s ease;
-  outline: 2px solid var(--nav-links-color);
-  box-shadow: 0px 0px 10px -8px black;
+  box-shadow: 0px 0px 10px -7px black;
 }
 
 .card:nth-child(2) {
@@ -232,11 +233,12 @@ body {
 
 .show-card {
   opacity: 1;
+  transform: translateY(0);
 }
 
 .card-img {
   max-width: 25rem;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1/0.9;
 }
 
 .card-img img {
@@ -246,12 +248,13 @@ body {
 
 .card-info {
   padding: 1rem;
-  color: var(--nav-links-color);
+  color: black;
 }
 
 .card-info h4 {
   font-size: 1.5rem;
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-1);
+  font-weight: normal;
 }
 
 .card-info p {
@@ -264,81 +267,98 @@ body {
 }
 
 .container-4 {
-  min-height: 50vh;
+  min-height: 92.5vh;
+  max-height: 92.5vh;
   color: white;
-  padding: 2rem 2rem 0;
-  background-color: var(--nav-links-color);
-}
-
-.container-4 > h4 {
-  margin-top: 4rem;
-}
-
-.divider {
-  margin-top: 4rem;
+  padding: 2rem;
+  background-color: var(--dark-blue);
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 6rem;
-}
-
-.img {
-  border-radius: 1% 40% 20% 60%;
-  min-height: 80vh;
-  aspect-ratio: 1/1;
+  gap: 13rem;
+  position: relative;
   overflow: hidden;
-  background-image: url(../Images/5124556.png);
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
 }
 
 .form {
-  background-color: var(--dark);
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 10px;
+  height: max-content;
+  min-width: 40vw;
+}
+
+.form h4 {
+  font-family: var(--font-1);
+  font-size: 3.5rem;
 }
 
 form {
+  margin-top: 4rem;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(2, auto);
+  gap: 2rem 1rem;
 }
 
-.one {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.form input {
-  padding: 15px;
-  min-width: 20vw;
-  font-family: system-ui;
-  font-size: 18px;
-  border-radius: 5px;
+input,
+textarea {
+  width: 100%;
+  padding: 10px 0;
+  background-color: transparent;
   border: none;
+  color: white;
+  border-bottom: 2px solid whitesmoke;
+  font-size: 17px;
 }
 
-.form label {
+input:focus,
+textarea:focus {
+  border-bottom: 2px solid var(--red);
+  outline: none;
+}
+
+textarea {
+  padding: 0;
+  max-width: 36vw;
+  max-height: 10vh;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: grey;
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
-  color: white;
 }
 
-.one:nth-child(4),
-.one:nth-child(3) {
+#email,
+form button {
   grid-column: 1/3;
 }
 
-.form button {
-  grid-column: 1/3;
-  padding: 10px;
+form button {
+  padding: 10px 15px;
+  border-radius: 35px;
   border: none;
-  border-radius: 5px;
-  background-color: green;
+  background-color: var(--red);
+  text-transform: uppercase;
   color: white;
-  font-family: system-ui;
-  font-size: 18px;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  font-size: 16px;
   cursor: pointer;
+}
+
+.contact-info {
+  margin-top: 10rem;
+  min-height: 60vh;
+  aspect-ratio: 1/1;
+  padding: 20px;
+  background-image: url(../Images/5124556.png);
+  background-size: cover;
+}
+
+#img {
+  position: absolute;
+  right: -20rem;
+  bottom: 19rem;
+  max-height: 11rem;
+  transform: rotate(270deg);
 }

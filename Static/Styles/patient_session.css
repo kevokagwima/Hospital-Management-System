@@ -203,6 +203,54 @@ body {
   font-size: 14px;
   font-family: var(--nav-links-font);
   cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.button--text {
+  color: white;
+  font-family: var(--nav-links-font);
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.btn--loading .button--text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.btn--loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid transparent;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+#close-symtom {
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 5px;
+  color: white;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
 }
 
 .symptoms .else {
@@ -236,6 +284,10 @@ body {
   grid-row: 1/5;
   position: sticky;
   top: 0;
+}
+
+.prescription .else {
+  text-align: center;
 }
 
 .prescription-info {
