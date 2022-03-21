@@ -207,7 +207,11 @@ HMS | Doctor Session
           <div class="patient-prescription">
             <h4>Prescription Given</h4>
             {% for prescribe in session.prescription %}
-            <p>
+            <p id="prescs">
+              {% if session.status == "Active" %}
+              <a id="close-presc"
+                href="{{ url_for('doctors.remove_prescription', session_id=session.id, prescription_id=prescribe.id) }}">&times</a>
+              {% endif %}
               <span>
                 {% for med in medicines if med.id == prescribe.medicine %}
                 {{ med.name }} - {{ med.type }}

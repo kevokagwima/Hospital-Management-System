@@ -368,6 +368,20 @@ nav {
   border-radius: 5px;
 }
 
+#prescs {
+  position: relative;
+}
+
+#close-presc {
+  position: absolute;
+  top: 1.7rem;
+  right: 1rem;
+  color: var(--red);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  font-size: 1.5rem;
+}
+
 .alergies {
   display: grid;
   grid-template-columns: auto auto;

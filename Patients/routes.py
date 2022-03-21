@@ -1,9 +1,10 @@
-from flask import Blueprint, flash, redirect, render_template, url_for, request, abort
+from flask import Blueprint, flash, redirect, render_template, url_for, request, abort, json
 from Patients.form import *
 from models import *
 from flask_login import login_user, login_required, logout_user, current_user
 from twilio.rest import Client
-import random, stripe, os
+import random, stripe, os, sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
 from datetime import datetime
 
 patients = Blueprint('patients', __name__)
@@ -12,6 +13,9 @@ stripe.api_key = os.environ['Stripe_api_key']
 account_sid = os.environ['Twilio_account_sid']
 auth_token = os.environ['Twilio_auth_key']
 clients = Client(account_sid, auth_token)
+sg = sendgrid.SendGridAPIClient(api_key=os.environ['Email_api_key'])
+from_email = Email("kevinkagwima4@gmail.com")
+subject = "From PHMS team"
 
 @patients.route("/patient-signup", methods=["POST", "GET"])
 def patient_register():
@@ -35,6 +39,15 @@ def patient_register():
       db.session.add(patient)
       db.session.commit()
       flash(f"Account successfully created", category="success")
+      # try:
+      #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+      #   content = Content("text/plain", f"Congratulations! {patient.first_name} {patient.second_name} you have successfully created a patient account. Your patient ID is {patient.patient_id}. Login to your portal with your email and password.")
+      #   mail = Mail(from_email, to_email, subject, content)
+      #   mail_json = mail.get()
+      #   response = sg.client.mail.send.post(request_body=mail_json)
+      #   print(response.headers)
+      # except:
+      #   flash(f"Failed to send an email", category="danger")
       # try:
       #   clients.messages.create(
       #     to = '+254796897011',
@@ -129,6 +142,15 @@ def book_appointment():
     flash(f"Appointment created successfully", category="success")
     doctor = Doctors.query.filter_by(id=current_user.doctor).first()
     # try:
+    #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+    #   content = Content("text/plain", f"Congratulations {current_user.first_name} {current_user.second_name} you have successfully created an appointment. Your appointment ID is {new_appointment.appointment_id}\nYou have been assigned doctor {doctor.first_name} {doctor.second_name}, tel {doctor.phone}, email {doctor.email}\nYour session ID is {new_session.session_id}")
+    #   mail = Mail(from_email, to_email, subject, content)
+    #   mail_json = mail.get()
+    #   response = sg.client.mail.send.post(request_body=mail_json)
+    #   print(response.headers)
+    # except:
+    #   flash(f"Failed to send an email", category="danger")
+    # try:
     #   clients.messages.create(
     #     to = '+254796897011',
     #     from_ = '+16203191736',
@@ -221,6 +243,7 @@ def medical_bill_payment():
     for medicine in medicines:
       total.append(medicine.price)
   session.cost = sum(total)
+  db.session.commit()
   try:
     checkout_session = stripe.checkout.Session.create(
       line_items = [
@@ -280,6 +303,15 @@ def payment_complete():
   appointment.date_closed = datetime.now()
   session.date_closed = datetime.now()
   db.session.commit()
+  # try:
+  #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+  #   content = Content("text/plain", f"Congratulations! {current_user.first_name} {current_user.second_name} your medical bill of Ksh{session.cost} has successfully been cleared. Your transaction ID is {new_transaction.transaction_id}. Your session and appointment with Dr. {doctor.first_name} {doctor.second_name} has officially been closed. Head over to your portal to view the session details.")
+  #   mail = Mail(from_email, to_email, subject, content)
+  #   mail_json = mail.get()
+  #   response = sg.client.mail.send.post(request_body=mail_json)
+  #   print(response.headers)
+  # except:
+  #   flash(f"Failed to send an email", category="danger")
   # try:
   #   clients.messages.create(
   #     to = '+254796897011',

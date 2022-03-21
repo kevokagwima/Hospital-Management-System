@@ -2,8 +2,9 @@ from flask import Blueprint, flash, redirect, render_template, url_for, request,
 from Doctors.form import *
 from models import *
 from twilio.rest import Client
+from sendgrid.helpers.mail import Mail, Email, To, Content
 from flask_login import login_user, login_required,logout_user,current_user
-import random, datetime
+import random, datetime, sendgrid
 import os
 
 doctors = Blueprint('doctors', __name__)
@@ -11,6 +12,9 @@ doctors = Blueprint('doctors', __name__)
 account_sid = os.environ['Twilio_account_sid']
 auth_token = os.environ['Twilio_auth_key']
 clients = Client(account_sid, auth_token)
+sg = sendgrid.SendGridAPIClient(api_key=os.environ['Email_api_key'])
+from_email = Email("kevinkagwima4@gmail.com")
+subject = "From PHMS team"
 
 @doctors.route("/doctor-signup", methods=["POST", "GET"])
 def doctor_register():
@@ -34,6 +38,15 @@ def doctor_register():
       db.session.add(doctor)
       db.session.commit()
       flash(f"Account successfully created", category="success")
+      # try:
+      #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+      #   content = Content("text/plain", f"'Congratulations! {doctor.first_name} {doctor.second_name} you have successfully created a doctor account. Your doctor ID is {doctor.doctor_id}. Login to your portal with your email and password.")
+      #   mail = Mail(from_email, to_email, subject, content)
+      #   mail_json = mail.get()
+      #   response = sg.client.mail.send.post(request_body=mail_json)
+      #   print(response.headers)
+      # except:
+      #   flash(f"Failed to send an email", category="danger")
       # try:
       #   clients.messages.create(
       #     to = '+254796897011',
@@ -174,6 +187,19 @@ def prescription(session_id):
 
   return redirect(url_for('doctors.doctor_session', session_id=session.id))
 
+@doctors.route("/remove-patient-prescription/<int:session_id>/<int:prescription_id>", methods=["POST", "GET"])
+@login_required
+def remove_prescription(session_id, prescription_id):
+  if current_user.account_type != "doctor":
+    abort(403)
+  session = Session.query.get(session_id)
+  prescription = Prescription.query.get(prescription_id)
+  db.session.delete(prescription)
+  db.session.commit()
+  flash(f"Prescription removed successfully", category="success")
+
+  return redirect(url_for('doctors.doctor_session', session_id=session.id))
+
 @doctors.route("/patient-notes/<int:session_id>", methods=["POST", "GET"])
 @login_required
 def notes(session_id):
@@ -188,6 +214,15 @@ def notes(session_id):
   session.notes = request.form.get("notes")
   db.session.commit()
   flash(f"Additional notes sent successfully", category="success")
+  # try:
+  #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+  #   content = Content("text/plain", f"Your session with Dr. {current_user.first_name} {current_user.second_name} is coming to an end. Details for this session include:\nDiagnosis - {session.diagnosis}\nPrescriptions:\n{presc}\nAdditional notes - {session.notes}")
+  #   mail = Mail(from_email, to_email, subject, content)
+  #   mail_json = mail.get()
+  #   response = sg.client.mail.send.post(request_body=mail_json)
+  #   print(response.headers)
+  # except:
+  #   flash(f"Failed to send an email", category="danger")
   # try:
   #   clients.messages.create(
   #     to = '+254796897011',
@@ -235,7 +270,7 @@ def patient_vitals(session_id):
   #   clients.messages.create(
   #     to = '+254796897011',
   #     from_ = '+16203191736',
-  #     body = f"Dear patient, your vitals have been successfully updated. Login into your dashboard to view your latest medical data."
+  #     body = f"Dear {patient.first_name} {patient.second_name}, your vitals have been successfully updated. Login into your dashboard to view your latest medical data."
   #   )
   # except:
   #   flash(f"Failed to send sms", category="danger")

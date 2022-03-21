@@ -37,7 +37,6 @@ def admin_signin():
 def admin_portal():
   if current_user.account_type != "admin":
     abort(403)
-
   patients = Patients.query.all()
   doctors = Doctors.query.all()
   appointments = Appointment.query.all()
