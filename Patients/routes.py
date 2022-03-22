@@ -197,7 +197,7 @@ def patient_symptoms(session_id):
     db.session.commit()
     flash(f"Symptom added successfully", category="success")
   else:
-    flash(f"Could not add symptom, symptom already added", category="danger")  
+    flash(f"Could not add symptom, symptom already exists", category="danger")  
 
   return redirect(url_for('patients.patient_session', session_id=session.id))
 

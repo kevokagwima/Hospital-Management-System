@@ -186,6 +186,11 @@ nav {
   margin-top: 10px;
 }
 
+.else {
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+}
+
 .session-info {
   margin: 1.5rem 0 0;
   display: grid;
@@ -372,6 +377,16 @@ nav {
   position: relative;
 }
 
+#close-diagnosis {
+  position: absolute;
+  top: 0.4rem;
+  right: 1rem;
+  color: var(--red);
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
+  font-size: 1.5rem;
+}
+
 #close-presc {
   position: absolute;
   top: 1.7rem;
@@ -427,7 +442,7 @@ nav {
 }
 
 .patient-diagnosis p {
-  background-color: #54c333;
+  background-color: var(--nav-links-color);
   color: white;
   font-size: 18px;
 }

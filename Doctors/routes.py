@@ -165,6 +165,19 @@ def diagnosis(session_id):
   
   return redirect(url_for('doctors.doctor_session', session_id=session.id))
 
+@doctors.route("/review-patient-diagnosis/<int:session_id>", methods=["POST", "GET"])
+@login_required
+def review_diagnosis(session_id):
+  if current_user.account_type != "doctor":
+    abort(403)
+  session = Session.query.get(session_id)
+  if session:
+    session.diagnosis = None
+    db.session.commit()
+    flash(f"Diagnosis successfully reviewed", category="success")
+
+  return redirect(url_for('doctors.doctor_session', session_id=session.id))
+
 @doctors.route("/patient-prescription/<int:session_id>", methods=["POST", "GET"])
 @login_required
 def prescription(session_id):

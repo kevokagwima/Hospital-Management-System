@@ -167,17 +167,33 @@ a {
 
 .tops {
   position: absolute;
-  top: 3.5rem;
+  top: 3.7rem;
   left: 0;
   right: 0;
   z-index: 2;
   max-height: max-content;
   margin-bottom: 0;
+  animation: fade-away 1s 4s forwards;
 }
 
 .alert {
   margin-bottom: 2px;
   position: relative;
+}
+
+@keyframes fade-away {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 #close {
@@ -187,4 +203,5 @@ a {
   font-family: "Dancing Script", cursive;
   font-family: "Varela Round", sans-serif;
   cursor: pointer;
+  display: none;
 }
