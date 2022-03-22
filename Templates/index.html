@@ -131,10 +131,10 @@ HMS | Home
 <div id="contact-us" class="container-4">
   <div class="form">
     <h4>Fill the form to <br> get in touch</h4>
-    <form action="#">
+    <form action="{{ url_for('main.contact') }}" method="post">
       <input type="text" name="fname" required placeholder="First Name">
-      <input type="text" name="fname" required placeholder="Last Name">
-      <input id="email" type="email" name="fname" required placeholder="Email Address">
+      <input type="text" name="lname" required placeholder="Last Name">
+      <input id="email" type="email" name="email" required placeholder="Email Address">
       <textarea required id="email" name="message" placeholder="Message"></textarea>
       <button type="submit">Send</button>
     </form>

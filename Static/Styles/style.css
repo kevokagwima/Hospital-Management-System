@@ -307,6 +307,8 @@ textarea {
   color: white;
   border-bottom: 2px solid whitesmoke;
   font-size: 17px;
+  font-family: "Dancing Script", cursive;
+  font-family: "Varela Round", sans-serif;
 }
 
 input:focus,

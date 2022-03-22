@@ -279,11 +279,6 @@ nav {
   color: black;
 }
 
-.accordion:hover {
-  color: white;
-  background-color: var(--dark);
-}
-
 .medicine {
   margin-top: 1rem;
   padding: 20px;
