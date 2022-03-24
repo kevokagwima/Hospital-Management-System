@@ -306,7 +306,7 @@ body {
 .sessions {
   margin-top: 1rem;
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(3, 1.5fr);
   gap: 1.5rem;
   max-height: 38.8rem;
   overflow: auto;
@@ -316,7 +316,7 @@ body {
 
 .patients-info,
 .doctors-info {
-  padding: 20px 10px;
+  padding: 20px 0 20px 10px;
   border-radius: 10px;
   background-color: white;
   box-shadow: 0px 0px 10px -6px black;
@@ -393,6 +393,54 @@ body {
   align-items: center;
 }
 
+.appointment {
+  margin-top: 1rem;
+}
+
+.accordion {
+  padding: 10px;
+  font-size: 15px;
+  color: black;
+  background-color: whitesmoke;
+  border: none;
+  font-family: var(--nav-links-font);
+  cursor: pointer;
+  min-width: 100%;
+  border-radius: 5px 5px 0 0;
+  text-align: left;
+}
+
+.accordion span {
+  font-weight: bold;
+}
+
+.panel {
+  background-color: rgb(231, 231, 231);
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  border-radius: 0 0 5px 5px;
+  margin-bottom: 1rem;
+}
+
+.panel-info {
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.panel-info p span {
+  font-weight: bold;
+  color: green;
+}
+
+.panel-info .else {
+  flex-grow: 1;
+  text-align: center;
+}
+
 .timeline {
   min-width: 15rem;
   max-width: 15rem;
@@ -457,6 +505,7 @@ body {
 
 .symptoms ul {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
   list-style-type: none;
@@ -467,7 +516,8 @@ body {
   padding: 5px 10px;
   border-radius: 30px;
   color: white;
-  outline: 2px solid yellow;
+  outline: 3px solid green;
+  text-transform: capitalize;
 }
 
 .prescription {

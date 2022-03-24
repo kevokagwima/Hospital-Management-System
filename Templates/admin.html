@@ -275,7 +275,15 @@ HMS | Admin Portal
           <h4>{{ patient.first_name }} {{ patient.second_name }} {{ patient.last_name }}</h4>
           <p>Phone number - <span>{{ patient.phone }}</span></p>
           <p>Email Address - <span>{{ patient.email }}</span></p>
-          <p>Gender - <span>{{ patient.gender }}</span></p>
+          <p>Gender -
+            <span>
+              {% if patient.gender %}
+              {{ patient.gender }}
+              {% else %}
+              Unknown
+              {% endif %}
+            </span>
+          </p>
           <p>Age - <span>{{ patient.age }} years</span></p>
         </div>
       </div>
@@ -324,6 +332,24 @@ HMS | Admin Portal
           <span id="active">Currently ongoing</span>
           {% endif %}
         </h4>
+        <div class="appointment">
+          {% for appointment in appointments if appointment.id == session.appointment %}
+          <button class="accordion">Appointment Information - <span>{{ appointment.appointment_id }}</span></button>
+          <div class="panel">
+            <div class="panel-info">
+              <p>Appointment Name - <span>{{ appointment.name }}</span></p>
+              <p>Created On - <span>{{ appointment.date_created.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time Started - <span>{{ appointment.date_created.strftime("%I:%M %p") }}</span></p>
+              {% if session.status == "Closed" %}
+              <p>Closed On - <span>{{ appointment.date_closed.strftime("%d/%m/%Y") }}</span></p>
+              <p>Time Ended - <span>{{ appointment.date_closed.strftime("%I:%M %p") }}</span></p>
+              {% else %}
+              <h4 class="else">Currently in session</h4>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
         <div class="session-details">
           <div class="timeline">
             <div class="line">

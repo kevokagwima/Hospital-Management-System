@@ -38,15 +38,15 @@ def doctor_register():
       db.session.add(doctor)
       db.session.commit()
       flash(f"Account successfully created", category="success")
-      # try:
-      #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
-      #   content = Content("text/plain", f"'Congratulations! {doctor.first_name} {doctor.second_name} you have successfully created a doctor account. Your doctor ID is {doctor.doctor_id}. Login to your portal with your email and password.")
-      #   mail = Mail(from_email, to_email, subject, content)
-      #   mail_json = mail.get()
-      #   response = sg.client.mail.send.post(request_body=mail_json)
-      #   print(response.headers)
-      # except:
-      #   flash(f"Failed to send an email", category="danger")
+      try:
+        to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+        content = Content("text/plain", f"'Congratulations! {doctor.first_name} {doctor.second_name} you have successfully created a doctor account. Your doctor ID is {doctor.doctor_id}. Login to your portal with your email and password.")
+        mail = Mail(from_email, to_email, subject, content)
+        mail_json = mail.get()
+        response = sg.client.mail.send.post(request_body=mail_json)
+        print(response.headers)
+      except:
+        flash(f"Failed to send an email", category="danger")
       # try:
       #   clients.messages.create(
       #     to = '+254796897011',
@@ -227,15 +227,15 @@ def notes(session_id):
   session.notes = request.form.get("notes")
   db.session.commit()
   flash(f"Additional notes sent successfully", category="success")
-  # try:
-  #   to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
-  #   content = Content("text/plain", f"Your session with Dr. {current_user.first_name} {current_user.second_name} is coming to an end. Details for this session include:\nDiagnosis - {session.diagnosis}\nPrescriptions:\n{presc}\nAdditional notes - {session.notes}")
-  #   mail = Mail(from_email, to_email, subject, content)
-  #   mail_json = mail.get()
-  #   response = sg.client.mail.send.post(request_body=mail_json)
-  #   print(response.headers)
-  # except:
-  #   flash(f"Failed to send an email", category="danger")
+  try:
+    to_email = To(f"kevokagwima@gmail.com, {current_user.email}")
+    content = Content("text/plain", f"Your session with Dr. {current_user.first_name} {current_user.second_name} is coming to an end. Details for this session include:\nDiagnosis - {session.diagnosis}\nPrescriptions:\n{presc}\nAdditional notes - {session.notes}")
+    mail = Mail(from_email, to_email, subject, content)
+    mail_json = mail.get()
+    response = sg.client.mail.send.post(request_body=mail_json)
+    print(response.headers)
+  except:
+    flash(f"Failed to send an email", category="danger")
   # try:
   #   clients.messages.create(
   #     to = '+254796897011',

@@ -18,16 +18,16 @@ def contact():
   last_name = request.form.get("lname")
   email = request.form.get("email")
   message = request.form.get("message")
-  # try:
-  #   to_email = To(f"kevokagwima@gmail.com")
-  #   subject = f"Enquiry From {first_name} {last_name}"
-  #   content = Content("text/plain", f"{message}\nYou can reach out via {email}")
-  #   mail = Mail(from_email, to_email, subject, content)
-  #   mail_json = mail.get()
-  #   response = sg.client.mail.send.post(request_body=mail_json)
-  #   print(response.headers)
-  #   flash(f"Message sent successfully", category="success")
-  # except:
-  #   flash(f"Failed to send email", category="danger")
+  try:
+    to_email = To(f"kevokagwima@gmail.com")
+    subject = f"Enquiry From {first_name} {last_name}"
+    content = Content("text/plain", f"{message}\nYou can reach out via {email}")
+    mail = Mail(from_email, to_email, subject, content)
+    mail_json = mail.get()
+    response = sg.client.mail.send.post(request_body=mail_json)
+    print(response.headers)
+    flash(f"Message sent successfully", category="success")
+  except:
+    flash(f"Failed to send email", category="danger")
   
   return redirect(url_for('main.index'))
