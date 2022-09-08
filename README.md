@@ -16,3 +16,15 @@ The system also allows for patients to quickly and easily pay for their prescrip
 <h3>Patient Session Page</h3>
 <p>In this page, a patient is assigned to a doctor and information is exchanged between them, e.g. The patient sends symptoms and the doctor analyzes them gives the patient a diagnosis and finally prescribes medication.</p>
 <img src="https://user-images.githubusercontent.com/63863253/189124196-7c10aa2f-92c7-4ccd-a553-1c9f704b0e97.png">
+<h1>The Doctor Portal</h1>
+<h3>The Home Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189125104-eed53a6d-26d6-49f7-a14b-f88a3537a5ff.png">
+<h3>Prescriptions Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189125291-f68adb18-0bc5-4292-be35-8fc5a773ecba.png">
+<h3>Previous Session Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189125489-06183971-4fca-4b84-9224-21e2ffb7035d.png">
+<h3>Drugs Tab</h3>
+<p>This tab allows for new medication to be added into the system</p>
+<img src="https://user-images.githubusercontent.com/63863253/189125737-be695deb-3f17-454d-a0ba-6e3ef08e170f.png">
+<h3>The Doctor Session Page</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189126070-e81f8c88-b0dd-441b-b4c2-8f990cadd821.png">
