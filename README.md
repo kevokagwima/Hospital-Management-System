@@ -28,3 +28,15 @@ The system also allows for patients to quickly and easily pay for their prescrip
 <img src="https://user-images.githubusercontent.com/63863253/189125737-be695deb-3f17-454d-a0ba-6e3ef08e170f.png">
 <h3>The Doctor Session Page</h3>
 <img src="https://user-images.githubusercontent.com/63863253/189126070-e81f8c88-b0dd-441b-b4c2-8f990cadd821.png">
+<img src="https://user-images.githubusercontent.com/63863253/189126443-d905b383-7276-423f-b213-b76ba5678dc0.png">
+<h1>The Admin Portal</h1>
+<h3>The Home Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189127256-3a1ba0f5-00d5-41a1-b66f-20db5d77069f.png">
+<h3>The Patient Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189127432-61e72ce7-4dd7-46e6-b728-4b108756b830.png">
+<h3>The Doctor Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189127590-184d76d0-a51f-42ea-8f8e-5ee86ab61d5c.png">
+<h3>The Sessions Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189127774-b9893592-67c0-4ea1-b18d-6bab6eb8d233.png">
+<h3>The Medication Tab</h3>
+<img src="https://user-images.githubusercontent.com/63863253/189127922-3ffcc662-30fd-4eac-916a-1a1053005efe.png">
